@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan de Paternidad + Vacaciones 2026–2027 — Luca</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a0533">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luca 2026">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -227,33 +234,6 @@ section { scroll-margin-top: 60px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
 /* ============================================
-   VERTICAL TIMELINE
-   ============================================ */
-.vtimeline { position: relative; margin-bottom: 32px; padding: 20px 0; }
-.vtimeline::before {
-  content: ''; position: absolute;
-  left: 50%; top: 0; bottom: 0; width: 2px;
-  background: var(--timeline-line);
-  transform: translateX(-50%);
-}
-.vt-item { position: relative; width: 50%; margin-bottom: 24px; }
-.vt-item:last-child { margin-bottom: 0; }
-.vt-item.left { padding-right: 36px; text-align: right; left: 0; }
-.vt-item.right { padding-left: 36px; text-align: left; left: 50%; }
-.vt-dot {
-  position: absolute; top: 20px;
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 3px solid var(--glass-border);
-  z-index: 2;
-}
-.vt-item.left .vt-dot { right: -7px; }
-.vt-item.right .vt-dot { left: -7px; }
-.vt-card { padding: 16px; }
-.vt-card .vt-dates { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
-.vt-card .vt-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-.vt-card .vt-why { font-size: 12px; color: var(--text-secondary); }
-
-/* ============================================
    TABLES (desktop) & CARD STACKS (mobile)
    ============================================ */
 .data-card { margin-bottom: 24px; }
@@ -330,6 +310,129 @@ section { scroll-margin-top: 60px; }
 .tramite-row.done .tramite-info .name { text-decoration: line-through; color: var(--text-muted); }
 
 /* ============================================
+   SETTINGS / SYNC / MODAL / TOAST / UPLOAD
+   ============================================ */
+.nav-link.settings-link { margin-left: auto; cursor: pointer; }
+.sync-pill {
+  flex-shrink: 0; font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: 100px;
+  background: rgba(255,255,255,0.04); color: var(--text-muted);
+  border: 1px solid var(--glass-border); white-space: nowrap;
+  align-self: center;
+}
+.sync-pill.synced { background: rgba(74,222,128,0.12); color: var(--accent-green); border-color: rgba(74,222,128,0.25); }
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(8,6,20,0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: rgba(20,16,40,0.95);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border); border-radius: 20px;
+  padding: 28px; max-width: 460px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 14px; }
+.modal p a { color: var(--accent-purple); text-decoration: none; }
+.modal p a:hover { text-decoration: underline; }
+.modal input[type="password"], .modal input[type="text"] {
+  width: 100%; padding: 11px 14px; border-radius: 10px;
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05);
+  color: var(--text); font-size: 14px; font-family: inherit; outline: none;
+  margin-bottom: 10px;
+}
+.modal input:focus { border-color: var(--accent-purple-soft); }
+.modal .modal-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.modal .btn {
+  padding: 10px 16px; border-radius: 10px; border: none;
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  transition: opacity 0.2s;
+}
+.modal .btn:hover { opacity: 0.85; }
+.modal .btn-primary { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; flex: 1; }
+.modal .btn-secondary { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--glass-border); }
+.modal .btn-danger { background: rgba(251,113,133,0.15); color: #fb7185; border: 1px solid rgba(251,113,133,0.3); }
+.modal .error-msg { color: #fb7185; font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+#toast-host {
+  position: fixed; right: 16px; bottom: 16px; z-index: 9500;
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: calc(100vw - 32px);
+}
+.toast {
+  padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 500;
+  background: rgba(20,16,40,0.95); color: var(--text);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; gap: 8px; max-width: 360px;
+  animation: toast-in 0.2s ease-out;
+}
+.toast.success { border-color: rgba(74,222,128,0.35); }
+.toast.error { border-color: rgba(251,113,133,0.4); }
+.toast.loading { border-color: rgba(139,92,246,0.35); }
+.toast .toast-x { cursor: pointer; color: var(--text-muted); margin-left: auto; font-size: 16px; line-height: 1; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Aggregate progress card */
+.aggregate-card { display: flex; align-items: center; gap: 18px; padding: 18px 22px; margin-bottom: 24px; }
+.aggregate-card .agg-num { font-size: 30px; font-weight: 800; color: var(--accent-purple); letter-spacing: -1px; white-space: nowrap; }
+.aggregate-card .agg-info { flex: 1; min-width: 0; }
+.aggregate-card .agg-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; }
+.aggregate-card .progress-track { margin: 0; }
+
+/* Uploader */
+.uploader {
+  margin-top: 14px; border: 2px dashed var(--glass-border); border-radius: 14px;
+  padding: 18px; text-align: center; font-size: 13px; color: var(--text-secondary);
+  transition: border-color 0.2s, background 0.2s; cursor: pointer;
+  background: rgba(255,255,255,0.015);
+}
+.uploader:hover, .uploader.drag-over { border-color: var(--accent-purple-soft); background: rgba(167,139,250,0.06); color: var(--text); }
+.uploader input[type="file"] { display: none; }
+.uploader.hidden { display: none; }
+.uploader .u-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.doc-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.doc-list-empty { font-size: 11px; color: var(--text-muted); font-style: italic; padding: 4px 0; }
+.doc-entry {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+  font-size: 12px;
+}
+.doc-entry a { color: var(--accent-blue); text-decoration: none; word-break: break-all; flex: 1; min-width: 0; }
+.doc-entry a:hover { text-decoration: underline; }
+.doc-entry .doc-del {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 14px; padding: 2px 6px; border-radius: 6px;
+}
+.doc-entry .doc-del:hover { color: #fb7185; background: rgba(251,113,133,0.1); }
+
+/* Per-row attach */
+.tramite-info .row-doc {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 4px; font-size: 11px;
+}
+.tramite-info .row-doc a { color: var(--accent-blue); text-decoration: none; word-break: break-all; }
+.tramite-info .row-doc a:hover { text-decoration: underline; }
+.tramite-info .row-doc .row-unlink {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 12px; padding: 0 4px;
+}
+.tramite-info .attach-btn {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 11px; padding: 2px 6px; border-radius: 6px; margin-top: 3px;
+  display: inline-block;
+}
+.tramite-info .attach-btn:hover { color: var(--accent-purple); background: rgba(167,139,250,0.08); }
+.tramite-info .attach-btn.hidden { display: none; }
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 700px) {
@@ -337,11 +440,6 @@ section { scroll-margin-top: 60px; }
   .summary { grid-template-columns: 1fr 1fr; gap: 10px; }
   .summary .value { font-size: 24px; }
   .cal-grid { grid-template-columns: 1fr 1fr; }
-
-  /* Vertical timeline: single column */
-  .vtimeline::before { left: 16px; }
-  .vt-item, .vt-item.left, .vt-item.right { width: 100%; left: 0; padding-left: 44px; padding-right: 0; text-align: left; }
-  .vt-item.left .vt-dot, .vt-item.right .vt-dot { left: 9px; right: auto; }
 
   /* Table card stacks */
   .data-table thead { display: none; }
@@ -377,13 +475,11 @@ section { scroll-margin-top: 60px; }
     background: #fff !important; backdrop-filter: none !important;
     border: 1px solid #ddd !important; box-shadow: none !important;
   }
-  .vtimeline::before { background: #ccc !important; }
-  .vt-dot { border-color: #ccc !important; }
   .cal-day.mandatory { background: #d8b4fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cal-day.parental { background: #ede9fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cal-day.annual { background: #bbf7d0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cal-day.baby { background: #fda4af !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .status-dot, .vt-dot, .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .status-dot, .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .data-card, .tramite-group, .cal-month { break-inside: avoid; }
   a { color: #000 !important; text-decoration: none !important; }
 }
@@ -433,11 +529,12 @@ if(sessionStorage.getItem('auth')==='1'){
   <div class="nav-inner">
     <a href="#resumen" class="nav-link active">Resumen</a>
     <a href="#calendario" class="nav-link">Calendario</a>
-    <a href="#cronograma" class="nav-link">Cronograma</a>
     <a href="#bloques" class="nav-link">Bloques</a>
     <a href="#vacaciones" class="nav-link">Vacaciones</a>
     <a href="#tramites" class="nav-link">Trámites</a>
     <a href="#notas" class="nav-link">Notas</a>
+    <a class="nav-link settings-link" id="nav-settings">⚙ Ajustes</a>
+    <span class="sync-pill" id="sync-pill">📱 Solo este dispositivo</span>
   </div>
 </nav>
 
@@ -459,6 +556,13 @@ if(sessionStorage.getItem('auth')==='1'){
 
   <!-- ========== RESUMEN ========== -->
   <section id="resumen">
+    <div class="glass aggregate-card">
+      <div class="agg-num"><span id="agg-done">0</span>/<span id="agg-total">0</span></div>
+      <div class="agg-info">
+        <div class="agg-label">Trámites completados</div>
+        <div class="progress-track"><div class="progress-fill" id="agg-fill" style="width:0%"></div></div>
+      </div>
+    </div>
     <div class="summary">
       <div class="glass">
         <div class="label">Permiso Parental</div>
@@ -497,12 +601,6 @@ if(sessionStorage.getItem('auth')==='1'){
       <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Nace Luca</div>
     </div>
     <div class="cal-grid" id="yearCalendar"></div>
-  </section>
-
-  <!-- ========== CRONOGRAMA (Vertical Timeline) ========== -->
-  <section id="cronograma">
-    <div class="section-title">Cronograma</div>
-    <div class="vtimeline" id="vtimeline"></div>
   </section>
 
   <!-- ========== BLOQUES DE PERMISO ========== -->
@@ -814,58 +912,184 @@ if(sessionStorage.getItem('auth')==='1'){
   }
 })();
 
-// ========== VERTICAL TIMELINE ==========
+// ========== TRÁMITES + SYNC + UPLOADS ==========
 (function() {
-  const container = document.getElementById('vtimeline');
-  const colorMap = { mandatory: '#a855f7', parental: '#d8b4fe', annual: '#22c55e', trip: '#f43f5e' };
-  const events = [
-    { dates: '20 abr – 31 may', label: 'Obligatorio', why: '6 sem. por ley', type: 'mandatory' },
-    { dates: '5–7 jun', label: 'Siam Park', why: 'Cumple de Candela el 9', type: 'trip' },
-    { dates: '17–23 jun', label: 'Bloque 1', why: 'Adaptación a la vida en Tenerife con Luca', type: 'parental' },
-    { dates: '10–16 ago', label: 'Bloque 2', why: 'Porque Agosto nunca se lo dan a un piloto', type: 'parental' },
-    { dates: '21 sep – 2 oct', label: 'Vacaciones', why: 'Otoño', type: 'annual' },
-    { dates: '8–14 nov', label: 'Bloque 3', why: 'Primer viaje a La Graciosa con familia de 4', type: 'parental' },
-    { dates: '11–22 dic', label: 'Vacaciones', why: '→ Navidad', type: 'annual' },
-    { dates: '23 dic – 12 ene', label: 'Bloques 4–6', why: 'Las vacaciones de navidad más largas de nuestras vidas', type: 'parental' },
-    { dates: '26 mar – 15 abr \'27', label: 'Bloques 7–9', why: 'Viaje a Asia por visado. Kyoto', type: 'parental' },
-    { dates: 'Por decidir', label: 'Reservados', why: 'Posible viaje con Padre', type: '', faded: true },
-  ];
-  events.forEach((ev, i) => {
-    const side = (i % 2 === 0) ? 'left' : 'right';
-    const item = document.createElement('div');
-    item.className = 'vt-item ' + side;
-    if (ev.faded) item.style.opacity = '0.45';
-    const dot = document.createElement('div');
-    dot.className = 'vt-dot';
-    dot.style.background = colorMap[ev.type] || '#888';
-    const card = document.createElement('div');
-    card.className = 'glass vt-card';
-    card.innerHTML =
-      '<div class="vt-dates">' + ev.dates + '</div>' +
-      '<div class="vt-title">' + ev.label + '</div>' +
-      '<div class="vt-why">' + ev.why + '</div>';
-    item.appendChild(dot);
-    item.appendChild(card);
-    container.appendChild(item);
-  });
-})();
+  // Repo config
+  const REPO_OWNER = 'CommnaderWi11';
+  const REPO_NAME  = 'parental-leave-plan';
+  const STATE_PATH = 'state.json';
+  const LEGACY_KEY = 'parental-leave-tramites';
+  const LOCAL_STATE_KEY = 'parental-leave-state';
+  const PAT_KEY = 'gh-pat';
 
-// ========== TRÁMITES PERSISTENCE ==========
-(function() {
-  const STORAGE_KEY = 'parental-leave-tramites';
-  function loadState() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
-  function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+  // Groups map to Documents/ subfolders
+  const GROUP_FOLDERS = {
+    registro: 'Registro-Civil',
+    inss: 'INSS',
+    binter: 'Binter'
+  };
+  // Registro Civil group also uses Hospital; INSS uses Hospital + Binter. We list one folder per group, but "attach" can target any.
 
-  function updateProgress(group) {
-    const boxes = document.querySelectorAll('input[data-group="' + group + '"]');
-    const total = boxes.length;
-    const checked = Array.from(boxes).filter(b => b.checked).length;
-    const fill = document.getElementById('prog-' + group);
-    const label = document.getElementById('prog-label-' + group);
-    if (fill) fill.style.width = (total ? (checked / total * 100) : 0) + '%';
-    if (label) label.textContent = checked + ' / ' + total + ' completados';
+  // ---------- Toast module ----------
+  const toastHost = document.getElementById('toast-host');
+  function toast(msg, kind) {
+    kind = kind || 'info';
+    const el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    el.innerHTML = '<span>' + msg + '</span>';
+    if (kind !== 'loading') {
+      const x = document.createElement('span');
+      x.className = 'toast-x';
+      x.textContent = '×';
+      x.onclick = () => el.remove();
+      el.appendChild(x);
+    }
+    toastHost.appendChild(el);
+    if (kind === 'success') setTimeout(() => el.remove(), 2500);
+    else if (kind === 'error') setTimeout(() => el.remove(), 8000);
+    return el;
   }
 
+  // ---------- GitHub API client ----------
+  function getToken() { return localStorage.getItem(PAT_KEY); }
+  function setToken(t) { if (t) localStorage.setItem(PAT_KEY, t); else localStorage.removeItem(PAT_KEY); }
+  function hasToken() { return !!getToken(); }
+
+  async function gh(path, opts) {
+    opts = opts || {};
+    const headers = Object.assign({
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    }, opts.headers || {});
+    const token = getToken();
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const url = 'https://api.github.com' + path;
+    const res = await fetch(url, { method: opts.method || 'GET', headers, body: opts.body });
+    if (res.status === 403 && res.headers.get('X-RateLimit-Remaining') === '0') {
+      const reset = parseInt(res.headers.get('X-RateLimit-Reset') || '0') * 1000;
+      const mins = Math.max(1, Math.ceil((reset - Date.now()) / 60000));
+      throw new Error('Límite de GitHub alcanzado — reintenta en ' + mins + 'm');
+    }
+    return res;
+  }
+
+  function utf8ToB64(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64ToUtf8(b64) { try { return decodeURIComponent(escape(atob(b64))); } catch { return atob(b64); } }
+
+  async function ghGetFile(path) {
+    const res = await gh('/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path));
+    if (res.status === 404) return { exists: false };
+    if (!res.ok) throw new Error('GET ' + path + ' → ' + res.status);
+    const j = await res.json();
+    return { exists: true, sha: j.sha, content: b64ToUtf8(j.content.replace(/\n/g, '')), raw: j };
+  }
+
+  async function ghPutFile(path, contentB64, message, sha) {
+    const body = { message: message, content: contentB64 };
+    if (sha) body.sha = sha;
+    const res = await gh('/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error('PUT ' + path + ' → ' + res.status + ' ' + t.slice(0,120));
+    }
+    return await res.json();
+  }
+
+  async function ghDeleteFile(path, sha, message) {
+    const res = await gh('/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: message, sha: sha })
+    });
+    if (!res.ok) throw new Error('DELETE ' + path + ' → ' + res.status);
+    return await res.json();
+  }
+
+  async function ghListDir(path) {
+    const res = await gh('/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path));
+    if (res.status === 404) return [];
+    if (!res.ok) throw new Error('LIST ' + path + ' → ' + res.status);
+    const j = await res.json();
+    return Array.isArray(j) ? j.filter(e => e.type === 'file') : [];
+  }
+
+  async function validateToken(token) {
+    const res = await fetch('https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME, {
+      headers: { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + token }
+    });
+    return res.ok;
+  }
+
+  // ---------- State ----------
+  let state = { tramites: {}, docs: {} };
+  let stateSha = null;
+
+  function loadLocal() {
+    try {
+      const s = JSON.parse(localStorage.getItem(LOCAL_STATE_KEY) || 'null');
+      if (s && typeof s === 'object') return { tramites: s.tramites || {}, docs: s.docs || {} };
+    } catch {}
+    // Legacy migration: old flat key → tramites
+    try {
+      const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null');
+      if (legacy && typeof legacy === 'object') return { tramites: legacy, docs: {} };
+    } catch {}
+    return { tramites: {}, docs: {} };
+  }
+  function saveLocal() { localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(state)); }
+
+  async function loadRemote() {
+    const r = await ghGetFile(STATE_PATH);
+    if (!r.exists) { stateSha = null; return null; }
+    stateSha = r.sha;
+    try {
+      const parsed = JSON.parse(r.content);
+      return { tramites: parsed.tramites || {}, docs: parsed.docs || {} };
+    } catch { return null; }
+  }
+
+  let saveTimer = null;
+  let pendingToast = null;
+  function queueSave() {
+    saveLocal();
+    if (!hasToken()) return;
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(doSave, 1500);
+  }
+  async function doSave() {
+    const payload = Object.assign({}, state, { updatedAt: new Date().toISOString() });
+    const b64 = utf8ToB64(JSON.stringify(payload, null, 2));
+    if (pendingToast) pendingToast.remove();
+    pendingToast = toast('Sincronizando…', 'loading');
+    try {
+      const res = await ghPutFile(STATE_PATH, b64, 'Update state', stateSha);
+      stateSha = res.content && res.content.sha;
+      if (pendingToast) pendingToast.remove();
+      pendingToast = toast('✓ Guardado', 'success');
+      updateSyncPill();
+    } catch (e) {
+      // Handle SHA conflict
+      if (('' + e.message).includes('409') || ('' + e.message).includes('422')) {
+        try {
+          const remote = await loadRemote();
+          if (remote) {
+            state.tramites = Object.assign({}, remote.tramites, state.tramites);
+            state.docs = Object.assign({}, remote.docs, state.docs);
+            saveLocal();
+            return doSave();
+          }
+        } catch (e2) {/* fallthrough */}
+      }
+      if (pendingToast) pendingToast.remove();
+      pendingToast = toast('⚠ No se pudo guardar: ' + e.message, 'error');
+    }
+  }
+
+  // ---------- UI: checkboxes ----------
   function applyRowStyle(cb) {
     const row = cb.closest('.tramite-row');
     if (!row) return;
@@ -878,25 +1102,356 @@ if(sessionStorage.getItem('auth')==='1'){
       if (badge) { badge.className = 'badge badge-pending'; badge.textContent = 'Pendiente'; }
     }
   }
+  function updateGroupProgress(group) {
+    const boxes = document.querySelectorAll('input[data-group="' + group + '"]');
+    const total = boxes.length;
+    const checked = Array.from(boxes).filter(b => b.checked).length;
+    const fill = document.getElementById('prog-' + group);
+    const label = document.getElementById('prog-label-' + group);
+    if (fill) fill.style.width = (total ? (checked / total * 100) : 0) + '%';
+    if (label) label.textContent = checked + ' / ' + total + ' completados';
+  }
+  function updateAggregate() {
+    const allBoxes = document.querySelectorAll('.tramite-row input[type="checkbox"]');
+    const total = allBoxes.length;
+    const checked = Array.from(allBoxes).filter(b => b.checked).length;
+    const pct = total ? (checked / total * 100) : 0;
+    const done = document.getElementById('agg-done');
+    const tot = document.getElementById('agg-total');
+    const fill = document.getElementById('agg-fill');
+    if (done) done.textContent = checked;
+    if (tot) tot.textContent = total;
+    if (fill) fill.style.width = pct + '%';
+  }
 
-  const state = loadState();
-  const allBoxes = document.querySelectorAll('.tramite-row input[type="checkbox"]');
+  const allBoxes = Array.from(document.querySelectorAll('.tramite-row input[type="checkbox"]'));
   const groups = new Set();
+  allBoxes.forEach(b => groups.add(b.dataset.group));
+
+  function applyStateToUI() {
+    allBoxes.forEach(box => {
+      const key = box.dataset.group + '-' + box.dataset.idx;
+      box.checked = !!state.tramites[key];
+      applyRowStyle(box);
+      renderRowDoc(box);
+    });
+    groups.forEach(updateGroupProgress);
+    updateAggregate();
+  }
+
   allBoxes.forEach(box => {
-    const key = box.dataset.group + '-' + box.dataset.idx;
-    groups.add(box.dataset.group);
-    if (state[key]) box.checked = true;
-    applyRowStyle(box);
     box.addEventListener('change', function() {
-      const s = loadState();
-      s[this.dataset.group + '-' + this.dataset.idx] = this.checked;
-      saveState(s);
+      const key = this.dataset.group + '-' + this.dataset.idx;
+      state.tramites[key] = this.checked;
       applyRowStyle(this);
-      updateProgress(this.dataset.group);
+      updateGroupProgress(this.dataset.group);
+      updateAggregate();
+      queueSave();
     });
   });
-  groups.forEach(g => updateProgress(g));
+
+  // ---------- Per-row attach ----------
+  function renderRowDoc(box) {
+    const row = box.closest('.tramite-row');
+    const info = row.querySelector('.tramite-info');
+    const key = box.dataset.group + '-' + box.dataset.idx;
+    // Remove any existing row-doc / attach-btn from previous render
+    info.querySelectorAll('.row-doc, .attach-btn').forEach(e => e.remove());
+    const path = state.docs[key];
+    if (path) {
+      const wrap = document.createElement('div');
+      wrap.className = 'row-doc';
+      const a = document.createElement('a');
+      a.href = path;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = '📎 ' + path.split('/').pop();
+      wrap.appendChild(a);
+      const btn = document.createElement('button');
+      btn.className = 'row-unlink';
+      btn.title = 'Desvincular';
+      btn.textContent = '✕';
+      btn.onclick = () => {
+        delete state.docs[key];
+        renderRowDoc(box);
+        queueSave();
+      };
+      wrap.appendChild(btn);
+      info.appendChild(wrap);
+    } else if (hasToken()) {
+      const btn = document.createElement('button');
+      btn.className = 'attach-btn';
+      btn.textContent = '📎 adjuntar';
+      btn.onclick = () => openAttachPicker(box);
+      info.appendChild(btn);
+    }
+  }
+
+  function openAttachPicker(box) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/pdf,image/*';
+    input.onchange = async () => {
+      if (!input.files || !input.files[0]) return;
+      const group = box.dataset.group;
+      const folder = GROUP_FOLDERS[group];
+      const key = group + '-' + box.dataset.idx;
+      const uploaded = await uploadFile(input.files[0], folder);
+      if (uploaded) {
+        state.docs[key] = uploaded.path;
+        renderRowDoc(box);
+        queueSave();
+        refreshDocList(group);
+      }
+    };
+    input.click();
+  }
+
+  // ---------- Uploader + Doc list per group ----------
+  function slugify(s) {
+    return s.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'archivo';
+  }
+  function yyyymmdd(d) {
+    return d.getFullYear().toString() +
+      String(d.getMonth()+1).padStart(2,'0') +
+      String(d.getDate()).padStart(2,'0');
+  }
+
+  async function uploadFile(file, folder) {
+    const MAX_HARD = 100 * 1024 * 1024;
+    const MAX_WARN = 25 * 1024 * 1024;
+    if (file.size > MAX_HARD) { toast('⚠ Archivo supera el límite de 100 MB de GitHub', 'error'); return null; }
+    if (file.size > MAX_WARN) { toast('Archivo grande (' + Math.round(file.size/1024/1024) + ' MB) — puede tardar', 'loading'); }
+
+    // Prompt for label
+    const origBase = (file.name.split('.').slice(0, -1).join('.') || file.name);
+    const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+    const label = prompt('Nombre para el archivo (sin extensión):', origBase);
+    if (label === null) return null;
+    const slug = slugify(label) || slugify(origBase);
+    const fname = yyyymmdd(new Date()) + '-' + slug + '.' + ext;
+    const path = 'Documents/' + folder + '/' + fname;
+
+    const b64 = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => {
+        const dataUrl = r.result;
+        resolve(dataUrl.split(',')[1] || '');
+      };
+      r.onerror = () => reject(r.error);
+      r.readAsDataURL(file);
+    });
+
+    const loadingT = toast('Subiendo ' + fname + '…', 'loading');
+    try {
+      await ghPutFile(path, b64, 'Upload ' + fname);
+      loadingT.remove();
+      toast('✓ Subido — disponible en ~1 min en Pages', 'success');
+      return { path, name: fname };
+    } catch (e) {
+      loadingT.remove();
+      toast('⚠ Error subiendo: ' + e.message, 'error');
+      return null;
+    }
+  }
+
+  async function refreshDocList(group) {
+    const folder = GROUP_FOLDERS[group];
+    const listEl = document.getElementById('doc-list-' + group);
+    if (!listEl) return;
+    if (!hasToken()) { listEl.innerHTML = '<div class="doc-list-empty">Configura el token para listar documentos.</div>'; return; }
+    listEl.innerHTML = '<div class="doc-list-empty">Cargando…</div>';
+    try {
+      const files = await ghListDir('Documents/' + folder);
+      if (!files.length) { listEl.innerHTML = '<div class="doc-list-empty">Sin documentos aún.</div>'; return; }
+      listEl.innerHTML = '';
+      files.forEach(f => {
+        const entry = document.createElement('div');
+        entry.className = 'doc-entry';
+        const a = document.createElement('a');
+        a.href = 'Documents/' + folder + '/' + f.name;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = f.name;
+        entry.appendChild(a);
+        const del = document.createElement('button');
+        del.className = 'doc-del';
+        del.title = 'Eliminar';
+        del.textContent = '🗑';
+        del.onclick = async () => {
+          if (!confirm('¿Eliminar ' + f.name + '?')) return;
+          const loadingT = toast('Eliminando…', 'loading');
+          try {
+            await ghDeleteFile('Documents/' + folder + '/' + f.name, f.sha, 'Delete ' + f.name);
+            loadingT.remove();
+            toast('✓ Eliminado', 'success');
+            // Clean any row-doc references pointing to this path
+            const fullPath = 'Documents/' + folder + '/' + f.name;
+            let dirty = false;
+            Object.keys(state.docs).forEach(k => { if (state.docs[k] === fullPath) { delete state.docs[k]; dirty = true; } });
+            if (dirty) { applyStateToUI(); queueSave(); }
+            refreshDocList(group);
+          } catch (e) {
+            loadingT.remove();
+            toast('⚠ Error: ' + e.message, 'error');
+          }
+        };
+        entry.appendChild(del);
+        listEl.appendChild(entry);
+      });
+    } catch (e) {
+      listEl.innerHTML = '<div class="doc-list-empty">Error: ' + e.message + '</div>';
+    }
+  }
+
+  function injectUploaderUI() {
+    Object.keys(GROUP_FOLDERS).forEach(group => {
+      const grpEl = document.getElementById('grp-' + group);
+      if (!grpEl || grpEl.querySelector('.uploader')) return;
+      const folder = GROUP_FOLDERS[group];
+
+      const uploader = document.createElement('label');
+      uploader.className = 'uploader' + (hasToken() ? '' : ' hidden');
+      uploader.id = 'upl-' + group;
+      uploader.innerHTML =
+        '<div>📎 Subir archivo o arrastra aquí → <strong>Documents/' + folder + '/</strong></div>' +
+        '<div class="u-hint">PDF o imagen · máx 100 MB</div>';
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/pdf,image/*';
+      input.setAttribute('capture', 'environment');
+      uploader.appendChild(input);
+      input.addEventListener('change', async () => {
+        if (!input.files || !input.files[0]) return;
+        const f = input.files[0];
+        input.value = '';
+        await uploadFile(f, folder);
+        refreshDocList(group);
+      });
+
+      // Drag-drop
+      uploader.addEventListener('dragover', e => { e.preventDefault(); uploader.classList.add('drag-over'); });
+      uploader.addEventListener('dragleave', () => uploader.classList.remove('drag-over'));
+      uploader.addEventListener('drop', async e => {
+        e.preventDefault();
+        uploader.classList.remove('drag-over');
+        if (!e.dataTransfer.files.length) return;
+        for (const f of e.dataTransfer.files) {
+          await uploadFile(f, folder);
+        }
+        refreshDocList(group);
+      });
+
+      const list = document.createElement('div');
+      list.className = 'doc-list';
+      list.id = 'doc-list-' + group;
+
+      grpEl.appendChild(uploader);
+      grpEl.appendChild(list);
+    });
+  }
+
+  // ---------- Settings modal ----------
+  const modal = document.getElementById('settings-modal');
+  const patInput = document.getElementById('pat-input');
+  const patErr = document.getElementById('pat-error');
+  const navSettings = document.getElementById('nav-settings');
+  const syncPill = document.getElementById('sync-pill');
+
+  navSettings.addEventListener('click', e => {
+    e.preventDefault();
+    patInput.value = getToken() || '';
+    patErr.textContent = '';
+    modal.classList.add('open');
+    patInput.focus();
+  });
+  document.getElementById('pat-cancel').onclick = () => modal.classList.remove('open');
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+  document.getElementById('pat-save').onclick = async () => {
+    const t = patInput.value.trim();
+    patErr.textContent = '';
+    if (!t) { patErr.textContent = 'Introduce un token.'; return; }
+    patErr.textContent = 'Validando…';
+    const ok = await validateToken(t);
+    if (!ok) { patErr.textContent = 'Token inválido o sin permisos Contents:RW sobre este repo.'; return; }
+    setToken(t);
+    patErr.textContent = '';
+    modal.classList.remove('open');
+    toast('✓ Token guardado', 'success');
+    updateSyncPill();
+    await initialSync();
+    injectUploaderUI();
+    refreshAllDocs();
+    allBoxes.forEach(renderRowDoc);
+  };
+  document.getElementById('pat-clear').onclick = () => {
+    setToken(null);
+    patInput.value = '';
+    patErr.textContent = '';
+    updateSyncPill();
+    toast('Token borrado — modo solo-este-dispositivo', 'success');
+    // Hide uploaders & attach buttons
+    document.querySelectorAll('.uploader').forEach(u => u.classList.add('hidden'));
+    allBoxes.forEach(renderRowDoc);
+  };
+
+  function updateSyncPill() {
+    if (hasToken()) {
+      syncPill.textContent = '☁ Sincronizado';
+      syncPill.classList.add('synced');
+    } else {
+      syncPill.textContent = '📱 Solo este dispositivo';
+      syncPill.classList.remove('synced');
+    }
+  }
+
+  function refreshAllDocs() {
+    Object.keys(GROUP_FOLDERS).forEach(refreshDocList);
+  }
+
+  // ---------- Init ----------
+  async function initialSync() {
+    state = loadLocal();
+    if (hasToken()) {
+      try {
+        const remote = await loadRemote();
+        if (remote) {
+          state = remote;
+          saveLocal();
+        } else {
+          // No remote yet — push our local state as the initial commit
+          queueSave();
+        }
+      } catch (e) {
+        toast('⚠ No se pudo leer state.json: ' + e.message, 'error');
+      }
+    }
+    applyStateToUI();
+  }
+
+  (async function init() {
+    updateSyncPill();
+    await initialSync();
+    if (hasToken()) {
+      injectUploaderUI();
+      refreshAllDocs();
+    } else {
+      // Still inject uploader scaffolding but keep hidden, so the toggle on token-save just unhides
+      injectUploaderUI();
+    }
+  })();
 })();
+
+// ========== SERVICE WORKER ==========
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {/* ignore */});
+  });
+}
 
 // ========== ACTIVE NAV (IntersectionObserver) ==========
 (function() {
@@ -921,6 +1476,26 @@ if(sessionStorage.getItem('auth')==='1'){
   sections.forEach(s => observer.observe(s.el));
 })();
 </script>
+
+<!-- ========== SETTINGS MODAL ========== -->
+<div class="modal-backdrop" id="settings-modal">
+  <div class="modal">
+    <h3>⚙ Ajustes de sincronización</h3>
+    <p>Para que los trámites y documentos se sincronicen entre dispositivos, introduce un <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">token personal de GitHub</a> con permiso <strong>Contents: Read and write</strong> sobre el repo <code>CommnaderWi11/parental-leave-plan</code>.</p>
+    <input type="password" id="pat-input" placeholder="github_pat_..." autocomplete="off">
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="pat-save">Guardar</button>
+      <button class="btn btn-secondary" id="pat-cancel">Cerrar</button>
+      <button class="btn btn-danger" id="pat-clear">Borrar token</button>
+    </div>
+    <div class="error-msg" id="pat-error"></div>
+    <p style="margin-top:14px;font-size:11px;color:var(--text-muted);">El token se guarda solo en este dispositivo (localStorage). Los documentos subidos son <strong>públicos</strong> (repo público). Revoca el token en cualquier momento desde los ajustes de GitHub.</p>
+  </div>
+</div>
+
+<!-- ========== TOAST HOST ========== -->
+<div id="toast-host"></div>
+
 </div><!-- /main-content -->
 </body>
 </html>
