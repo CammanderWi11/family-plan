@@ -299,8 +299,7 @@ section { scroll-margin-top: 60px; }
 .tramite-info { flex: 1; min-width: 0; }
 .tramite-info .name { font-size: 13px; font-weight: 600; }
 .tramite-info .meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.tramite-info .doc-link { font-size: 11px; color: var(--accent-blue); text-decoration: none; }
-.tramite-info .doc-link:hover { text-decoration: underline; }
+.tramite-info .doc-slot { display: inline-flex; margin-top: 4px; }
 .badge {
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
   padding: 4px 10px; border-radius: 100px; flex-shrink: 0; white-space: nowrap;
@@ -413,24 +412,31 @@ section { scroll-margin-top: 60px; }
 }
 .doc-entry .doc-del:hover { color: #fb7185; background: rgba(251,113,133,0.1); }
 
-/* Per-row attach */
-.tramite-info .row-doc {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 4px; font-size: 11px;
+/* Per-row doc pill (empty / filled states) */
+.doc-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 100px;
+  border: 1px dashed var(--glass-border);
+  background: transparent; color: var(--text-muted);
+  cursor: pointer; text-decoration: none;
+  transition: all 0.15s ease;
+  max-width: 100%;
 }
-.tramite-info .row-doc a { color: var(--accent-blue); text-decoration: none; word-break: break-all; }
-.tramite-info .row-doc a:hover { text-decoration: underline; }
-.tramite-info .row-doc .row-unlink {
-  background: none; border: none; color: var(--text-muted); cursor: pointer;
-  font-size: 12px; padding: 0 4px;
+.doc-pill:hover { color: var(--accent-purple); border-color: var(--accent-purple); background: rgba(167,139,250,0.08); }
+.doc-pill.filled {
+  border-style: solid; border-color: rgba(96,165,250,0.35);
+  background: rgba(96,165,250,0.08); color: var(--accent-blue);
 }
-.tramite-info .attach-btn {
-  background: none; border: none; color: var(--text-muted); cursor: pointer;
-  font-size: 11px; padding: 2px 6px; border-radius: 6px; margin-top: 3px;
-  display: inline-block;
+.doc-pill.filled:hover { background: rgba(96,165,250,0.15); }
+.doc-pill .doc-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+.doc-pill-unlink {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 13px; line-height: 1;
+  padding: 2px 4px; margin-left: 2px; border-radius: 4px;
 }
-.tramite-info .attach-btn:hover { color: var(--accent-purple); background: rgba(167,139,250,0.08); }
-.tramite-info .attach-btn.hidden { display: none; }
+.doc-pill-unlink:hover { color: #f87171; background: rgba(248,113,113,0.1); }
+.doc-pill.disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ============================================
    RESPONSIVE
@@ -709,16 +715,16 @@ if(sessionStorage.getItem('auth')==='1'){
       <div class="progress-track"><div class="progress-fill" id="prog-registro" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="0">
-        <div class="tramite-info"><div class="name">Parte médico de nacimiento</div><div class="meta">Registro Civil · 72h tras nacimiento</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Hospital" target="_blank" rel="noopener">Carpeta Hospital/</a></div>
+        <div class="tramite-info"><div class="name">Parte médico de nacimiento</div><div class="meta">Registro Civil · 72h tras nacimiento</div><span class="doc-slot" data-folder="Hospital"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="1">
-        <div class="tramite-info"><div class="name">DNI ambos progenitores (copia)</div><div class="meta">Registro Civil · Con la inscripción</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Registro-Civil" target="_blank" rel="noopener">Carpeta Registro-Civil/</a></div>
+        <div class="tramite-info"><div class="name">DNI ambos progenitores (copia)</div><div class="meta">Registro Civil · Con la inscripción</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="2">
-        <div class="tramite-info"><div class="name">Libro de Familia</div><div class="meta">Registro Civil · Con la inscripción</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Registro-Civil" target="_blank" rel="noopener">Carpeta Registro-Civil/</a></div>
+        <div class="tramite-info"><div class="name">Libro de Familia</div><div class="meta">Registro Civil · Con la inscripción</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="3">
-        <div class="tramite-info"><div class="name">Declaración de nacimiento</div><div class="meta">Registro Civil · 10 días (max 30) — solo si hospital no lo tramitó</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Registro-Civil" target="_blank" rel="noopener">Carpeta Registro-Civil/</a></div>
+        <div class="tramite-info"><div class="name">Declaración de nacimiento</div><div class="meta">Registro Civil · 10 días (max 30) — solo si hospital no lo tramitó</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
@@ -730,22 +736,22 @@ if(sessionStorage.getItem('auth')==='1'){
       <div class="progress-track"><div class="progress-fill" id="prog-inss" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="0">
-        <div class="tramite-info"><div class="name">Formulario solicitud (MP-1 bis)</div><div class="meta">INSS sede electrónica · Desde día siguiente al nacimiento</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/INSS" target="_blank" rel="noopener">Carpeta INSS/</a></div>
+        <div class="tramite-info"><div class="name">Formulario solicitud (MP-1 bis)</div><div class="meta">INSS sede electrónica · Desde día siguiente al nacimiento</div><span class="doc-slot" data-folder="INSS"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="1">
-        <div class="tramite-info"><div class="name">DNI / NIE</div><div class="meta">INSS · Con la solicitud</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/INSS" target="_blank" rel="noopener">Carpeta INSS/</a></div>
+        <div class="tramite-info"><div class="name">DNI / NIE</div><div class="meta">INSS · Con la solicitud</div><span class="doc-slot" data-folder="INSS"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="2">
-        <div class="tramite-info"><div class="name">Informe de maternidad</div><div class="meta">INSS · Lo expide el servicio público de salud tras el parto</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Hospital" target="_blank" rel="noopener">Carpeta Hospital/</a></div>
+        <div class="tramite-info"><div class="name">Informe de maternidad</div><div class="meta">INSS · Lo expide el servicio público de salud tras el parto</div><span class="doc-slot" data-folder="Hospital"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="3">
-        <div class="tramite-info"><div class="name">Libro de Familia o certificado nacimiento</div><div class="meta">INSS · Obtenido del Registro Civil tras inscripción</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Registro-Civil" target="_blank" rel="noopener">Carpeta Registro-Civil/</a></div>
+        <div class="tramite-info"><div class="name">Libro de Familia o certificado nacimiento</div><div class="meta">INSS · Obtenido del Registro Civil tras inscripción</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="4">
-        <div class="tramite-info"><div class="name">Certificado de empresa (periodo obligatorio)</div><div class="meta">INSS (Binter lo envía) · Fecha inicio suspensión + bases cotización</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Binter" target="_blank" rel="noopener">Carpeta Binter/</a></div>
+        <div class="tramite-info"><div class="name">Certificado de empresa (periodo obligatorio)</div><div class="meta">INSS (Binter lo envía) · Fecha inicio suspensión + bases cotización</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="5">
-        <div class="tramite-info"><div class="name">Solicitud periodos sucesivos (cada bloque)</div><div class="meta">INSS · Max 15 días antes de cada bloque · Múltiplos de 7 días</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/INSS" target="_blank" rel="noopener">Carpeta INSS/</a></div>
+        <div class="tramite-info"><div class="name">Solicitud periodos sucesivos (cada bloque)</div><div class="meta">INSS · Max 15 días antes de cada bloque · Múltiplos de 7 días</div><span class="doc-slot" data-folder="INSS"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
@@ -757,16 +763,16 @@ if(sessionStorage.getItem('auth')==='1'){
       <div class="progress-track"><div class="progress-fill" id="prog-binter" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="0">
-        <div class="tramite-info"><div class="name">Comunicación formal de permiso parental</div><div class="meta">RRHH Binter · Antes del nacimiento · Fechas periodo obligatorio (20 abr – 31 may)</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Binter" target="_blank" rel="noopener">Carpeta Binter/</a></div>
+        <div class="tramite-info"><div class="name">Comunicación formal de permiso parental</div><div class="meta">RRHH Binter · Antes del nacimiento · Fechas periodo obligatorio (20 abr – 31 may)</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="1">
-        <div class="tramite-info"><div class="name">Certificado / Libro de Familia</div><div class="meta">RRHH Binter · Tras inscripción · Acreditar nacimiento</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Binter" target="_blank" rel="noopener">Carpeta Binter/</a></div>
+        <div class="tramite-info"><div class="name">Certificado / Libro de Familia</div><div class="meta">RRHH Binter · Tras inscripción · Acreditar nacimiento</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="2">
-        <div class="tramite-info"><div class="name">Solicitud de cada bloque flexible</div><div class="meta">RRHH Binter · Min 15 días antes de cada bloque</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Binter" target="_blank" rel="noopener">Carpeta Binter/</a></div>
+        <div class="tramite-info"><div class="name">Solicitud de cada bloque flexible</div><div class="meta">RRHH Binter · Min 15 días antes de cada bloque</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="3">
-        <div class="tramite-info"><div class="name">Solicitud devolución vacaciones solapadas</div><div class="meta">RRHH Binter · 21 abr – 2 may (~8 días) solapan con obligatorio → devolver al saldo</div><a class="doc-link" href="https://github.com/CommnaderWi11/parental-leave-plan/tree/main/Documents/Binter" target="_blank" rel="noopener">Carpeta Binter/</a></div>
+        <div class="tramite-info"><div class="name">Solicitud devolución vacaciones solapadas</div><div class="meta">RRHH Binter · 21 abr – 2 may (~8 días) solapan con obligatorio → devolver al saldo</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
   </section>
@@ -1153,55 +1159,61 @@ if(sessionStorage.getItem('auth')==='1'){
   // ---------- Per-row attach ----------
   function renderRowDoc(box) {
     const row = box.closest('.tramite-row');
-    const info = row.querySelector('.tramite-info');
+    const slot = row.querySelector('.doc-slot');
+    if (!slot) return;
     const key = box.dataset.group + '-' + box.dataset.idx;
-    // Remove any existing row-doc / attach-btn from previous render
-    info.querySelectorAll('.row-doc, .attach-btn').forEach(e => e.remove());
+    const folder = slot.dataset.folder;
+    slot.innerHTML = '';
     const path = state.docs[key];
     if (path) {
-      const wrap = document.createElement('div');
-      wrap.className = 'row-doc';
       const a = document.createElement('a');
+      a.className = 'doc-pill filled';
       a.href = path;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.textContent = '📎 ' + path.split('/').pop();
-      wrap.appendChild(a);
-      const btn = document.createElement('button');
-      btn.className = 'row-unlink';
-      btn.title = 'Desvincular';
-      btn.textContent = '✕';
-      btn.onclick = () => {
+      a.innerHTML = '<span>📎</span><span class="doc-name">' + path.split('/').pop() + '</span>';
+      slot.appendChild(a);
+      const del = document.createElement('button');
+      del.className = 'doc-pill-unlink';
+      del.title = 'Desvincular';
+      del.textContent = '✕';
+      del.onclick = (e) => {
+        e.preventDefault(); e.stopPropagation();
         delete state.docs[key];
         renderRowDoc(box);
         queueSave();
       };
-      wrap.appendChild(btn);
-      info.appendChild(wrap);
-    } else if (hasToken()) {
+      slot.appendChild(del);
+    } else {
       const btn = document.createElement('button');
-      btn.className = 'attach-btn';
-      btn.textContent = '📎 adjuntar';
-      btn.onclick = () => openAttachPicker(box);
-      info.appendChild(btn);
+      btn.className = 'doc-pill' + (hasToken() ? '' : ' disabled');
+      btn.title = hasToken() ? ('Subir a Documents/' + folder) : 'Configura el token de GitHub primero';
+      btn.innerHTML = '<span>⬆</span><span>Subir a ' + folder + '/</span>';
+      btn.onclick = () => {
+        if (!hasToken()) { toast('⚠ Configura el token de GitHub primero', 'error'); return; }
+        openAttachPicker(box, folder);
+      };
+      slot.appendChild(btn);
     }
   }
 
-  function openAttachPicker(box) {
+  function openAttachPicker(box, folder) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/pdf,image/*';
     input.onchange = async () => {
       if (!input.files || !input.files[0]) return;
       const group = box.dataset.group;
-      const folder = GROUP_FOLDERS[group];
       const key = group + '-' + box.dataset.idx;
       const uploaded = await uploadFile(input.files[0], folder);
       if (uploaded) {
         state.docs[key] = uploaded.path;
         renderRowDoc(box);
         queueSave();
-        refreshDocList(group);
+        // Refresh the doc list for whichever group matches this folder, if any
+        Object.keys(GROUP_FOLDERS).forEach(g => {
+          if (GROUP_FOLDERS[g] === folder) refreshDocList(g);
+        });
       }
     };
     input.click();
