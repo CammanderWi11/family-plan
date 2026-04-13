@@ -440,6 +440,12 @@ section { scroll-margin-top: 60px; }
 .dl-urgent { background: rgba(251,113,133,0.18); color: #fb7185; border: 1px solid rgba(251,113,133,0.4); }
 .dl-overdue { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.45); }
 .deadline-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; margin-left: 6px; white-space: nowrap; }
+.scope-chip { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.2px; border: 1px solid transparent; }
+.chip-nac { background: rgba(251,113,133,0.12); color: #fda4af; border-color: rgba(251,113,133,0.3); }
+.chip-aut { background: rgba(74,222,128,0.12); color: #86efac; border-color: rgba(74,222,128,0.3); }
+.chip-mun { background: rgba(251,191,36,0.14); color: #fcd34d; border-color: rgba(251,191,36,0.32); }
+.chip-prv { background: rgba(96,165,250,0.14); color: #93c5fd; border-color: rgba(96,165,250,0.32); }
+.chip-emp { background: rgba(167,139,250,0.14); color: #c4b5fd; border-color: rgba(167,139,250,0.32); }
 
 .aggregate-card { display: flex; align-items: center; gap: 18px; padding: 18px 22px; margin-bottom: 24px; }
 .aggregate-card .agg-num { font-size: 30px; font-weight: 800; color: var(--accent-purple); letter-spacing: -1px; white-space: nowrap; }
@@ -908,6 +914,9 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="tramite-info"><div class="name">Solicitud devolución vacaciones solapadas</div><div class="meta">RRHH Binter · 21 abr – 2 may (~8 días) solapan con obligatorio → devolver al saldo</div><span class="doc-slot" data-folder="Binter"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
+
+    <!-- JS-rendered groups (Bebé · Salud · Ayudas) -->
+    <div id="js-groups-host"></div>
   </section>
 
   <!-- ========== NOTAS (al final) ========== -->
@@ -984,31 +993,117 @@ window.BLOQUE_STARTS = {
   5: new Date(2026, 11, 23)
 };
 
-// Rules per trámite key (group-idx). Each rule resolves to an absolute date.
-// kinds: absolute | afterBirth (days) | beforeBloque (n, days) | beforeEDD (days)
-window.TRAMITE_DEADLINES = {
-  // Preparación (pre-parto, priority critical)
-  'preparacion-0': { kind: 'beforeEDD', days: 7,  label: 'Lista 7 d antes EDD', priority: 'critical' }, // Bolsa hospital
-  'preparacion-1': { kind: 'beforeEDD', days: 7,  label: 'Instalada 7 d antes EDD', priority: 'critical' }, // Silla coche
-  'preparacion-2': { kind: 'beforeEDD', days: 14, label: 'Presentar semana 36-37', priority: 'high' }, // Plan de parto
-  'preparacion-3': { kind: 'beforeEDD', days: 3,  label: 'Coordinar 3 d antes EDD', priority: 'high' }, // Logística hermano
-  // Registro Civil
-  'registro-0': { kind: 'afterBirth', days: 3, label: '72h tras nacimiento', priority: 'critical' },     // Parte médico
-  'registro-1': { kind: 'afterBirth', days: 10, label: '10 días tras nacimiento' }, // DNI copias (con inscripción)
-  'registro-2': { kind: 'afterBirth', days: 10, label: '10 días tras nacimiento' }, // Libro de Familia
-  'registro-3': { kind: 'afterBirth', days: 10, label: '10 días (max 30)' },       // Declaración si hospital no tramitó
-  // INSS
-  'inss-0': { kind: 'afterBirth', days: 15, label: 'Cuanto antes tras nacimiento' }, // MP-1 bis
-  'inss-1': { kind: 'afterBirth', days: 15, label: 'Con la solicitud' },             // DNI
-  'inss-2': { kind: 'afterBirth', days: 15, label: 'Tras el parto' },                // Informe maternidad
-  'inss-3': { kind: 'afterBirth', days: 15, label: 'Tras inscripción Registro' },    // Libro Familia → INSS
-  'inss-4': { kind: 'afterBirth', days: 15, label: 'Certificado empresa' },          // Binter lo envía
-  'inss-5': { kind: 'beforeBloque', bloque: 2, days: 15, label: '15 d antes del bloque' }, // solicitud periodos sucesivos
-  // Binter
-  'binter-0': { kind: 'beforeEDD', days: 1, label: 'Antes del nacimiento' },         // Comunicación formal
-  'binter-1': { kind: 'afterBirth', days: 15, label: 'Tras inscripción Registro' },  // Certificado / Libro Familia
-  'binter-2': { kind: 'beforeBloque', bloque: 2, days: 15, label: '15 d antes del bloque' }, // Solicitud bloque flexible
-  'binter-3': { kind: 'beforeEDD', days: 7, label: 'Antes del periodo obligatorio' } // Devolución vacaciones solapadas
+// Full trámite registry. Backwards-compat: window.TRAMITE_DEADLINES still works, read from .deadline.
+// scope: nacional | autonomica | municipal | privado | empresa
+// priority: critical | high | normal
+// dependsOn: [otherKey, ...]  — row greys out until deps are checked
+// Existing 4 groups are also in HTML; new 3 groups (bebe, salud, ayudas) render from this config.
+window.TRAMITES = {
+  // ---------- Preparación ----------
+  'preparacion-0': { deadline: { kind: 'beforeEDD', days: 7, label: 'Lista 7 d antes EDD' }, priority: 'critical', scope: 'privado' },
+  'preparacion-1': { deadline: { kind: 'beforeEDD', days: 7, label: 'Instalada 7 d antes EDD' }, priority: 'critical', scope: 'nacional' },
+  'preparacion-2': { deadline: { kind: 'beforeEDD', days: 14, label: 'Presentar semana 36-37' }, priority: 'high', scope: 'privado' },
+  'preparacion-3': { deadline: { kind: 'beforeEDD', days: 3, label: 'Coordinar 3 d antes EDD' }, priority: 'high', scope: 'privado' },
+  // ---------- Registro Civil ----------
+  'registro-0': { deadline: { kind: 'afterBirth', days: 3, label: '72h tras nacimiento' }, priority: 'critical', scope: 'privado' },
+  'registro-1': { deadline: { kind: 'afterBirth', days: 10, label: '10 días tras nacimiento' }, scope: 'nacional' },
+  'registro-2': { deadline: { kind: 'afterBirth', days: 10, label: '10 días tras nacimiento' }, scope: 'nacional' },
+  'registro-3': { deadline: { kind: 'afterBirth', days: 10, label: '10 días (max 30)' }, scope: 'nacional' },
+  // ---------- INSS ----------
+  'inss-0': { deadline: { kind: 'afterBirth', days: 15, label: 'Cuanto antes tras nacimiento' }, priority: 'high', scope: 'nacional' },
+  'inss-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Con la solicitud' }, scope: 'nacional' },
+  'inss-2': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras el parto' }, scope: 'autonomica' },
+  'inss-3': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción Registro' }, scope: 'nacional' },
+  'inss-4': { deadline: { kind: 'afterBirth', days: 15, label: 'Certificado empresa' }, scope: 'empresa' },
+  'inss-5': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15 d antes del bloque' }, scope: 'nacional' },
+  // ---------- Binter ----------
+  'binter-0': { deadline: { kind: 'beforeEDD', days: 1, label: 'Antes del nacimiento' }, priority: 'critical', scope: 'empresa' },
+  'binter-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción Registro' }, scope: 'empresa' },
+  'binter-2': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15 d antes del bloque' }, scope: 'empresa' },
+  'binter-3': { deadline: { kind: 'beforeEDD', days: 7, label: 'Antes del periodo obligatorio' }, scope: 'empresa' },
+  // ---------- Bebé (admin) ----------
+  'bebe-0': { name: 'Inscripción telemática Registro Civil (Vithas tramita)', meta: 'Vithas Ciudad Jardín · 72h · Se tramita desde el hospital',
+              deadline: { kind: 'afterBirth', days: 3, label: '72h tras nacimiento' }, priority: 'critical', scope: 'privado' },
+  'bebe-1': { name: 'Libro de Familia / Certificado literal', meta: 'Registro Civil telemático · Obligatorio para el resto de trámites',
+              deadline: { kind: 'afterBirth', days: 10, label: '~10 días tras inscripción' }, priority: 'high', scope: 'nacional',
+              dependsOn: ['bebe-0'] },
+  'bebe-2': { name: 'Empadronamiento bebé (Ciudad Jardín, LPGC)', meta: 'Ayto. Las Palmas · OAC Ciudad Jardín · Requiere Libro Familia',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes de vida' }, scope: 'municipal',
+              dependsOn: ['bebe-1'] },
+  'bebe-3': { name: 'Tarjeta Sanitaria SCS bebé', meta: 'SCS · Requiere empadronamiento · Asignación centro de salud',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes' }, scope: 'autonomica',
+              dependsOn: ['bebe-2'] },
+  'bebe-4': { name: 'Familia Digital (app Mi Familia)', meta: 'Ministerio de Justicia · Sustituye Libro de Familia en papel · Opcional',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Cuando esté disponible' }, scope: 'nacional',
+              dependsOn: ['bebe-1'] },
+  'bebe-5': { name: 'DNI bebé', meta: 'Dirección General de Policía · Cita previa · Requerido para pasaporte',
+              deadline: { kind: 'afterBirth', days: 90, label: 'Antes de solicitar pasaporte' }, scope: 'nacional',
+              dependsOn: ['bebe-1'] },
+  'bebe-6': { name: 'Pasaporte bebé', meta: 'Dirección General de Policía · Necesario para viaje Japón abr 2027 · Iniciar 2 meses antes',
+              deadline: { kind: 'absolute', date: '2027-02-01', label: 'Al menos 2 meses antes del viaje' }, scope: 'nacional',
+              dependsOn: ['bebe-5'] },
+  // ---------- Salud ----------
+  'salud-0': { name: 'Asignación pediatra bebé (CS Ciudad Jardín)', meta: 'SCS Gran Canaria · Centro de salud por zona básica',
+               deadline: { kind: 'afterBirth', days: 30, label: 'Tras Tarjeta Sanitaria' }, scope: 'autonomica',
+               dependsOn: ['bebe-3'] },
+  'salud-1': { name: 'Screening metabólico (prueba del talón)', meta: 'Vithas · Se realiza en las primeras 48h · Resultado ~15 d',
+               deadline: { kind: 'afterBirth', days: 2, label: '48h tras nacimiento' }, priority: 'critical', scope: 'privado' },
+  'salud-2': { name: 'Screening auditivo', meta: 'Vithas · Se realiza en el hospital al nacer',
+               deadline: { kind: 'afterBirth', days: 2, label: '48h tras nacimiento' }, priority: 'critical', scope: 'privado' },
+  'salud-3': { name: 'Revisión matrona postparto (sem. 1 y 6)', meta: 'SCS La Laguna · Primera visita en la primera semana',
+               deadline: { kind: 'afterBirth', days: 7, label: 'Primera semana' }, priority: 'high', scope: 'autonomica' },
+  'salud-4': { name: 'Informe de maternidad (SCS)', meta: 'Matrona o médico de familia · NO lo expide Vithas · Necesario para INSS prestación',
+               deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', scope: 'autonomica' },
+  'salud-5': { name: 'Revisión niño sano (1 mes)', meta: 'Pediatra asignado · Primera revisión del Programa de Salud Infantil',
+               deadline: { kind: 'afterBirth', days: 30, label: '~1 mes de vida' }, scope: 'autonomica',
+               dependsOn: ['salud-0'] },
+  'salud-6': { name: 'Vacuna 2 meses (calendario Canarias)', meta: 'Centro de salud asignado · Hexavalente + meningo B + neumococo + rotavirus',
+               deadline: { kind: 'afterBirth', days: 60, label: '2 meses exactos' }, scope: 'autonomica',
+               dependsOn: ['salud-0'] },
+  'salud-7': { name: 'Vacuna 4 meses', meta: 'Centro de salud asignado',
+               deadline: { kind: 'afterBirth', days: 120, label: '4 meses' }, scope: 'autonomica',
+               dependsOn: ['salud-6'] },
+  // ---------- Ayudas económicas ----------
+  'ayudas-0': { name: 'Deducción por maternidad AEAT (modelo 140)', meta: 'Agencia Tributaria · 100€/mes hasta 3 años · Solo madre trabajadora en alta SS',
+                deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes tras alta' }, scope: 'nacional',
+                dependsOn: ['bebe-1'] },
+  'ayudas-1': { name: 'Verificación IRPF — datos familiares', meta: 'AEAT · Actualizar número de hijos para retenciones · Al empleador',
+                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
+  'ayudas-2': { name: 'Ayuda nacimiento Ayto. LPGC (si convocatoria activa)', meta: 'Ayto. Las Palmas · Verificar convocatoria en BOP · Requiere empadronamiento',
+                deadline: { kind: 'afterBirth', days: 90, label: 'Primeros 3 meses — verificar plazo BOP' }, scope: 'municipal',
+                dependsOn: ['bebe-2'] },
+  'ayudas-3': { name: 'Actualización beneficiarios seguros de vida', meta: 'Aseguradora · Incluir al nuevo hijo',
+                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
+  'ayudas-4': { name: 'Actualización seguro médico privado (si aplica)', meta: 'Aseguradora · Alta del bebé · Algunos tienen 15-30 días plazo',
+                deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', scope: 'privado' }
+};
+
+// Backwards-compat alias used by legacy paths.
+window.TRAMITE_DEADLINES = new Proxy({}, {
+  get(_, key) {
+    const t = window.TRAMITES[key];
+    if (!t || !t.deadline) return undefined;
+    return Object.assign({ priority: t.priority }, t.deadline);
+  },
+  has(_, key) { return !!(window.TRAMITES[key] && window.TRAMITES[key].deadline); }
+});
+
+window.GROUPS = {
+  preparacion: { title: '🎒 Preparación pre-parto', desc: 'Tareas críticas antes del nacimiento.', renderMode: 'html' },
+  registro:    { title: 'Registro Civil — Inscripción de Nacimiento', renderMode: 'html' },
+  inss:        { title: 'INSS / Seguridad Social — Prestación por Nacimiento', renderMode: 'html' },
+  binter:      { title: 'Binter — Empresa / RRHH', renderMode: 'html' },
+  bebe:        { title: '👶 Bebé — Admin', desc: 'Trámites administrativos del bebé tras el nacimiento.', renderMode: 'js', count: 7 },
+  salud:       { title: '🩺 Salud', desc: 'Seguimiento sanitario entre Vithas (parto) y SCS (post-parto La Laguna / LPGC).', renderMode: 'js', count: 8 },
+  ayudas:      { title: '💶 Ayudas económicas', desc: 'Deducciones y ayudas aplicables a nivel nacional, autonómico y municipal.', renderMode: 'js', count: 5 }
+};
+
+window.SCOPE_CHIPS = {
+  nacional:   { label: 'Nacional', emoji: '🇪🇸', cls: 'chip-nac' },
+  autonomica: { label: 'Canarias', emoji: '🌴', cls: 'chip-aut' },
+  municipal:  { label: 'LPGC', emoji: '🏛', cls: 'chip-mun' },
+  privado:    { label: 'Vithas', emoji: '🏥', cls: 'chip-prv' },
+  empresa:    { label: 'Binter', emoji: '🏢', cls: 'chip-emp' }
 };
 
 window.resolveDeadline = function(key) {
@@ -1322,6 +1417,58 @@ window.fmtLongDate = function(d) {
     if (tot) tot.textContent = total;
     if (fill) fill.style.width = pct + '%';
   }
+
+  // Render JS-mode groups (Bebé, Salud, Ayudas) from TRAMITES config
+  function renderJsGroups() {
+    const host = document.getElementById('js-groups-host');
+    if (!host || host.childElementCount) return;
+    Object.entries(window.GROUPS).forEach(([groupKey, g]) => {
+      if (g.renderMode !== 'js') return;
+      const wrap = document.createElement('div');
+      wrap.className = 'glass tramite-group';
+      wrap.id = 'grp-' + groupKey;
+      let html = '<h3>' + g.title + '</h3>';
+      if (g.desc) html += '<p class="group-desc">' + g.desc + '</p>';
+      html += '<div class="progress-label" id="prog-label-' + groupKey + '">0 / ' + g.count + ' completados</div>';
+      html += '<div class="progress-track"><div class="progress-fill" id="prog-' + groupKey + '" style="width:0%"></div></div>';
+      for (let i = 0; i < g.count; i++) {
+        const key = groupKey + '-' + i;
+        const t = window.TRAMITES[key];
+        if (!t) continue;
+        const folder = GROUP_FOLDERS[groupKey] || 'Hospital';
+        html += '<div class="tramite-row"><input type="checkbox" data-group="' + groupKey + '" data-idx="' + i + '">';
+        html += '<div class="tramite-info"><div class="name">' + t.name + '</div>';
+        if (t.meta) html += '<div class="meta">' + t.meta + '</div>';
+        html += '<span class="doc-slot" data-folder="' + folder + '"></span></div>';
+        html += '<span class="badge badge-pending">Pendiente</span></div>';
+      }
+      host.appendChild(wrap);
+      wrap.innerHTML = html;
+    });
+    // Make the new groups eligible for upload injection
+    ['bebe','salud','ayudas'].forEach(k => { if (!GROUP_FOLDERS[k]) GROUP_FOLDERS[k] = 'Hospital'; });
+  }
+  renderJsGroups();
+
+  // Inject scope chip into every tramite row (existing HTML + JS-rendered)
+  function renderScopeChips() {
+    document.querySelectorAll('.tramite-row input[type="checkbox"]').forEach(box => {
+      const key = box.dataset.group + '-' + box.dataset.idx;
+      const t = window.TRAMITES[key];
+      if (!t || !t.scope) return;
+      const info = box.parentElement.querySelector('.tramite-info');
+      if (!info || info.querySelector('.scope-chip')) return;
+      const chipDef = window.SCOPE_CHIPS[t.scope];
+      if (!chipDef) return;
+      const chip = document.createElement('span');
+      chip.className = 'scope-chip ' + chipDef.cls;
+      chip.textContent = chipDef.emoji + ' ' + chipDef.label;
+      chip.title = 'Ámbito: ' + chipDef.label;
+      const nameEl = info.querySelector('.name');
+      if (nameEl) nameEl.appendChild(chip);
+    });
+  }
+  renderScopeChips();
 
   const allBoxes = Array.from(document.querySelectorAll('.tramite-row input[type="checkbox"]'));
   const groups = new Set();
