@@ -1,4 +1,4 @@
-const VERSION = 'v6-deps-subtasks';
+const VERSION = 'v7-doc-library';
 const CACHE = 'paternidad-shell-' + VERSION;
 const SHELL = [
   './',

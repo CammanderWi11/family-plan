@@ -481,6 +481,62 @@ section { scroll-margin-top: 60px; }
   white-space: nowrap;
 }
 
+/* Document Library */
+.lib-uploader { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+.lib-type {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text); padding: 8px 12px; border-radius: 10px;
+  font-family: inherit; font-size: 13px; min-height: 40px;
+}
+.lib-list { display: flex; flex-direction: column; gap: 16px; }
+.lib-group {}
+.lib-group-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+.lib-group-count { opacity: 0.6; font-weight: 400; margin-left: 4px; }
+.lib-entry {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 14px; border-radius: 10px; margin-bottom: 4px;
+  min-height: 44px;
+}
+.lib-name { flex: 1; color: var(--text); text-decoration: none; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.lib-name:hover { color: var(--accent-purple); }
+.lib-attach-count { font-size: 11px; color: var(--text-muted); padding: 3px 8px; background: rgba(167,139,250,0.1); border-radius: 999px; }
+.lib-del { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px 6px; min-width: 32px; min-height: 32px; }
+.lib-del:hover { color: #fb7185; }
+
+/* Picker modal */
+.lib-picker-list { max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+.lib-pick-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer; font-size: 13px;
+  min-height: 44px;
+}
+.lib-pick-item:hover { background: rgba(255,255,255,0.05); }
+.lib-pick-item input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
+.lib-pick-name { flex: 1; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.lib-pick-type { font-size: 11px; color: var(--text-muted); padding: 2px 8px; background: rgba(255,255,255,0.05); border-radius: 999px; }
+
+/* Pills on tramite rows */
+.lib-attached-host { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.lib-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; padding: 3px 8px; border-radius: 999px;
+  background: rgba(96,165,250,0.12); color: #93c5fd;
+  border: 1px solid rgba(96,165,250,0.25);
+  text-decoration: none; max-width: 180px;
+}
+.lib-pill span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lib-pill:hover { background: rgba(96,165,250,0.2); }
+.lib-add-btn {
+  background: transparent; border: 1px dashed rgba(255,255,255,0.2);
+  color: var(--text-muted); font-size: 12px; padding: 4px 10px;
+  border-radius: 999px; margin-left: 6px; cursor: pointer;
+  font-family: inherit; min-height: 32px;
+}
+.lib-add-btn:hover { border-color: var(--accent-purple-soft); color: var(--text); }
+
 .aggregate-card { display: flex; align-items: center; gap: 18px; padding: 18px 22px; margin-bottom: 24px; }
 .aggregate-card .agg-num { font-size: 30px; font-weight: 800; color: var(--accent-purple); letter-spacing: -1px; white-space: nowrap; }
 .aggregate-card .agg-info { flex: 1; min-width: 0; }
@@ -670,6 +726,7 @@ window.sb.auth.getSession().then(({ data }) => {
     <a href="#bloques" class="nav-link">Bloques</a>
     <a href="#vacaciones" class="nav-link">Vacaciones</a>
     <a href="#tramites" class="nav-link">Trámites</a>
+    <a href="#documentos" class="nav-link">Docs</a>
     <a href="#notas" class="nav-link">Notas</a>
     <a class="nav-link settings-link" id="nav-settings">⚙ Ajustes</a>
     <span class="sync-pill" id="sync-pill">📱 Solo este dispositivo</span>
@@ -953,6 +1010,36 @@ window.sb.auth.getSession().then(({ data }) => {
     <div id="js-groups-host"></div>
   </section>
 
+  <!-- ========== DOCUMENTOS (biblioteca) ========== -->
+  <section id="documentos" class="tab-section">
+    <div class="section-title">Biblioteca de Documentos</div>
+    <div class="glass data-card">
+      <p style="color: var(--text-muted); margin-bottom: 14px;">Sube cada documento una sola vez y adjúntalo a los trámites que lo necesiten (DNI, Libro de Familia, empadronamiento…).</p>
+      <div class="lib-uploader">
+        <label>
+          <input type="file" id="lib-file-input" accept="application/pdf,image/*" style="display:none;">
+          <span class="btn btn-primary" id="lib-pick-btn">📤 Subir documento</span>
+        </label>
+        <select id="lib-type-select" class="lib-type">
+          <option value="">Tipo (opcional)</option>
+          <option value="dni-luis">DNI Luis</option>
+          <option value="dni-madre">DNI Madre</option>
+          <option value="libro-familia">Libro de Familia / Certificado literal</option>
+          <option value="empadronamiento">Empadronamiento</option>
+          <option value="parte-medico">Parte médico de nacimiento</option>
+          <option value="informe-mat">Informe de maternidad</option>
+          <option value="cert-empresa">Certificado de empresa (Binter)</option>
+          <option value="iban">Certificado titularidad IBAN</option>
+          <option value="seguro-medico">Tarjeta seguro médico</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="lib-list" id="lib-list">
+        <div class="doc-list-empty">Cargando biblioteca…</div>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== NOTAS (al final) ========== -->
   <section id="notas" class="tab-section">
     <div class="glass data-card">
@@ -981,6 +1068,19 @@ window.sb.auth.getSession().then(({ data }) => {
     <div class="modal-actions">
       <button class="btn btn-secondary" id="logout-cancel">Cerrar</button>
       <button class="btn btn-danger" id="logout-btn">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LIBRARY PICKER MODAL ========== -->
+<div class="modal-backdrop" id="lib-picker-modal">
+  <div class="modal" style="max-width: 520px;">
+    <h3>📎 Adjuntar documentos</h3>
+    <p id="lib-picker-tramite-name" style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;"></p>
+    <div id="lib-picker-list" class="lib-picker-list"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="lib-picker-close">Cerrar</button>
+      <button class="btn btn-primary" id="lib-picker-upload">⬆ Subir uno nuevo</button>
     </div>
   </div>
 </div>
@@ -2160,6 +2260,249 @@ window.fmtLongDate = function(d) {
     window.addEventListener('auth-ready', initAuthed, { once: true });
     updateSyncPill();
   }
+})();
+
+// ========== DOCUMENT LIBRARY ==========
+(function() {
+  const BUCKET = 'documents';
+  const LIB_PREFIX = 'library/';
+  let sb = null;
+  let library = [];            // [{ id, filename, storage_path, doc_type, tags, uploaded_at }]
+  let attachments = [];         // [{ tramite_key, document_id }]
+  let currentPickerTramite = null;
+
+  const typeLabels = {
+    'dni-luis': 'DNI Luis', 'dni-madre': 'DNI Madre',
+    'libro-familia': 'Libro de Familia', 'empadronamiento': 'Empadronamiento',
+    'parte-medico': 'Parte médico', 'informe-mat': 'Informe maternidad',
+    'cert-empresa': 'Cert. empresa', 'iban': 'IBAN',
+    'seguro-medico': 'Seguro médico', 'otro': 'Otro'
+  };
+
+  function toast(msg, kind) {
+    const host = document.getElementById('toast-host'); if (!host) return;
+    const el = document.createElement('div');
+    el.className = 'toast ' + (kind || 'info');
+    el.innerHTML = '<span>' + msg + '</span>';
+    host.appendChild(el);
+    setTimeout(() => el.remove(), kind === 'error' ? 6000 : 2500);
+  }
+
+  async function signedUrl(path) {
+    const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, 3600);
+    if (error) return null;
+    return data && data.signedUrl;
+  }
+
+  async function fetchLibrary() {
+    const { data, error } = await sb.from('documents').select('*').order('uploaded_at', { ascending: false });
+    if (error) { toast('⚠ No se pudo leer biblioteca: ' + error.message, 'error'); return; }
+    library = data || [];
+    renderLibrary();
+    renderAttachedPillsAll();
+  }
+  async function fetchAttachments() {
+    const { data, error } = await sb.from('tramite_attachments').select('*');
+    if (error) { toast('⚠ No se pudo leer adjuntos: ' + error.message, 'error'); return; }
+    attachments = data || [];
+    renderAttachedPillsAll();
+  }
+
+  function renderLibrary() {
+    const listEl = document.getElementById('lib-list');
+    if (!listEl) return;
+    if (!library.length) { listEl.innerHTML = '<div class="doc-list-empty">Sin documentos en la biblioteca aún.</div>'; return; }
+    const byType = {};
+    library.forEach(d => {
+      const k = d.doc_type || 'otro';
+      (byType[k] = byType[k] || []).push(d);
+    });
+    let html = '';
+    Object.keys(byType).forEach(type => {
+      html += '<div class="lib-group">';
+      html += '<div class="lib-group-title">' + (typeLabels[type] || type) + ' <span class="lib-group-count">' + byType[type].length + '</span></div>';
+      byType[type].forEach(d => {
+        const count = attachments.filter(a => a.document_id === d.id).length;
+        html += '<div class="lib-entry" data-id="' + d.id + '">';
+        html += '<a class="lib-name" href="#">' + escapeHtml(d.filename) + '</a>';
+        html += '<span class="lib-attach-count" title="Adjunto a ' + count + ' trámites">📎 ' + count + '</span>';
+        html += '<button class="lib-del" title="Eliminar">🗑</button>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.querySelectorAll('.lib-entry').forEach(entry => {
+      const id = entry.dataset.id;
+      const doc = library.find(d => d.id === id);
+      entry.querySelector('.lib-name').onclick = async (e) => {
+        e.preventDefault();
+        const url = await signedUrl(doc.storage_path);
+        if (url) window.open(url, '_blank', 'noopener');
+      };
+      entry.querySelector('.lib-del').onclick = async () => {
+        if (!confirm('¿Eliminar "' + doc.filename + '" de la biblioteca? Se desvinculará de todos los trámites.')) return;
+        const t = toast('Eliminando…', 'loading');
+        await sb.storage.from(BUCKET).remove([doc.storage_path]);
+        const { error } = await sb.from('documents').delete().eq('id', doc.id);
+        t.remove();
+        if (error) { toast('⚠ ' + error.message, 'error'); return; }
+        toast('✓ Eliminado', 'success');
+        await Promise.all([fetchLibrary(), fetchAttachments()]);
+      };
+    });
+  }
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function renderAttachedPillsAll() {
+    document.querySelectorAll('.tramite-row').forEach(row => {
+      const cb = row.querySelector('input[type="checkbox"][data-group]');
+      if (!cb) return;
+      const key = cb.dataset.group + '-' + cb.dataset.idx;
+      renderAttachedPills(key, row);
+    });
+  }
+  function renderAttachedPills(key, row) {
+    if (!row) {
+      const cb = document.querySelector('.tramite-row input[data-group="' + key.split('-')[0] + '"][data-idx="' + key.split('-').slice(1).join('-') + '"]');
+      if (!cb) return;
+      row = cb.closest('.tramite-row');
+    }
+    let host = row.querySelector('.lib-attached-host');
+    if (!host) {
+      host = document.createElement('span');
+      host.className = 'lib-attached-host';
+      const info = row.querySelector('.tramite-info');
+      if (info) info.appendChild(host);
+    }
+    host.innerHTML = '';
+    const keyAttachments = attachments.filter(a => a.tramite_key === key);
+    keyAttachments.forEach(a => {
+      const doc = library.find(d => d.id === a.document_id);
+      if (!doc) return;
+      const pill = document.createElement('a');
+      pill.className = 'lib-pill';
+      pill.href = '#';
+      pill.innerHTML = '<span>📎</span><span>' + escapeHtml(doc.filename) + '</span>';
+      pill.onclick = async (e) => { e.preventDefault(); const u = await signedUrl(doc.storage_path); if (u) window.open(u, '_blank', 'noopener'); };
+      host.appendChild(pill);
+    });
+    // "Adjuntar desde biblioteca" button
+    let addBtn = row.querySelector('.lib-add-btn');
+    if (!addBtn) {
+      addBtn = document.createElement('button');
+      addBtn.className = 'lib-add-btn';
+      addBtn.type = 'button';
+      addBtn.title = 'Adjuntar desde biblioteca';
+      addBtn.textContent = '📎+';
+      row.appendChild(addBtn);
+      addBtn.onclick = () => openPickerForTramite(key);
+    }
+  }
+
+  function openPickerForTramite(key) {
+    currentPickerTramite = key;
+    const modal = document.getElementById('lib-picker-modal');
+    const t = window.TRAMITES && window.TRAMITES[key];
+    const nameEl = document.getElementById('lib-picker-tramite-name');
+    nameEl.textContent = t && t.name ? t.name : key;
+    renderPickerList();
+    modal.classList.add('open');
+  }
+  function renderPickerList() {
+    const list = document.getElementById('lib-picker-list');
+    if (!library.length) {
+      list.innerHTML = '<div class="doc-list-empty">Sube documentos primero desde la pestaña Docs.</div>';
+      return;
+    }
+    const attachedIds = new Set(attachments.filter(a => a.tramite_key === currentPickerTramite).map(a => a.document_id));
+    list.innerHTML = library.map(d => {
+      const type = typeLabels[d.doc_type || 'otro'] || 'Otro';
+      const checked = attachedIds.has(d.id) ? 'checked' : '';
+      return '<label class="lib-pick-item"><input type="checkbox" data-id="' + d.id + '" ' + checked + '> <span class="lib-pick-name">' + escapeHtml(d.filename) + '</span> <span class="lib-pick-type">' + type + '</span></label>';
+    }).join('');
+    list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', async () => {
+        const docId = cb.dataset.id;
+        if (cb.checked) {
+          const { error } = await sb.from('tramite_attachments').insert({ tramite_key: currentPickerTramite, document_id: docId });
+          if (error) { toast('⚠ ' + error.message, 'error'); cb.checked = false; return; }
+        } else {
+          const { error } = await sb.from('tramite_attachments').delete().match({ tramite_key: currentPickerTramite, document_id: docId });
+          if (error) { toast('⚠ ' + error.message, 'error'); cb.checked = true; return; }
+        }
+        await fetchAttachments();
+      });
+    });
+  }
+
+  async function uploadToLibrary(file, docType) {
+    if (!file) return;
+    const id = crypto.randomUUID();
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = LIB_PREFIX + id + '/' + safeName;
+    const t = toast('Subiendo…', 'loading');
+    const up = await sb.storage.from(BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
+    if (up.error) { t.remove(); toast('⚠ ' + up.error.message, 'error'); return null; }
+    const ins = await sb.from('documents').insert({
+      id, filename: file.name, storage_path: path, doc_type: docType || null
+    }).select().single();
+    t.remove();
+    if (ins.error) { toast('⚠ ' + ins.error.message, 'error'); return null; }
+    toast('✓ Subido', 'success');
+    await fetchLibrary();
+    return ins.data;
+  }
+
+  function wire() {
+    const pickBtn = document.getElementById('lib-pick-btn');
+    const fileInput = document.getElementById('lib-file-input');
+    const typeSelect = document.getElementById('lib-type-select');
+    pickBtn && pickBtn.addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
+    fileInput && fileInput.addEventListener('change', async () => {
+      if (!fileInput.files || !fileInput.files[0]) return;
+      await uploadToLibrary(fileInput.files[0], typeSelect.value || null);
+      fileInput.value = '';
+    });
+    const modal = document.getElementById('lib-picker-modal');
+    modal && modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+    document.getElementById('lib-picker-close').onclick = () => modal.classList.remove('open');
+    document.getElementById('lib-picker-upload').onclick = () => {
+      const tempIn = document.createElement('input');
+      tempIn.type = 'file';
+      tempIn.accept = 'application/pdf,image/*';
+      tempIn.onchange = async () => {
+        if (!tempIn.files || !tempIn.files[0]) return;
+        const t = window.TRAMITES && window.TRAMITES[currentPickerTramite];
+        const guessType = t && t.requiresDocs && t.requiresDocs[0] ? t.requiresDocs[0] : null;
+        const doc = await uploadToLibrary(tempIn.files[0], guessType);
+        if (doc) {
+          await sb.from('tramite_attachments').insert({ tramite_key: currentPickerTramite, document_id: doc.id });
+          await fetchAttachments();
+          renderPickerList();
+        }
+      };
+      tempIn.click();
+    };
+  }
+
+  function subscribeLibRealtime() {
+    sb.channel('lib-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'documents' }, () => fetchLibrary())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tramite_attachments' }, () => fetchAttachments())
+      .subscribe();
+  }
+
+  async function init() {
+    sb = window.sb;
+    wire();
+    await Promise.all([fetchLibrary(), fetchAttachments()]);
+    subscribeLibRealtime();
+  }
+
+  if (window.__authReady) init();
+  else window.addEventListener('auth-ready', init, { once: true });
 })();
 
 // ========== SERVICE WORKER ==========
