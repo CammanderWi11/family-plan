@@ -991,7 +991,7 @@ window.sb.auth.getSession().then(({ data }) => {
   <!-- ========== HEADER ========== -->
   <div class="header">
     <h1>Misión: Luca</h1>
-    <div class="sub">Luca llega el 17 de abril de 2026 a las 09:00</div>
+    <div class="sub">Luca llega el 17 de abril de 2026 a las 12:00</div>
   </div>
 
   <!-- ========== MISSION COUNTDOWN ========== -->
@@ -1013,21 +1013,6 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="clock-seg"><div class="seg-num" id="cd-secs">--</div><div class="seg-lbl">SEC</div></div>
       </div>
       <div class="mission-footer">
-        <div id="countdown-sub" style="font-family: 'Courier New', 'SF Mono', Menlo, Consolas, monospace;">
-          <strong>Últimas Noticias</strong>
-          <ul id="news-list" style="margin:6px 0 0 0;padding-left:18px;list-style:none;"></ul>
-          <form id="news-form" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
-            <textarea id="news-text" rows="2" maxlength="2000" placeholder="Nueva actualización…"
-              style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:inherit;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <input id="news-photo" type="file" accept="image/*" capture="environment"
-                style="flex:1;font-size:11px;color:inherit;">
-              <button id="news-submit" type="submit"
-                style="padding:6px 12px;border-radius:6px;border:none;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Publicar</button>
-            </div>
-            <div id="news-error" style="color:#fb7185;font-size:11px;display:none;"></div>
-          </form>
-        </div>
         <button class="btn-link birth-toggle" id="birth-toggle-btn">Registrar fecha de nacimiento</button>
       </div>
     </div>
@@ -1035,6 +1020,21 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== RESUMEN ========== -->
   <section id="resumen" class="tab-section active">
+    <div class="glass" id="news-card" style="margin-bottom:16px;padding:16px 18px;font-family:'Inter',system-ui,-apple-system,sans-serif;">
+      <div style="font-size:15px;font-weight:600;margin-bottom:10px;letter-spacing:0.2px;">Últimas Noticias</div>
+      <ul id="news-list" style="margin:0 0 12px 0;padding:0;list-style:none;font-size:14px;line-height:1.5;"></ul>
+      <form id="news-form" style="display:flex;flex-direction:column;gap:8px;">
+        <textarea id="news-text" rows="3" maxlength="2000" placeholder="Escribe una actualización…"
+          style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:inherit;font-family:inherit;font-size:14px;line-height:1.4;resize:vertical;box-sizing:border-box;"></textarea>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input id="news-photo" type="file" accept="image/*" capture="environment"
+            style="flex:1;min-width:160px;font-size:13px;color:inherit;font-family:inherit;">
+          <button id="news-submit" type="submit"
+            style="padding:8px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Publicar</button>
+        </div>
+        <div id="news-error" style="color:#fb7185;font-size:12px;display:none;"></div>
+      </form>
+    </div>
     <div class="urgent-banner" id="urgent-banner" style="display:none;">
       <span class="urgent-text">⚠ Urgente esta semana</span>
       <span class="urgent-arrow">→</span>
@@ -1390,7 +1390,7 @@ window.sb.auth.getSession().then(({ data }) => {
      ============================================ -->
 <script>
 // ========== DEADLINE ENGINE ==========
-window.BIRTH_EDD = new Date(2026, 3, 17, 9, 0, 0); // Cesárea 17 Abr 2026 09:00
+window.BIRTH_EDD = new Date(2026, 3, 17, 12, 0, 0); // Cesárea 17 Abr 2026 12:00
 window.birthActual = null; // set when "Ya nació" toggled, YYYY-MM-DD string
 window.getBirthAnchor = function() {
   if (window.birthActual) {
