@@ -214,6 +214,29 @@ body {
   font-size: 18px;
   color: #2f7a48;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cd-born-arrow {
+  font-size: 22px;
+  color: #2f7a48;
+  display: inline-block;
+  animation: arrowNudge 1.6s ease-in-out infinite;
+}
+.cd-born-arrow::before { content: '→'; }
+@media (max-width: 600px) {
+  .cd-born-arrow::before { content: '↓'; }
+}
+@keyframes arrowNudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+@media (max-width: 600px) {
+  @keyframes arrowNudge {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(4px); }
+  }
 }
 
 .cd-admin-actions {
@@ -525,12 +548,11 @@ body.is-admin .update-del { display: inline-block; }
 
 <div class="container">
   <div class="top-bar">
-    <a href="#" id="admin-link">Soy Luis</a>
+    <a href="#" id="admin-link">Soy Daddey</a>
   </div>
 
   <div class="header">
     <h1 id="page-title">Llega Luca</h1>
-    <div class="sub">17 de abril de 2026 · 12:00</div>
   </div>
 
   <!-- COUNTDOWN -->
@@ -704,8 +726,7 @@ body.is-admin .update-del { display: inline-block; }
 
   function fmtWeight(g) {
     if (!g) return '—';
-    const kg = g / 1000;
-    return kg.toFixed(3).replace('.', ',') + ' kg';
+    return g + ' g';
   }
 
   const pageTitle = document.getElementById('page-title');
@@ -718,24 +739,23 @@ body.is-admin .update-del { display: inline-block; }
       cdCard.classList.add('celebrate');
       pageTitle.textContent = '¡Llegó Luca!';
       document.title = '¡Llegó Luca!';
+      cdBornLine.style.display = 'inline-flex';
+      cdBornLine.innerHTML = 'Llegó a las: <span class="cd-born-arrow"></span>';
     } else {
       birthBox.classList.remove('show');
       cdCard.classList.remove('celebrate');
       pageTitle.textContent = 'Llega Luca';
       document.title = 'Llega Luca';
+      cdBornLine.style.display = 'none';
     }
   }
 
   function tick() {
     const now = Date.now();
     if (bornAt) {
-      const diff = now - new Date(bornAt).getTime();
       cdStatus.textContent = 'NACIDO';
       cdStatus.classList.add('born');
-      const d = new Date(bornAt);
-      cdBornLine.style.display = 'block';
-      cdBornLine.textContent = 'Llegó el ' + pad(d.getDate()) + '-' + pad(d.getMonth()+1) + '-' + d.getFullYear() + ' a las ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-      renderClock(diff, 'T+');
+      renderClock(now - new Date(bornAt).getTime(), 'T+');
     } else if (now < TARGET.getTime()) {
       cdStatus.textContent = 'PROGRAMADO';
       cdStatus.classList.remove('born');
@@ -856,7 +876,7 @@ body.is-admin .update-del { display: inline-block; }
   function applyAuth(session) {
     isAdmin = !!session;
     document.body.classList.toggle('is-admin', isAdmin);
-    adminLink.textContent = isAdmin ? 'Cerrar sesión' : 'Soy Luis';
+    adminLink.textContent = isAdmin ? 'Cerrar sesión' : 'Soy Daddey';
   }
 
   sb.auth.getSession().then(({ data }) => applyAuth(data.session));
