@@ -98,11 +98,33 @@ body {
 
 /* ==== COUNTDOWN ==== */
 .countdown-card {
-  text-align: center;
-  padding: 0 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px 20px;
   position: relative;
   overflow: hidden;
 }
+.cd-body {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+.cd-hero {
+  flex: 0 0 auto;
+  width: clamp(96px, 26%, 160px);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffaf0, #fff4e3);
+  box-shadow: 0 6px 18px rgba(20,30,60,0.10);
+  transform: rotate(2deg);
+  transition: transform .3s ease;
+  align-self: center;
+  margin-top: 16px;
+}
+.cd-hero:hover { transform: rotate(0deg) scale(1.03); }
 .countdown-card.celebrate {
   background: linear-gradient(135deg, #fffaf0, #fff4e3);
   box-shadow: 0 6px 28px rgba(217,147,72,0.25), 0 0 0 1px rgba(245,185,107,0.4);
@@ -134,8 +156,8 @@ body.is-born .cd-progress-fill { width: 100% !important; background: linear-grad
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding-top: 28px;
-  margin-bottom: 18px;
+  padding-top: 22px;
+  margin-bottom: 14px;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -169,15 +191,15 @@ body.is-born .cd-progress-fill { width: 100% !important; background: linear-grad
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   color: #1f2742;
-  font-size: clamp(28px, 7vw, 44px);
+  font-size: clamp(22px, 5.5vw, 38px);
   margin: 6px 0;
 }
-.cd-clock.compact { font-size: clamp(40px, 11vw, 64px); }
-.cd-sign { color: #c97a4a; font-size: 0.7em; margin-right: 6px; }
-.cd-seg { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
-.cd-clock.compact .cd-seg { min-width: 72px; }
+.cd-clock.compact { font-size: clamp(34px, 9vw, 56px); }
+.cd-sign { color: #c97a4a; font-size: 0.7em; margin-right: 4px; }
+.cd-seg { display: flex; flex-direction: column; align-items: center; min-width: 42px; }
+.cd-clock.compact .cd-seg { min-width: 56px; }
 .cd-num { font-size: 1em; line-height: 1; color: #1f2742; }
 .cd-num.amber { color: #d99348; }
 .cd-lbl {
@@ -209,7 +231,7 @@ body.is-born .cd-progress-fill { width: 100% !important; background: linear-grad
 body.is-born #cd-display { display: none; }
 body.is-born .cd-strip { display: none; }
 body.is-born .cd-progress { display: none; }
-body.is-born .countdown-card { padding-top: 28px; }
+body.is-born .countdown-card { padding: 24px 20px 20px; }
 
 .birth-box {
   display: none;
@@ -729,14 +751,15 @@ body.is-offline .offline-badge { display: inline-block; }
 @media (max-width: 480px) {
   .container { padding: 20px 14px 50px; }
   .card { padding: 20px 18px; border-radius: 14px; }
-  .countdown-card { padding: 0 18px 20px; }
-  body.is-born .countdown-card { padding-top: 22px; }
-  .cd-seg { min-width: 44px; }
-  .cd-clock.compact .cd-seg { min-width: 60px; }
+  .countdown-card { padding: 0 16px 18px; gap: 12px; }
+  body.is-born .countdown-card { padding: 22px 16px 18px; }
+  .cd-hero { width: 96px; margin-top: 14px; }
+  .cd-seg { min-width: 36px; }
+  .cd-clock.compact .cd-seg { min-width: 48px; }
   .comment-form .name-row { flex-direction: column; }
   .comment-form .name-row input { flex: 1; }
-  .birth-box-row { gap: 18px; padding: 14px 18px; }
-  .bb-value { font-size: 22px; }
+  .birth-box-row { gap: 14px; padding: 12px 16px; }
+  .bb-value { font-size: 20px; }
 }
 </style>
 </head>
@@ -754,34 +777,37 @@ body.is-offline .offline-badge { display: inline-block; }
   <!-- COUNTDOWN -->
   <div class="card countdown-card" id="cd-card">
     <div class="cd-progress" aria-hidden="true"><div class="cd-progress-fill" id="cd-progress-fill"></div></div>
-    <div class="cd-strip">
-      <span class="cd-dot"></span>
-      <span>Cuenta atrás</span>
-      <span class="cd-status" id="cd-status">PROGRAMADO</span>
-    </div>
-    <div id="cd-display"></div>
-
-    <div class="birth-box" id="birth-box">
-      <div class="birth-box-row">
-        <div class="birth-box-cell">
-          <div class="bb-label">Nació a las</div>
-          <div class="bb-value" id="bb-time">—</div>
-        </div>
-        <div class="bb-divider"></div>
-        <div class="birth-box-cell">
-          <div class="bb-label">Peso</div>
-          <div class="bb-value" id="bb-weight">—</div>
-        </div>
+    <div class="cd-body">
+      <div class="cd-strip">
+        <span class="cd-dot"></span>
+        <span>Cuenta atrás</span>
+        <span class="cd-status" id="cd-status">PROGRAMADO</span>
       </div>
-      <div class="birth-box-since" id="bb-since"></div>
-    </div>
+      <div id="cd-display"></div>
 
-    <button class="btn btn-ghost cd-notify" id="btn-notify" hidden>🔔 Avísame cuando nazca</button>
+      <div class="birth-box" id="birth-box">
+        <div class="birth-box-row">
+          <div class="birth-box-cell">
+            <div class="bb-label">Nació a las</div>
+            <div class="bb-value" id="bb-time">—</div>
+          </div>
+          <div class="bb-divider"></div>
+          <div class="birth-box-cell">
+            <div class="bb-label">Peso</div>
+            <div class="bb-value" id="bb-weight">—</div>
+          </div>
+        </div>
+        <div class="birth-box-since" id="bb-since"></div>
+      </div>
 
-    <div class="cd-admin-actions">
-      <button class="btn btn-primary" id="btn-born">Marcar como nacido</button>
-      <button class="btn btn-link" id="btn-reset-born" hidden>Resetear</button>
+      <button class="btn btn-ghost cd-notify" id="btn-notify" hidden>🔔 Avísame cuando nazca</button>
+
+      <div class="cd-admin-actions">
+        <button class="btn btn-primary" id="btn-born">Marcar como nacido</button>
+        <button class="btn btn-link" id="btn-reset-born" hidden>Resetear</button>
+      </div>
     </div>
+    <img class="cd-hero" id="cd-hero" src="https://voirsxfjdayhhvwviaqt.supabase.co/storage/v1/object/public/birth-photos/1776374297163-9utl5j-ab0844da-1e80-4425-a5e2-89a939f260dd-t.jpg" alt="Esperando a Luca" loading="lazy" decoding="async">
   </div>
 
   <!-- ADMIN POST FORM -->
