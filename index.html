@@ -899,7 +899,7 @@ body[data-tab]:not([data-tab="resumen"]) .clock-sign { margin-right: 2px; opacit
 <body>
 
 <!-- ========== SUPABASE AUTH GATE ========== -->
-<div id="auth-gate" style="position:fixed;inset:0;z-index:9999;background:#0a0a1a;background-image:linear-gradient(135deg,#1a0533 0%,#0f1b3d 40%,#0a2a4a 70%,#132743 100%);display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif;">
+<div id="auth-gate" style="display:none;position:fixed;inset:0;z-index:9999;background:#0a0a1a;background-image:linear-gradient(135deg,#1a0533 0%,#0f1b3d 40%,#0a2a4a 70%,#132743 100%);display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif;">
   <div style="background:rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px;max-width:340px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(139,92,246,0.15);">
     <div style="font-size:36px;margin-bottom:12px;">👶</div>
     <h2 style="color:#f0eef5;font-size:20px;font-weight:700;margin-bottom:6px;">Plan de Paternidad</h2>
@@ -950,6 +950,14 @@ async function checkAuth(){
   showApp();
 }
 
+// === TEMP AUTH BYPASS — to revert: uncomment ORIGINAL block below, delete this bypass ===
+window.__bypassAuth = true;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', showApp);
+} else {
+  showApp();
+}
+/* ORIGINAL:
 window.sb.auth.getSession().then(({ data }) => {
   if (data && data.session) {
     if (document.readyState === 'loading') {
@@ -959,6 +967,7 @@ window.sb.auth.getSession().then(({ data }) => {
     }
   }
 });
+*/
 </script>
 
 <div id="main-content" style="display:none;">
@@ -1004,7 +1013,21 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="clock-seg"><div class="seg-num" id="cd-secs">--</div><div class="seg-lbl">SEC</div></div>
       </div>
       <div class="mission-footer">
-        <div id="countdown-sub" style="font-family: 'Courier New', 'SF Mono', Menlo, Consolas, monospace;"><strong>Últimas Noticias</strong><ul style="margin:6px 0 0 0; padding-left:18px;"><li>14-04 09:15 Sujeto presenta contracciones!!!</li></ul></div>
+        <div id="countdown-sub" style="font-family: 'Courier New', 'SF Mono', Menlo, Consolas, monospace;">
+          <strong>Últimas Noticias</strong>
+          <ul id="news-list" style="margin:6px 0 0 0;padding-left:18px;list-style:none;"></ul>
+          <form id="news-form" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+            <textarea id="news-text" rows="2" maxlength="2000" placeholder="Nueva actualización…"
+              style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:inherit;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box;"></textarea>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input id="news-photo" type="file" accept="image/*" capture="environment"
+                style="flex:1;font-size:11px;color:inherit;">
+              <button id="news-submit" type="submit"
+                style="padding:6px 12px;border-radius:6px;border:none;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Publicar</button>
+            </div>
+            <div id="news-error" style="color:#fb7185;font-size:11px;display:none;"></div>
+          </form>
+        </div>
         <button class="btn-link birth-toggle" id="birth-toggle-btn">Registrar fecha de nacimiento</button>
       </div>
     </div>
@@ -2980,6 +3003,107 @@ if ('serviceWorker' in navigator) {
 
   const initial = (location.hash || '').slice(1);
   if (!initial || !activate(initial)) activate('resumen');
+})();
+
+// === ÚLTIMAS NOTICIAS (shared via Supabase) ===
+(function newsModule() {
+  const MAX_PHOTO_BYTES = 800 * 1024;
+  const listEl = () => document.getElementById('news-list');
+  const errEl  = () => document.getElementById('news-error');
+
+  function fmtTs(iso) {
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mi = String(d.getMinutes()).padStart(2,'0');
+    return dd+'-'+mm+' '+hh+':'+mi;
+  }
+
+  function renderNews(rows) {
+    const ul = listEl(); if (!ul) return;
+    ul.innerHTML = '';
+    rows.forEach(r => {
+      const li = document.createElement('li');
+      li.style.marginBottom = '8px';
+      const head = document.createElement('div');
+      head.textContent = fmtTs(r.created_at) + ' ' + r.text;
+      li.appendChild(head);
+      if (r.photo_data_url) {
+        const img = document.createElement('img');
+        img.src = r.photo_data_url;
+        img.style.cssText = 'max-width:100%;max-height:180px;display:block;margin-top:4px;border-radius:6px;';
+        li.appendChild(img);
+      }
+      ul.appendChild(li);
+    });
+  }
+
+  async function loadNews() {
+    const { data, error } = await sb.from('news')
+      .select('id, created_at, text, photo_data_url')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) { console.warn('news load failed', error); return; }
+    renderNews(data || []);
+  }
+
+  function readPhoto(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve(null);
+      if (file.size > MAX_PHOTO_BYTES) {
+        return reject(new Error('Foto demasiado grande (máx 800KB)'));
+      }
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = () => reject(new Error('No se pudo leer la foto'));
+      r.readAsDataURL(file);
+    });
+  }
+
+  async function postNews(text, photoFile) {
+    const photo_data_url = await readPhoto(photoFile);
+    const { error } = await sb.from('news').insert({ text, photo_data_url });
+    if (error) throw error;
+  }
+
+  function bindForm() {
+    const form = document.getElementById('news-form');
+    if (!form) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const ta = document.getElementById('news-text');
+      const fi = document.getElementById('news-photo');
+      const btn = document.getElementById('news-submit');
+      const err = errEl();
+      err.style.display = 'none';
+      const text = ta.value.trim();
+      if (!text) { err.textContent = 'Escribe algo'; err.style.display = 'block'; return; }
+      btn.disabled = true; btn.textContent = 'Publicando…';
+      try {
+        await postNews(text, fi.files[0] || null);
+        ta.value = ''; fi.value = '';
+        await loadNews();
+      } catch (ex) {
+        err.textContent = ex.message || 'Error al publicar';
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Publicar';
+      }
+    });
+  }
+
+  function subscribeRealtime() {
+    sb.channel('news-feed')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'news' }, () => loadNews())
+      .subscribe();
+  }
+
+  window.addEventListener('auth-ready', () => {
+    bindForm();
+    loadNews();
+    subscribeRealtime();
+  });
 })();
 </script>
 
