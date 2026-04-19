@@ -495,97 +495,6 @@ section { scroll-margin-top: 60px; }
   padding: 7px 14px; border-radius: 999px; cursor: pointer;
   font-family: inherit; transition: all 0.15s;
 }
-.birth-toggle:hover { border-color: var(--accent-purple-soft); color: var(--accent-purple); }
-.countdown-card.post-birth .birth-toggle:hover { border-color: var(--cal-baby-bg, #ff2d55); color: var(--cal-baby-bg, #ff2d55); }
-
-/* ======== NASA-style Mission Countdown ======== */
-#mission-countdown-section { margin-bottom: 24px; }
-body[data-tab]:not([data-tab="resumen"]) #mission-countdown-section { margin-bottom: 12px; }
-body[data-tab]:not([data-tab="resumen"]) .mission-countdown { padding: 10px 14px; max-width: 360px; margin-left: auto; margin-right: auto; }
-body[data-tab]:not([data-tab="resumen"]) .mission-header .mission-status,
-body[data-tab]:not([data-tab="resumen"]) #countdown-sub,
-body[data-tab]:not([data-tab="resumen"]) #birth-toggle-btn,
-body[data-tab]:not([data-tab="resumen"]) .mission-footer { display: none !important; }
-body[data-tab]:not([data-tab="resumen"]) .mission-header { margin-bottom: 4px; }
-body[data-tab]:not([data-tab="resumen"]) .mission-label { font-size: 12px; }
-body[data-tab]:not([data-tab="resumen"]) .seg-num { font-size: 22px; }
-body[data-tab]:not([data-tab="resumen"]) .seg-lbl { font-size: 9px; }
-body[data-tab]:not([data-tab="resumen"]) .clock-sign,
-body[data-tab]:not([data-tab="resumen"]) .clock-sep { font-size: 16px; }
-body[data-tab]:not([data-tab="resumen"]) .clock-seg { min-width: 0; }
-body[data-tab]:not([data-tab="resumen"]) .mission-clock { gap: 4px; padding: 4px 0 2px; flex-wrap: nowrap; }
-body[data-tab]:not([data-tab="resumen"]) .clock-sign { margin-right: 2px; opacity: 1; }
-.mission-countdown {
-  padding: 22px 24px;
-  background: var(--mission-bg);
-  border: 1px solid var(--mission-border);
-  border-radius: 22px;
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  box-shadow: var(--glass-shadow);
-  position: relative;
-  overflow: hidden;
-}
-.mission-countdown::before {
-  content: ""; position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(0deg, var(--mission-scanline) 0, var(--mission-scanline) 1px, transparent 1px, transparent 4px);
-  pointer-events: none; opacity: 0.6;
-}
-.mission-header {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;
-  color: var(--mission-accent); margin-bottom: 16px;
-}
-.mission-header .mission-label { color: var(--text-muted); flex: 1; font-weight: 600; }
-.mission-header .mission-status { font-weight: 700; color: var(--mission-accent); }
-.mission-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--mission-accent); box-shadow: 0 0 10px var(--mission-accent), 0 0 20px var(--accent-purple-soft);
-  animation: mission-pulse 1.6s ease-in-out infinite;
-}
-@keyframes mission-pulse { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.45; transform: scale(0.85);} }
-.mission-clock {
-  display: flex; align-items: flex-end; justify-content: center; gap: 8px;
-  font-family: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
-  padding: 8px 0 4px;
-}
-.clock-sign {
-  font-size: 24px; font-weight: 700; color: var(--accent-purple); margin-right: 4px;
-  align-self: center; opacity: 0.7;
-}
-.clock-seg { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
-.seg-num {
-  font-size: clamp(40px, 9vw, 64px); font-weight: 800; line-height: 1;
-  color: var(--text); letter-spacing: -1px;
-  font-variant-numeric: tabular-nums;
-}
-.seg-lbl {
-  font-size: 10px; letter-spacing: 2.5px; color: var(--text-muted);
-  margin-top: 10px; text-transform: uppercase; font-weight: 600;
-}
-.clock-sep {
-  font-size: clamp(34px, 8vw, 56px); font-weight: 300; color: var(--accent-purple-soft);
-  line-height: 1; padding-bottom: 20px; opacity: 0.5;
-  animation: blink 1s steps(2, start) infinite;
-}
-@keyframes blink { 50% { opacity: 0.15; } }
-.mission-footer {
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--glass-border);
-  font-size: 13px; color: var(--text-secondary);
-}
-.countdown-card.post-birth { border-color: rgba(255,45,85,0.35); }
-.countdown-card.post-birth .seg-num { color: var(--cal-baby-bg, #ff2d55); }
-.countdown-card.post-birth .clock-sep,
-.countdown-card.post-birth .clock-sign { color: var(--cal-baby-bg, #ff2d55); }
-.countdown-card.post-birth .mission-dot { background: var(--cal-baby-bg, #ff2d55); box-shadow: 0 0 10px var(--cal-baby-bg, #ff2d55), 0 0 20px rgba(255,45,85,0.6); }
-.countdown-card.post-birth .mission-header,
-.countdown-card.post-birth .mission-header .mission-status { color: var(--cal-baby-bg, #ff2d55); }
-@media (max-width: 520px) {
-  .clock-seg { min-width: 48px; }
-  .mission-countdown { padding: 16px; }
-  .mission-footer { flex-direction: column; align-items: flex-start; }
-}
-
 .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 18px; }
 .dash-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; min-height: 118px; }
 .dash-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
@@ -595,7 +504,6 @@ body[data-tab]:not([data-tab="resumen"]) .clock-sign { margin-right: 2px; opacit
 .dash-title:hover { color: var(--accent-purple); }
 .dash-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 .dash-badge { margin-top: 8px; align-self: flex-start; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
-.countdown-card.post-birth .dash-big { color: var(--cal-baby-bg, #ff2d55); }
 .dl-ok { background: rgba(74,222,128,0.15); color: var(--accent-green); border: 1px solid rgba(74,222,128,0.3); }
 .dl-soon { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); }
 .dl-urgent { background: rgba(251,113,133,0.18); color: #fb7185; border: 1px solid rgba(251,113,133,0.4); }
@@ -950,14 +858,6 @@ async function checkAuth(){
   showApp();
 }
 
-// === TEMP AUTH BYPASS — to revert: uncomment ORIGINAL block below, delete this bypass ===
-window.__bypassAuth = true;
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', showApp);
-} else {
-  showApp();
-}
-/* ORIGINAL:
 window.sb.auth.getSession().then(({ data }) => {
   if (data && data.session) {
     if (document.readyState === 'loading') {
@@ -967,7 +867,6 @@ window.sb.auth.getSession().then(({ data }) => {
     }
   }
 });
-*/
 </script>
 
 <div id="main-content" style="display:none;">
@@ -993,30 +892,6 @@ window.sb.auth.getSession().then(({ data }) => {
     <h1>Misión: Luca</h1>
     <div class="sub">Luca llega el 17 de abril de 2026 a las 12:00</div>
   </div>
-
-  <!-- ========== MISSION COUNTDOWN ========== -->
-  <section id="mission-countdown-section">
-    <div class="glass mission-countdown" id="countdown-card">
-      <div class="mission-header">
-        <span class="mission-dot"></span>
-        <span class="mission-label">Cuenta atrás para parto programado:</span>
-        <span class="mission-status" id="mission-status">COUNTDOWN ACTIVE</span>
-      </div>
-      <div class="mission-clock">
-        <span class="clock-sign" id="cd-sign">T−</span>
-        <div class="clock-seg"><div class="seg-num" id="cd-days">---</div><div class="seg-lbl">DAYS</div></div>
-        <div class="clock-sep">:</div>
-        <div class="clock-seg"><div class="seg-num" id="cd-hours">--</div><div class="seg-lbl">HRS</div></div>
-        <div class="clock-sep">:</div>
-        <div class="clock-seg"><div class="seg-num" id="cd-mins">--</div><div class="seg-lbl">MIN</div></div>
-        <div class="clock-sep">:</div>
-        <div class="clock-seg"><div class="seg-num" id="cd-secs">--</div><div class="seg-lbl">SEC</div></div>
-      </div>
-      <div class="mission-footer">
-        <button class="btn-link birth-toggle" id="birth-toggle-btn">Registrar fecha de nacimiento</button>
-      </div>
-    </div>
-  </section>
 
   <!-- ========== RESUMEN ========== -->
   <section id="resumen" class="tab-section active">
@@ -2185,54 +2060,8 @@ window.fmtLongDate = function(d) {
     };
   }
 
-  window.renderMissionCountdown = function() {
-    const ccard = document.getElementById('countdown-card');
-    const dEl = document.getElementById('cd-days');
-    const hEl = document.getElementById('cd-hours');
-    const mEl = document.getElementById('cd-mins');
-    const sEl = document.getElementById('cd-secs');
-    const sub = document.getElementById('countdown-sub');
-    const status = document.getElementById('mission-status');
-    const sign = document.getElementById('cd-sign');
-    if (!ccard || !dEl) return;
-    const now = new Date();
-    let target, postBirth = false;
-    if (window.isBornYet && window.isBornYet()) {
-      target = window.getBirthAnchor();
-      postBirth = true;
-    } else {
-      target = new Date(window.BIRTH_EDD);
-    }
-    let diff = target - now;
-    const past = diff < 0;
-    diff = Math.abs(diff);
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    dEl.textContent = String(d).padStart(3, '0');
-    hEl.textContent = String(h).padStart(2, '0');
-    mEl.textContent = String(m).padStart(2, '0');
-    sEl.textContent = String(s).padStart(2, '0');
-    if (sign) sign.textContent = past ? 'T+' : 'T−';
-    if (postBirth) {
-      ccard.classList.add('post-birth');
-      if (status) status.textContent = 'MISSION ACTIVE';
-      if (past) sub.textContent = 'desde el nacimiento registrado';
-    } else {
-      ccard.classList.remove('post-birth');
-      if (past) {
-        if (status) status.textContent = 'HOLD · PAST EDD';
-      } else {
-        if (status) status.textContent = d < 7 ? 'GO FOR LAUNCH WINDOW' : 'COUNTDOWN ACTIVE';
-      }
-    }
-  };
-  setInterval(window.renderMissionCountdown, 1000);
-
   function renderDashboard() {
     const today = new Date(); today.setHours(0,0,0,0);
-    if (typeof window.renderMissionCountdown === 'function') window.renderMissionCountdown();
     renderUrgentBanner();
 
     const title = document.getElementById('next-action-title');
