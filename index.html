@@ -626,7 +626,8 @@ section { scroll-margin-top: 60px; }
 /* Group collapse */
 .tramite-group.group-collapsed > * { display: none; }
 .tramite-group.group-collapsed > h3 { display: block; opacity: 0.75; }
-.tramite-group.group-collapsed > h3::after { content: ' ▸ (completado)'; font-size: 12px; color: var(--accent-green); font-weight: 500; }
+.tramite-group.group-collapsed > h3::after { content: ' ▸'; font-size: 14px; color: var(--text-muted); font-weight: 500; margin-left: 6px; }
+.tramite-group:not(.group-collapsed) > h3::after { content: ' ▾'; font-size: 14px; color: var(--text-muted); font-weight: 500; margin-left: 6px; }
 .tramite-group > h3 { user-select: none; }
 
 /* Toast undo button */
@@ -1069,7 +1070,7 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="tramite-info"><div class="name">Bolsa hospital preparada</div><div class="meta">Vithas · Mamá + bebé + acompañante · Lista 7 d antes EDD</div><span class="doc-slot" data-folder="Hospital"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="1">
-        <div class="tramite-info"><div class="name">Silla de coche homologada i-Size (grupo 0+)</div><div class="meta">Obligatoria al alta · Instalada y probada 7 d antes EDD</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <div class="tramite-info"><div class="name">Silla de coche homologada i-Size (grupo 0+)</div><div class="meta">Obligatoria al alta · Instalada y probada antes del 30 abr</div><span class="doc-slot" data-folder="Hospital"></span></div>
         <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="2">
         <div class="tramite-info"><div class="name">Plan de parto</div><div class="meta">Semana 36-37 · Entregar al equipo de matronas de Vithas</div><span class="doc-slot" data-folder="Hospital"></span></div>
@@ -1272,7 +1273,7 @@ window.TRAMITES = {
       { id: 'acomp-essentials', label: 'Acompañante: cargador móvil + snacks + botella agua + muda' }
     ]
   },
-  'preparacion-1': { deadline: { kind: 'beforeEDD', days: 7, label: 'Instalada 7 d antes EDD' }, priority: 'critical', scope: 'nacional',
+  'preparacion-1': { deadline: { kind: 'absolute', date: '2026-04-30', label: 'Antes del 30 abr' }, priority: 'critical', scope: 'nacional',
     subtasks: [
       { id: 'comprar', label: 'Comprar silla i-Size grupo 0+ homologada' },
       { id: 'instalar', label: 'Instalar en el coche (base isofix o cinturón)' },
@@ -1376,9 +1377,6 @@ window.TRAMITES = {
   // ---------- Ayudas económicas ----------
   'ayudas-0': { name: 'Contactar con asesora fiscal Elena Melián', meta: 'Verificación IRPF — datos familiares · Actualizar número de hijos para retenciones · Al empleador',
                 deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
-  'ayudas-1': { name: 'Ayuda nacimiento Ayto. LPGC (si convocatoria activa)', meta: 'Ayto. Las Palmas · Verificar convocatoria en BOP · Requiere empadronamiento',
-                deadline: { kind: 'afterBirth', days: 90, label: 'Primeros 3 meses — verificar plazo BOP' }, scope: 'municipal',
-                dependsOn: ['bebe-2'] },
   'ayudas-2': { name: 'Actualización beneficiarios seguros de vida', meta: 'Aseguradora · Incluir al nuevo hijo',
                 deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
   'ayudas-3': { name: 'Actualización seguro médico privado (si aplica)', meta: 'Aseguradora · Alta del bebé · Algunos tienen 15-30 días plazo',
@@ -2127,14 +2125,8 @@ window.fmtLongDate = function(d) {
   });
 
   function autoCollapseCompleted() {
-    Object.keys(window.GROUPS || {}).forEach(groupKey => {
-      const grpEl = document.getElementById('grp-' + groupKey);
-      if (!grpEl) return;
-      const boxes = grpEl.querySelectorAll('input[type="checkbox"][data-group]');
-      if (!boxes.length) return;
-      const allDone = Array.from(boxes).every(b => b.checked);
-      if (allDone && !grpEl.dataset.manualExpand) grpEl.classList.add('group-collapsed');
-      else if (!allDone) grpEl.classList.remove('group-collapsed');
+    document.querySelectorAll('.tramite-group').forEach(grpEl => {
+      if (!grpEl.dataset.manualExpand) grpEl.classList.add('group-collapsed');
     });
   }
 
