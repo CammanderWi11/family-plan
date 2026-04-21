@@ -139,15 +139,17 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="progress-fill" id="cd-progress" style="width:0%"></div>
       </div>
     </div>
-    <div class="dashboard">
-      <div class="glass dash-card next-action-card" id="next-action-card">
-        <div class="dash-label">Next action</div>
-        <div class="dash-title" id="next-action-title">—</div>
-        <div class="dash-meta" id="next-action-meta"></div>
-        <div class="dash-badge" id="next-action-badge"></div>
+    <div class="glass action-queue-card" id="action-queue-card">
+      <div class="aq-header">
+        <h3 class="dash-label">Próximas acciones</h3>
+        <div class="aq-summary" id="aq-weekly-summary"></div>
       </div>
+      <div id="action-queue" class="action-queue"></div>
+      <div id="blocked-queue" class="blocked-queue"></div>
+    </div>
+    <div class="dashboard">
       <div class="glass dash-card">
-        <div class="dash-label">Procedures completed</div>
+        <div class="dash-label">Trámites completados</div>
         <div class="agg-num" style="font-size:30px;font-weight:800;color:var(--accent-purple);letter-spacing:-1px;margin-top:6px;"><span id="agg-done">0</span>/<span id="agg-total">0</span></div>
         <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" id="agg-fill" style="width:0%"></div></div>
       </div>

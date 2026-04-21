@@ -479,53 +479,140 @@
     };
   }
 
-  function renderDashboard() {
-    const today = new Date(); today.setHours(0,0,0,0);
-    renderUrgentBanner();
+  function navigateToItem(box) {
+    const tab = window.getTabForKey(box.dataset.group + '-' + box.dataset.idx);
+    const navLink = document.querySelector('.nav-link[href="' + tab + '"]');
+    if (navLink) navLink.click();
+    setTimeout(() => {
+      const grp = box.closest('.tramite-group');
+      if (grp && grp.classList.contains('group-collapsed')) { grp.classList.remove('group-collapsed'); grp.dataset.manualExpand = '1'; }
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const row = box.closest('.tramite-row');
+      if (row) {
+        row.style.transition = 'box-shadow 0.3s';
+        row.style.boxShadow = '0 0 0 2px #fbbf24';
+        setTimeout(() => { row.style.boxShadow = ''; }, 1800);
+      }
+    }, 120);
+  }
 
-    const title = document.getElementById('next-action-title');
-    const meta = document.getElementById('next-action-meta');
-    const bdg = document.getElementById('next-action-badge');
-    if (!title) return;
-    const candidates = [];
+  function dotClsForDays(d) {
+    if (d < 0) return 'dot-overdue';
+    if (d <= 3) return 'dot-urgent';
+    if (d <= 14) return 'dot-soon';
+    return 'dot-ok';
+  }
+
+  function groupLabel(key) {
+    var g = window.getGroupForKey(key);
+    var grp = window.GROUPS[g];
+    return grp ? grp.title.replace(/^[^\w]*/, '').split('—')[0].trim() : g;
+  }
+
+  function renderDashboard() {
+    renderUrgentBanner();
+    const aqEl = document.getElementById('action-queue');
+    const bqEl = document.getElementById('blocked-queue');
+    const sumEl = document.getElementById('aq-weekly-summary');
+    if (!aqEl) return;
+
+    const actionable = [];
+    const blocked = [];
+
     allBoxes.forEach(box => {
       if (box.checked) return;
       const key = box.dataset.group + '-' + box.dataset.idx;
       const dl = window.resolveDeadline(key);
       if (!dl) return;
+      const t = window.TRAMITES[key];
       const nameEl = box.parentElement.querySelector('.tramite-info .name');
-      candidates.push({ key, dl, name: nameEl ? nameEl.textContent : key, box });
+      const name = nameEl ? nameEl.textContent.replace(/\s*(🇪🇸|🌴|🏛|🏥|🏢).*$/, '') : (t && t.name) || key;
+      const item = { key, dl, name, box, t };
+      const unmet = window.getUnmetDeps(key, state.tramites);
+      if (unmet.length) {
+        item.unmetNames = unmet.map(k => { var tr = window.TRAMITES[k]; return tr && tr.name ? tr.name : k; });
+        blocked.push(item);
+      } else {
+        actionable.push(item);
+      }
     });
-    if (!candidates.length) {
-      title.textContent = '🎉 Todo al día';
-      meta.textContent = 'No hay plazos pendientes inmediatos.';
-      bdg.style.display = 'none';
-      title.onclick = null;
+
+    actionable.sort((a, b) => a.dl.daysUntil - b.dl.daysUntil);
+    blocked.sort((a, b) => a.dl.daysUntil - b.dl.daysUntil);
+
+    // Weekly summary
+    const dueThisWeek = actionable.filter(i => i.dl.daysUntil <= 7);
+    const tramWeek = dueThisWeek.filter(i => window.getTabForKey(i.key) === '#tramites').length;
+    const saludWeek = dueThisWeek.filter(i => window.getTabForKey(i.key) === '#salud').length;
+    if (sumEl) {
+      const parts = [];
+      if (tramWeek) parts.push(tramWeek + ' trámite' + (tramWeek > 1 ? 's' : ''));
+      if (saludWeek) parts.push(saludWeek + ' revisión' + (saludWeek > 1 ? 'es' : ''));
+      sumEl.textContent = parts.length ? parts.join(' · ') + ' esta semana' : '';
+    }
+
+    // Render actionable queue (top 5)
+    aqEl.innerHTML = '';
+    if (!actionable.length && !blocked.length) {
+      aqEl.innerHTML = '<div class="aq-empty">🎉 Todo al día — no hay plazos pendientes</div>';
+      bqEl.innerHTML = '';
       return;
     }
-    candidates.sort((a, b) => a.dl.daysUntil - b.dl.daysUntil);
-    const top = candidates[0];
-    title.textContent = top.name;
-    meta.textContent = 'Deadline: ' + window.fmtLongDate(top.dl.date) + ' · ' + top.dl.label;
-    const fmt = window.formatDeadlineBadge(top.dl.daysUntil);
-    bdg.style.display = '';
-    bdg.className = 'dash-badge ' + fmt.cls;
-    bdg.textContent = fmt.text;
-    title.onclick = () => {
-      const tramitesTab = document.querySelector('.nav-link[href="#tramites"]');
-      if (tramitesTab) tramitesTab.click();
-      setTimeout(() => {
-        const grp = top.box.closest('.tramite-group');
-        if (grp && grp.classList.contains('group-collapsed')) { grp.classList.remove('group-collapsed'); grp.dataset.manualExpand = '1'; }
-        top.box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const row = top.box.closest('.tramite-row');
-        if (row) {
-          row.style.transition = 'box-shadow 0.3s';
-          row.style.boxShadow = '0 0 0 2px #fbbf24';
-          setTimeout(() => { row.style.boxShadow = ''; }, 1800);
-        }
-      }, 120);
-    };
+    const show = actionable.slice(0, 5);
+    show.forEach(item => {
+      const fmt = window.formatDeadlineBadge(item.dl.daysUntil);
+      const scope = item.t && item.t.scope ? window.SCOPE_CHIPS[item.t.scope] : null;
+      const row = document.createElement('div');
+      row.className = 'aq-item';
+      row.innerHTML =
+        '<div class="aq-dot ' + dotClsForDays(item.dl.daysUntil) + '"></div>' +
+        '<div class="aq-body">' +
+          '<div class="aq-name">' + item.name + '</div>' +
+          '<div class="aq-meta">' +
+            '<span class="aq-group-chip">' + groupLabel(item.key) + '</span>' +
+            (scope ? '<span class="scope-chip ' + scope.cls + '">' + scope.emoji + ' ' + scope.label + '</span>' : '') +
+            '<span>' + window.fmtLongDate(item.dl.date) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="deadline-badge aq-badge ' + fmt.cls + '">' + fmt.text + '</span>';
+      row.addEventListener('click', () => navigateToItem(item.box));
+      aqEl.appendChild(row);
+    });
+    if (actionable.length > 5) {
+      const more = document.createElement('div');
+      more.className = 'aq-meta';
+      more.style.padding = '6px 14px';
+      more.textContent = '+ ' + (actionable.length - 5) + ' más';
+      aqEl.appendChild(more);
+    }
+
+    // Render blocked queue (top 3)
+    bqEl.innerHTML = '';
+    if (blocked.length) {
+      const divider = document.createElement('div');
+      divider.className = 'bq-divider';
+      divider.textContent = 'Bloqueados';
+      bqEl.appendChild(divider);
+      blocked.slice(0, 3).forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'bq-item';
+        row.innerHTML =
+          '<span class="bq-icon">⏳</span>' +
+          '<div class="bq-body">' +
+            '<div class="bq-name">' + item.name + '</div>' +
+            '<div class="bq-dep">Requiere: ' + item.unmetNames.join(', ') + '</div>' +
+          '</div>';
+        row.addEventListener('click', () => navigateToItem(item.box));
+        bqEl.appendChild(row);
+      });
+      if (blocked.length > 3) {
+        const more = document.createElement('div');
+        more.className = 'aq-meta';
+        more.style.padding = '6px 14px';
+        more.textContent = '+ ' + (blocked.length - 3) + ' bloqueados más';
+        bqEl.appendChild(more);
+      }
+    }
   }
 
   function applyStateToUI() {

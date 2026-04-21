@@ -196,3 +196,20 @@ window.formatDeadlineBadge = function(daysUntil) {
 window.fmtLongDate = function(d) {
   return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
 };
+
+// Dependency helpers — used by dashboard action queue
+window.getUnmetDeps = function(key, tramiteState) {
+  var t = window.TRAMITES[key];
+  if (!t || !t.dependsOn || !t.dependsOn.length) return [];
+  return t.dependsOn.filter(function(k) { return !tramiteState[k]; });
+};
+window.isBlocked = function(key, tramiteState) {
+  return window.getUnmetDeps(key, tramiteState).length > 0;
+};
+window.getGroupForKey = function(key) {
+  return key.split('-')[0];
+};
+window.getTabForKey = function(key) {
+  var group = window.getGroupForKey(key);
+  return group === 'salud' ? '#salud' : '#tramites';
+};
