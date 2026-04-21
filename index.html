@@ -90,7 +90,8 @@ window.sb.auth.getSession().then(({ data }) => {
     <a href="#resumen" class="nav-link active">Dashboard</a>
     <a href="#calendario" class="nav-link">Calendar</a>
     <a href="#bloques" class="nav-link">Leave & Vacation</a>
-    <a href="#tramites" class="nav-link">Procedures</a>
+    <a href="#tramites" class="nav-link">Trámites</a>
+    <a href="#salud" class="nav-link">Revisiones</a>
     <a href="#documentos" class="nav-link">Docs</a>
     <a href="#notas" class="nav-link">Notes</a>
     <a href="#ajustes" class="nav-link settings-link" id="nav-settings">⚙ Settings</a>
@@ -286,107 +287,92 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== TRÁMITES ========== -->
   <section id="tramites" class="tab-section">
-    <div class="section-title">Procedures & Documentation</div>
+    <div class="section-title">Trámites</div>
     <div class="tramites-search">
-      <input type="search" id="tramites-search-input" placeholder="🔍 Search procedure…" autocomplete="off">
-      <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">×</button>
+      <input type="search" id="tramites-search-input" placeholder="🔍 Buscar trámite…" autocomplete="off">
+      <button class="tramites-search-clear" id="tramites-search-clear" title="Limpiar" style="display:none;">×</button>
     </div>
 
     <!-- PREPARACIÓN (pre-parto) -->
     <div class="glass tramite-group" id="grp-preparacion">
-      <h3>🎒 Pre-birth preparation</h3>
-      <p class="group-desc">Critical tasks before birth. Delivery planned at Vithas Ciudad Jardín (Las Palmas de GC).</p>
-      <div class="progress-label" id="prog-label-preparacion">0 / 4 completed</div>
+      <h3>🎒 Preparación pre-parto</h3>
+      <p class="group-desc">Tareas críticas antes del parto. Parto planificado en Vithas Ciudad Jardín (Las Palmas de GC).</p>
+      <div class="progress-label" id="prog-label-preparacion">0 / 4 completados</div>
       <div class="progress-track"><div class="progress-fill" id="prog-preparacion" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="0">
-        <div class="tramite-info"><div class="name">Hospital bag ready</div><div class="meta">Vithas · Mom + baby + companion · Ready 7d before EDD</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Bolsa del hospital lista</div><div class="meta">Vithas · Mamá + bebé + acompañante · Lista 7 días antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="1">
-        <div class="tramite-info"><div class="name">i-Size approved car seat (group 0+)</div><div class="meta">Required at discharge · Installed and tested before Apr 30</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Silla de coche homologada i-Size (grupo 0+)</div><div class="meta">Obligatoria al alta · Instalada y probada antes del 30 abr</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="2">
-        <div class="tramite-info"><div class="name">Birth plan</div><div class="meta">Week 36-37 · Submit to Vithas midwife team</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Plan de parto</div><div class="meta">Semana 36-37 · Entregar al equipo de matronas de Vithas</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="3">
-        <div class="tramite-info"><div class="name">Older sibling logistics during birth</div><div class="meta">Luther King La Laguna · Coordinate pickup/overnight · 3d before EDD</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
-    </div>
-
-    <!-- REGISTRO CIVIL -->
-    <div class="glass tramite-group" id="grp-registro">
-      <h3>Registro Civil — Birth Registration</h3>
-      <p class="group-desc">Hospital processes registration within 72h. Have documents ready before birth.</p>
-      <div class="progress-label" id="prog-label-registro">0 / 4 completed</div>
-      <div class="progress-track"><div class="progress-fill" id="prog-registro" style="width:0%"></div></div>
-
-      <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="0">
-        <div class="tramite-info"><div class="name">Medical birth report</div><div class="meta">Registro Civil · 72h after birth</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="1">
-        <div class="tramite-info"><div class="name">DNI both parents (copy)</div><div class="meta">Registro Civil · With registration</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="2">
-        <div class="tramite-info"><div class="name">Libro de Familia</div><div class="meta">Registro Civil · With registration</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="registro" data-idx="3">
-        <div class="tramite-info"><div class="name">Birth declaration</div><div class="meta">Registro Civil · 10 days (max 30) — only if hospital didn't process it</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Logística del hermano mayor durante el parto</div><div class="meta">Luther King La Laguna · Coordinar recogida/pernocta · 3 días antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
     <!-- INSS -->
     <div class="glass tramite-group" id="grp-inss">
-      <h3>INSS / Seguridad Social — Birth Benefit</h3>
-      <p class="group-desc">Request via Tu Seguridad Social with Cl@ve, by mail, or in person at CAISS with appointment. Resolution: 30 days.</p>
-      <div class="progress-label" id="prog-label-inss">0 / 6 completed</div>
+      <h3>INSS / Seguridad Social — Prestación por nacimiento</h3>
+      <p class="group-desc">Solicitar por Tu Seguridad Social con Cl@ve, por correo o presencialmente en CAISS con cita. Resolución: 30 días.</p>
+      <div class="progress-label" id="prog-label-inss">0 / 6 completados</div>
       <div class="progress-track"><div class="progress-fill" id="prog-inss" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="0">
-        <div class="tramite-info"><div class="name">Application form (MP-1 bis)</div><div class="meta">INSS online portal · From day after birth</div><span class="doc-slot" data-folder="INSS"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Solicitud (formulario MP-1 bis)</div><div class="meta">Portal INSS · Desde el día siguiente al nacimiento</div><span class="doc-slot" data-folder="INSS"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="1">
-        <div class="tramite-info"><div class="name">DNI / NIE</div><div class="meta">INSS · With application</div><span class="doc-slot" data-folder="INSS"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">DNI / NIE</div><div class="meta">INSS · Con la solicitud</div><span class="doc-slot" data-folder="INSS"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="2">
-        <div class="tramite-info"><div class="name">Maternity report</div><div class="meta">INSS · Issued by public health service after birth</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Informe de maternidad</div><div class="meta">INSS · Emitido por el servicio público de salud tras el parto</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="3">
-        <div class="tramite-info"><div class="name">Libro de Familia or birth certificate</div><div class="meta">INSS · Obtained from Registro Civil after registration</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Libro de Familia o certificado de nacimiento</div><div class="meta">INSS · Obtenido del Registro Civil tras la inscripción</div><span class="doc-slot" data-folder="Registro-Civil"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="4">
-        <div class="tramite-info"><div class="name">Company certificate (mandatory period)</div><div class="meta">INSS (Binter sends it) · Suspension start date + contribution basis</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Certificado de empresa (periodo obligatorio)</div><div class="meta">INSS (Binter lo envía) · Fecha inicio suspensión + base de cotización</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="inss" data-idx="5">
-        <div class="tramite-info"><div class="name">Successive period request (each block)</div><div class="meta">INSS · Max 15 days before each block · Multiples of 7 days</div><span class="doc-slot" data-folder="INSS"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Solicitud de periodos sucesivos (cada bloque)</div><div class="meta">INSS · Máx. 15 días antes de cada bloque · Múltiplos de 7 días</div><span class="doc-slot" data-folder="INSS"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
     <!-- BINTER -->
     <div class="glass tramite-group" id="grp-binter">
-      <h3>Binter — Company / HR</h3>
-      <p class="group-desc">Notify blocks with at least 15 days notice so HR can issue the company certificate to INSS.</p>
-      <div class="progress-label" id="prog-label-binter">0 / 5 completed</div>
+      <h3>Binter — Empresa / RRHH</h3>
+      <p class="group-desc">Notificar bloques con al menos 15 días de antelación para que RRHH emita el certificado de empresa al INSS.</p>
+      <div class="progress-label" id="prog-label-binter">0 / 5 completados</div>
       <div class="progress-track"><div class="progress-fill" id="prog-binter" style="width:0%"></div></div>
 
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="0">
-        <div class="tramite-info"><div class="name">Formal parental leave notification</div><div class="meta">Binter HR · Before birth · Mandatory period dates (17 Apr – 28 May)</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Notificación formal de permiso parental</div><div class="meta">Binter RRHH · Antes del parto · Fechas periodo obligatorio (17 abr – 28 may)</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="1">
-        <div class="tramite-info"><div class="name">Certificate / Libro de Familia</div><div class="meta">Binter HR · After registration · Prove birth</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Certificado / Libro de Familia</div><div class="meta">Binter RRHH · Tras inscripción · Acreditar nacimiento</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="2">
-        <div class="tramite-info"><div class="name">Flexible block request</div><div class="meta">Binter HR · Min 15 days before each block</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Solicitud de bloque flexible</div><div class="meta">Binter RRHH · Mín. 15 días antes de cada bloque</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="3">
-        <div class="tramite-info"><div class="name">Overlapping vacation refund request</div><div class="meta">Binter HR · 21 Apr – 2 May (~8 days) overlap with mandatory → refund to balance</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Solicitud devolución vacaciones solapadas</div><div class="meta">Binter RRHH · 21 abr – 2 may (~8 días) solapan con obligatorio → devolver al saldo</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
       <div class="tramite-row"><input type="checkbox" data-group="binter" data-idx="4">
-        <div class="tramite-info"><div class="name">Email Jefe De Operaciones — summer leave choices</div><div class="meta">Binter · Email summer leave preferences to Jefe De Operaciones</div><span class="doc-slot" data-folder="Binter"></span></div>
-        <span class="badge badge-pending">Pending</span></div>
+        <div class="tramite-info"><div class="name">Email Jefe de Operaciones — preferencias vacaciones verano</div><div class="meta">Binter · Enviar preferencias de vacaciones de verano al Jefe de Operaciones</div><span class="doc-slot" data-folder="Binter"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
-    <!-- JS-rendered groups (Bebé · Salud · Ayudas) -->
+    <!-- JS-rendered groups (Bebé · Ayudas) -->
     <div id="js-groups-host"></div>
+  </section>
+
+  <!-- ========== REVISIONES MÉDICAS ========== -->
+  <section id="salud" class="tab-section">
+    <div class="section-title">Revisiones Médicas</div>
+    <div id="js-groups-host-salud"></div>
   </section>
 
   <!-- ========== DOCUMENTOS (biblioteca) ========== -->

@@ -6,7 +6,6 @@
 
   const GROUP_FOLDERS = {
     preparacion: 'Hospital',
-    registro: 'Registro-Civil',
     inss: 'INSS',
     binter: 'Binter'
   };
@@ -144,10 +143,10 @@
     const badge = row.querySelector('.badge');
     if (cb.checked) {
       row.classList.add('done');
-      if (badge) { badge.className = 'badge badge-done'; badge.textContent = 'Done'; }
+      if (badge) { badge.className = 'badge badge-done'; badge.textContent = 'Hecho'; }
     } else {
       row.classList.remove('done');
-      if (badge) { badge.className = 'badge badge-pending'; badge.textContent = 'Pending'; }
+      if (badge) { badge.className = 'badge badge-pending'; badge.textContent = 'Pendiente'; }
     }
   }
   function updateGroupProgress(group) {
@@ -157,7 +156,7 @@
     const fill = document.getElementById('prog-' + group);
     const label = document.getElementById('prog-label-' + group);
     if (fill) fill.style.width = (total ? (checked / total * 100) : 0) + '%';
-    if (label) label.textContent = checked + ' / ' + total + ' completed';
+    if (label) label.textContent = checked + ' / ' + total + ' completados';
   }
   function updateAggregate() {
     const allBoxes = document.querySelectorAll('.tramite-row input[type="checkbox"]');
@@ -174,16 +173,18 @@
 
   // Render JS-mode groups (Bebé, Salud, Ayudas) from TRAMITES config
   function renderJsGroups() {
-    const host = document.getElementById('js-groups-host');
-    if (!host || host.childElementCount) return;
+    const defaultHost = document.getElementById('js-groups-host');
     Object.entries(window.GROUPS).forEach(([groupKey, g]) => {
       if (g.renderMode !== 'js') return;
+      const host = g.host ? document.getElementById(g.host) : defaultHost;
+      if (!host) return;
+      if (document.getElementById('grp-' + groupKey)) return;
       const wrap = document.createElement('div');
       wrap.className = 'glass tramite-group';
       wrap.id = 'grp-' + groupKey;
       let html = '<h3>' + g.title + '</h3>';
       if (g.desc) html += '<p class="group-desc">' + g.desc + '</p>';
-      html += '<div class="progress-label" id="prog-label-' + groupKey + '">0 / ' + g.count + ' completed</div>';
+      html += '<div class="progress-label" id="prog-label-' + groupKey + '">0 / ' + g.count + ' completados</div>';
       html += '<div class="progress-track"><div class="progress-fill" id="prog-' + groupKey + '" style="width:0%"></div></div>';
       for (let i = 0; i < g.count; i++) {
         const key = groupKey + '-' + i;
@@ -194,12 +195,11 @@
         html += '<div class="tramite-info"><div class="name">' + t.name + '</div>';
         if (t.meta) html += '<div class="meta">' + t.meta + '</div>';
         html += '<span class="doc-slot" data-folder="' + folder + '"></span></div>';
-        html += '<span class="badge badge-pending">Pending</span></div>';
+        html += '<span class="badge badge-pending">Pendiente</span></div>';
       }
       host.appendChild(wrap);
       wrap.innerHTML = html;
     });
-    // Make the new groups eligible for upload injection
     ['bebe','salud','ayudas'].forEach(k => { if (!GROUP_FOLDERS[k]) GROUP_FOLDERS[k] = 'Hospital'; });
   }
   renderJsGroups();
@@ -293,7 +293,7 @@
       panel.style.display = 'none';
       const ta = document.createElement('textarea');
       ta.className = 'journal-textarea';
-      ta.placeholder = 'Notes: people contacted, reference numbers, questions, follow-up dates…';
+      ta.placeholder = 'Notas: personas contactadas, números de referencia, preguntas, fechas de seguimiento…';
       ta.rows = 3;
       panel.appendChild(ta);
       const meta = document.createElement('div');
@@ -413,8 +413,8 @@
         const t2 = window.TRAMITES[k];
         return t2 && t2.name ? t2.name : k;
       });
-      depBadge.textContent = '⏳ Requires ' + unmet.length;
-      depBadge.title = 'Requires: ' + names.join(' · ');
+      depBadge.textContent = '⏳ Requiere ' + unmet.length;
+      depBadge.title = 'Requiere: ' + names.join(' · ');
     });
   }
 
@@ -462,7 +462,7 @@
     if (!items.length) { banner.style.display = 'none'; return; }
     items.sort((a,b) => a.dl.daysUntil - b.dl.daysUntil);
     const overdue = items.filter(i => i.dl.daysUntil < 0).length;
-    const label = overdue ? '⚠ ' + overdue + ' overdue · ' + items.length + ' urgent' : '⚠ ' + items.length + ' urgent this week';
+    const label = overdue ? '⚠ ' + overdue + ' vencidos · ' + items.length + ' urgentes' : '⚠ ' + items.length + ' urgentes esta semana';
     banner.querySelector('.urgent-text').textContent = label;
     banner.style.display = '';
     banner.onclick = () => {
@@ -497,8 +497,8 @@
       candidates.push({ key, dl, name: nameEl ? nameEl.textContent : key, box });
     });
     if (!candidates.length) {
-      title.textContent = '🎉 All caught up';
-      meta.textContent = 'No immediate deadlines pending.';
+      title.textContent = '🎉 Todo al día';
+      meta.textContent = 'No hay plazos pendientes inmediatos.';
       bdg.style.display = 'none';
       title.onclick = null;
       return;
@@ -562,10 +562,10 @@
       if (navigator.vibrate) navigator.vibrate(this.checked ? 25 : 10);
       if (lastUndoToast) lastUndoToast.remove();
       const self = this;
-      const msg = this.checked ? '✓ Checked' : '↺ Unchecked';
-      const t = toast(msg + ' · Undo', 'success');
+      const msg = this.checked ? '✓ Marcado' : '↺ Desmarcado';
+      const t = toast(msg + ' · Deshacer', 'success');
       const undo = document.createElement('button');
-      undo.textContent = 'Undo';
+      undo.textContent = 'Deshacer';
       undo.className = 'toast-undo';
       undo.onclick = () => {
         self.checked = wasChecked;
@@ -605,13 +605,13 @@
       if (!badge) { badge = document.createElement('span'); badge.className = 'collapsed-urgency'; h3.appendChild(badge); }
       if (overdueCount) {
         badge.className = 'collapsed-urgency has-overdue';
-        badge.textContent = overdueCount + ' overdue' + (urgentCount ? ', ' + urgentCount + ' urgent' : '');
+        badge.textContent = overdueCount + ' vencido' + (overdueCount > 1 ? 's' : '') + (urgentCount ? ', ' + urgentCount + ' urgente' + (urgentCount > 1 ? 's' : '') : '');
       } else if (urgentCount) {
         badge.className = 'collapsed-urgency has-urgent';
-        badge.textContent = urgentCount + ' urgent';
+        badge.textContent = urgentCount + ' urgente' + (urgentCount > 1 ? 's' : '');
       } else {
         badge.className = 'collapsed-urgency has-soon';
-        badge.textContent = soonCount + ' due soon';
+        badge.textContent = soonCount + ' próximo' + (soonCount > 1 ? 's' : '');
       }
     });
   }
