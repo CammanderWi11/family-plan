@@ -34,11 +34,6 @@
     document.getElementById('cfg-shift-ref').value = cfg.shiftRef || '';
     document.getElementById('cfg-cycle').value = cfg.shiftCycle || 9;
     document.getElementById('cfg-days-off').value = cfg.shiftDaysOff || 3;
-    document.getElementById('cfg-mandatory-start').value = cfg.mandatory.start || '';
-    document.getElementById('cfg-mandatory-end').value = cfg.mandatory.end || '';
-    document.getElementById('cfg-school-start').value = cfg.school.start || '';
-    document.getElementById('cfg-school-end').value = cfg.school.end || '';
-
     // Flexible blocks
     const flexList = document.getElementById('cfg-flexible-list');
     flexList.innerHTML = '';
@@ -62,14 +57,8 @@
       shiftDaysOff: parseInt(document.getElementById('cfg-days-off').value) || 3,
       birthDate: '2026-04-17',
       lastSchoolDay: '2026-06-19',
-      mandatory: {
-        start: document.getElementById('cfg-mandatory-start').value,
-        end: document.getElementById('cfg-mandatory-end').value,
-      },
-      school: {
-        start: document.getElementById('cfg-school-start').value,
-        end: document.getElementById('cfg-school-end').value,
-      },
+      mandatory: { start: '2026-04-17', end: '2026-05-28' },
+      school: { start: '2026-06-22', end: '2026-07-31' },
       flexibleBlocks: readBlockRows(document.getElementById('cfg-flexible-list')),
       annualLeave: readBlockRows(document.getElementById('cfg-annual-list')),
       trips: readBlockRows(document.getElementById('cfg-trips-list')),

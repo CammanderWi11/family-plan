@@ -139,44 +139,16 @@ window.sb.auth.getSession().then(({ data }) => {
       </div>
     </div>
     <div class="dashboard">
-      <div class="glass dash-card" id="total-dias">
-        <div class="dash-label">Total leave days</div>
-        <div id="parentalDaySummary" class="parental-totals" style="margin-top:8px;"></div>
-      </div>
       <div class="glass dash-card next-action-card" id="next-action-card">
         <div class="dash-label">Next action</div>
         <div class="dash-title" id="next-action-title">—</div>
         <div class="dash-meta" id="next-action-meta"></div>
         <div class="dash-badge" id="next-action-badge"></div>
       </div>
-    </div>
-    <div class="glass aggregate-card">
-      <div class="agg-num"><span id="agg-done">0</span>/<span id="agg-total">0</span></div>
-      <div class="agg-info">
-        <div class="agg-label">Procedures completed</div>
-        <div class="progress-track"><div class="progress-fill" id="agg-fill" style="width:0%"></div></div>
-      </div>
-    </div>
-    <div class="summary">
-      <div class="glass">
-        <div class="label">Parental Leave</div>
-        <div class="value c-purple">19 wks</div>
-        <div class="detail">6 mandatory + 11 flexible (before age 1) + 2 additional (until age 8)</div>
-      </div>
-      <div class="glass">
-        <div class="label">Annual Vacation</div>
-        <div class="value c-green">3 blocks</div>
-        <div class="detail">21 Apr–2 May · 21 Sep–2 Oct · 11–22 Dec</div>
-      </div>
-      <div class="glass">
-        <div class="label">Summer School</div>
-        <div class="value c-orange">~6 wks</div>
-        <div class="detail">22 Jun – 31 Jul</div>
-      </div>
-      <div class="glass">
-        <div class="label">Trips</div>
-        <div class="value c-pink">3 + 1</div>
-        <div class="detail">Siam Park 5–7 Jun · La Graciosa 5–12 Nov · Japan Apr '27 · Father (TBD)</div>
+      <div class="glass dash-card">
+        <div class="dash-label">Procedures completed</div>
+        <div class="agg-num" style="font-size:30px;font-weight:800;color:var(--accent-purple);letter-spacing:-1px;margin-top:6px;"><span id="agg-done">0</span>/<span id="agg-total">0</span></div>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" id="agg-fill" style="width:0%"></div></div>
       </div>
     </div>
   </section>
@@ -230,16 +202,40 @@ window.sb.auth.getSession().then(({ data }) => {
             <td data-label="Period">5 – 16 Nov</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Blocks 4–6 – Christmas</td>
-            <td data-label="Plan">The longest Christmas vacation of our lives</td>
-            <td data-label="Days">33</td>
-            <td data-label="Period">11 Dec – 12 Jan</td>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 4 – Christmas</td>
+            <td data-label="Plan">Christmas week</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">23 – 29 Dec</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Blocks 7–9 – Japan</td>
-            <td data-label="Plan">Asia trip for visa renewal. Kyoto</td>
-            <td data-label="Days">24</td>
-            <td data-label="Period">26 Mar – 18 Apr '27</td>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 5 – New Year</td>
+            <td data-label="Plan">New Year week</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">30 Dec – 5 Jan</td>
+          </tr>
+          <tr>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 6 – January</td>
+            <td data-label="Plan">Post-holidays week</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">6 – 12 Jan</td>
+          </tr>
+          <tr>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 7 – Japan I</td>
+            <td data-label="Plan">Asia trip for visa renewal</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">26 Mar – 1 Apr '27</td>
+          </tr>
+          <tr>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 8 – Japan II</td>
+            <td data-label="Plan">Kyoto</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">2 – 8 Apr '27</td>
+          </tr>
+          <tr>
+            <td data-label="Block"><span class="status-dot" style="background:#d8b4fe"></span>Block 9 – Japan III</td>
+            <td data-label="Plan">Return</td>
+            <td data-label="Days">7</td>
+            <td data-label="Period">9 – 15 Apr '27</td>
           </tr>
           <tr class="muted-row">
             <td data-label="Block"><span class="status-dot" style="background:#aaa"></span>Reserved (2 blocks)</td>
@@ -469,19 +465,6 @@ window.sb.auth.getSession().then(({ data }) => {
       </div>
     </div>
 
-    <!-- Mandatory Leave -->
-    <div class="glass data-card">
-      <h2>Mandatory Leave</h2>
-      <div class="settings-row">
-        <label>Start</label>
-        <input type="date" id="cfg-mandatory-start">
-      </div>
-      <div class="settings-row">
-        <label>End</label>
-        <input type="date" id="cfg-mandatory-end">
-      </div>
-    </div>
-
     <!-- Flexible Blocks -->
     <div class="glass data-card">
       <h2>Flexible Parental Blocks</h2>
@@ -501,19 +484,6 @@ window.sb.auth.getSession().then(({ data }) => {
       <h2>Trips</h2>
       <div id="cfg-trips-list"></div>
       <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text); font-size: 13px; cursor: pointer; font-family: inherit;">+ Add trip</button>
-    </div>
-
-    <!-- Summer School -->
-    <div class="glass data-card">
-      <h2>Summer School</h2>
-      <div class="settings-row">
-        <label>Start</label>
-        <input type="date" id="cfg-school-start">
-      </div>
-      <div class="settings-row">
-        <label>End</label>
-        <input type="date" id="cfg-school-end">
-      </div>
     </div>
 
     <!-- Save -->

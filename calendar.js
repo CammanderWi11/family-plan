@@ -13,8 +13,12 @@
       { label: 'Block 1 – June', start: '2026-06-26', end: '2026-07-02' },
       { label: 'Block 2 – August', start: '2026-08-10', end: '2026-08-16' },
       { label: 'Block 3 – La Graciosa', start: '2026-11-08', end: '2026-11-14' },
-      { label: 'Blocks 4–6 – Christmas', start: '2026-12-23', end: '2027-01-12' },
-      { label: 'Blocks 7–9 – Japan', start: '2027-03-26', end: '2027-04-15' },
+      { label: 'Block 4 – Christmas', start: '2026-12-23', end: '2026-12-29' },
+      { label: 'Block 5 – New Year', start: '2026-12-30', end: '2027-01-05' },
+      { label: 'Block 6 – January', start: '2027-01-06', end: '2027-01-12' },
+      { label: 'Block 7 – Japan I', start: '2027-03-26', end: '2027-04-01' },
+      { label: 'Block 8 – Japan II', start: '2027-04-02', end: '2027-04-08' },
+      { label: 'Block 9 – Japan III', start: '2027-04-09', end: '2027-04-15' },
     ],
     annualLeave: [
       { label: 'Easter', start: '2026-04-21', end: '2026-05-02' },
@@ -219,14 +223,27 @@
       nextLabel = 'All blocks completed';
     }
 
-    // Return to work: day after current block ends (or after next block)
+    // Return to work: first working day (not a shift day off) after block ends
+    function nextWorkDay(date) {
+      const shiftRef = parseDate(cfg.shiftRef);
+      const cycle = cfg.shiftCycle || 9;
+      const off = cfg.shiftDaysOff || 3;
+      const d = new Date(date);
+      for (let i = 0; i < 30; i++) {
+        const diff = daysBetween(shiftRef, d);
+        const pos = ((diff % cycle) + cycle) % cycle;
+        if (pos >= off) return d;
+        d.setDate(d.getDate() + 1);
+      }
+      return d;
+    }
     let returnText = '—';
     if (currentBlock) {
       const ret = new Date(currentBlock.end); ret.setDate(ret.getDate() + 1);
-      returnText = fmtShort(ret);
+      returnText = fmtShort(nextWorkDay(ret));
     } else if (nextBlock) {
       const ret = new Date(nextBlock.end); ret.setDate(ret.getDate() + 1);
-      returnText = fmtShort(ret);
+      returnText = fmtShort(nextWorkDay(ret));
     }
 
     // Deadlines
