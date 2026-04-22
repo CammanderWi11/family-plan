@@ -85,3 +85,45 @@ if ('serviceWorker' in navigator) {
   var initial = (location.hash || '').slice(1);
   if (!initial || !activate(initial)) activate('resumen');
 })();
+
+// ========== THEME TOGGLE ==========
+(function() {
+  var SUN = '\u263C';   // ☼
+  var MOON = '\u263D';  // ☽
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    var meta = document.getElementById('meta-theme-color');
+    if (meta) meta.content = theme === 'light' ? '#f5f5f0' : '#0a0f1a';
+
+    // Update sidebar toggle
+    var icon = document.getElementById('theme-icon');
+    var label = document.getElementById('theme-label');
+    if (icon) icon.textContent = theme === 'light' ? MOON : SUN;
+    if (label) label.textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
+
+    // Update mobile toggle
+    var mIcon = document.getElementById('mobile-theme-icon');
+    var mBtn = document.getElementById('mobile-theme-toggle');
+    if (mIcon) mIcon.textContent = theme === 'light' ? MOON : SUN;
+    if (mBtn) mBtn.querySelector('span:last-child').textContent = theme === 'light' ? 'DARK' : 'LIGHT';
+  }
+
+  function toggle() {
+    var current = document.documentElement.dataset.theme || 'dark';
+    var next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('fp-theme', next); } catch(e) {}
+  }
+
+  // Init from saved preference
+  var saved = null;
+  try { saved = localStorage.getItem('fp-theme'); } catch(e) {}
+  applyTheme(saved || 'dark');
+
+  // Bind clicks
+  var btn = document.getElementById('theme-toggle');
+  var mBtn = document.getElementById('mobile-theme-toggle');
+  if (btn) btn.addEventListener('click', toggle);
+  if (mBtn) mBtn.addEventListener('click', toggle);
+})();

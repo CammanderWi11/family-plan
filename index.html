@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Family Plan</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a0f1a">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0f1a" id="meta-theme-color">
+<meta name="color-scheme" content="dark light">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Luca 2026">
@@ -116,6 +116,10 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="nav-icon">&#9881;</span>
       <span class="nav-label">Settings</span>
     </a>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
+      <span class="nav-icon" id="theme-icon">&#9788;</span>
+      <span class="nav-label" id="theme-label">Light mode</span>
+    </button>
     <div style="padding:8px 10px;margin-top:6px;">
       <span class="sync-pill" id="sync-pill">Device only</span>
     </div>
@@ -145,6 +149,10 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="tab-icon">&#9782;</span>
       <span>DOCS</span>
     </a>
+    <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle light/dark mode">
+      <span class="tab-icon" id="mobile-theme-icon">&#9788;</span>
+      <span>LIGHT</span>
+    </button>
   </div>
 </nav>
 
