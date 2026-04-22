@@ -238,9 +238,13 @@
       return d;
     }
     let returnText = '—';
+    let returnSub = '';
     if (currentBlock) {
       const ret = new Date(currentBlock.end); ret.setDate(ret.getDate() + 1);
-      returnText = fmtShort(nextWorkDay(ret));
+      const returnDate = nextWorkDay(ret);
+      const daysUntilReturn = daysBetween(today, returnDate);
+      returnText = fmtShort(returnDate);
+      returnSub = 'en ' + daysUntilReturn + ' días';
     } else if (nextBlock) {
       const ret = new Date(nextBlock.end); ret.setDate(ret.getDate() + 1);
       returnText = fmtShort(nextWorkDay(ret));
@@ -254,21 +258,54 @@
 
     // Update DOM
     var el;
+
+    // Status banner
+    var statusEl = document.getElementById('cd-status');
+    if (statusEl) {
+      if (currentBlock) {
+        var daysInBlock = daysBetween(currentBlock.start, currentBlock.end) + 1;
+        var dayNum = daysBetween(currentBlock.start, today) + 1;
+        statusEl.textContent = '\u25CF EN PERMISO \u2014 ' + currentBlock.label + ' (d\u00eda ' + dayNum + ' de ' + daysInBlock + ')';
+        statusEl.style.color = 'var(--green)';
+      } else if (nextBlock) {
+        statusEl.textContent = '\u25CB TRABAJANDO \u2014 pr\u00f3ximo permiso en ' + daysBetween(today, nextBlock.start) + ' d\u00edas';
+        statusEl.style.color = 'var(--text-muted)';
+      } else {
+        statusEl.textContent = '\u25A0 PERMISO COMPLETADO';
+        statusEl.style.color = 'var(--text-muted)';
+      }
+    }
+
+    // Stat cards
     el = document.getElementById('cd-used'); if (el) el.textContent = daysUsed;
     el = document.getElementById('cd-remaining'); if (el) el.textContent = remaining;
     el = document.getElementById('cd-next-in'); if (el) el.textContent = nextText;
     el = document.getElementById('cd-next-label'); if (el) el.textContent = nextLabel;
     el = document.getElementById('cd-return'); if (el) el.textContent = returnText;
-    el = document.getElementById('cd-progress');
-    if (el) el.style.width = (totalAssigned ? Math.round((daysUsed / totalAssigned) * 100) : 0) + '%';
+    el = document.getElementById('cd-return-sub'); if (el) el.textContent = returnSub;
 
+    // Block-active highlight on 3rd card
+    var gridItems = document.querySelectorAll('#leave-countdown .countdown-item');
+    if (gridItems[2]) {
+      gridItems[2].classList.toggle('block-active', !!currentBlock);
+    }
+
+    // Progress bar with label
+    var pct = totalAssigned ? Math.round((daysUsed / totalAssigned) * 100) : 0;
+    el = document.getElementById('cd-progress');
+    if (el) el.style.width = pct + '%';
+    var progLabel = document.getElementById('cd-progress-label');
+    if (progLabel) progLabel.textContent = daysUsed + ' de ' + totalAssigned + ' d\u00edas usados (' + pct + '%)';
+
+    // Deadline pills
     var dlEl = document.getElementById('cd-deadlines');
     if (dlEl) {
       var pills = [];
       if (daysToAge1 > 0) {
-        pills.push('<span class="cd-deadline">Plazo permiso flexible (1 año): ' + fmtShort(age1) + ' (' + daysToAge1 + 'd)</span>');
+        var urgency = daysToAge1 < 90 ? ' cd-deadline-urgent' : '';
+        pills.push('<span class="cd-deadline' + urgency + '"><strong>FLEX</strong> ' + fmtShort(age1) + ' <span class="cd-deadline-days">' + daysToAge1 + 'd</span></span>');
       }
-      pills.push('<span class="cd-deadline">Plazo permiso adicional (8 años): ' + fmtShort(age8) + ' (' + daysToAge8 + 'd)</span>');
+      pills.push('<span class="cd-deadline cd-deadline-dim"><strong>+ADD</strong> ' + fmtShort(age8) + ' <span class="cd-deadline-days">' + daysToAge8 + 'd</span></span>');
       dlEl.innerHTML = pills.join('');
     }
   };

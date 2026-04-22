@@ -174,7 +174,8 @@ window.sb.auth.getSession().then(({ data }) => {
       <button class="urgent-x" id="urgent-dismiss" title="Hide until logout">&times;</button>
     </div>
     <div class="glass countdown-dashboard" id="leave-countdown">
-      <h3 class="dash-label">Cuenta atrás del permiso</h3>
+      <h3 class="dash-label">Estado del permiso</h3>
+      <div class="cd-status" id="cd-status"></div>
       <div class="countdown-grid">
         <div class="countdown-item">
           <div class="countdown-num" id="cd-used">&mdash;</div>
@@ -190,11 +191,13 @@ window.sb.auth.getSession().then(({ data }) => {
         </div>
         <div class="countdown-item">
           <div class="countdown-num" id="cd-return">&mdash;</div>
+          <div class="countdown-sub" id="cd-return-sub"></div>
           <div class="countdown-label">Vuelta al trabajo</div>
         </div>
       </div>
       <div class="countdown-deadlines" id="cd-deadlines"></div>
-      <div class="progress-track" style="margin-top: 12px;">
+      <div class="progress-label" id="cd-progress-label" style="margin-top: 14px;"></div>
+      <div class="progress-track">
         <div class="progress-fill" id="cd-progress" style="width:0%"></div>
       </div>
     </div>
