@@ -180,7 +180,7 @@
       if (!host) return;
       if (document.getElementById('grp-' + groupKey)) return;
       const wrap = document.createElement('div');
-      wrap.className = 'glass tramite-group';
+      wrap.className = 'glass tramite-group' + (g.noCollapse ? ' no-collapse' : '');
       wrap.id = 'grp-' + groupKey;
       let html = '<h3>' + g.title + '</h3>';
       if (g.desc) html += '<p class="group-desc">' + g.desc + '</p>';
@@ -667,6 +667,7 @@
 
   function autoCollapseCompleted() {
     document.querySelectorAll('.tramite-group').forEach(grpEl => {
+      if (grpEl.classList.contains('no-collapse')) return;
       if (!grpEl.dataset.manualExpand) grpEl.classList.add('group-collapsed');
     });
     updateCollapsedBadges();
@@ -706,9 +707,10 @@
 
   // Make group <h3> click toggle collapsed state (manual override)
   document.querySelectorAll('.tramite-group > h3').forEach(h3 => {
+    const grp = h3.parentElement;
+    if (grp.classList.contains('no-collapse')) return;
     h3.style.cursor = 'pointer';
     h3.addEventListener('click', () => {
-      const grp = h3.parentElement;
       if (grp.classList.toggle('group-collapsed')) delete grp.dataset.manualExpand;
       else grp.dataset.manualExpand = '1';
       updateCollapsedBadges();

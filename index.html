@@ -378,30 +378,12 @@ window.sb.auth.getSession().then(({ data }) => {
       <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
     </div>
 
-    <!-- PREPARACION (pre-parto) -->
-    <div class="glass tramite-group" id="grp-preparacion">
-      <h3>Preparacion pre-parto</h3>
-      <p class="group-desc">Tareas criticas antes del parto. Parto planificado en Vithas Ciudad Jardin (Las Palmas de GC).</p>
-      <div class="progress-label" id="prog-label-preparacion">0 / 4 completados</div>
-      <div class="progress-track"><div class="progress-fill" id="prog-preparacion" style="width:0%"></div></div>
-
-      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="0">
-        <div class="tramite-info"><div class="name">Bolsa del hospital lista</div><div class="meta">Vithas &middot; Mama + bebe + acompanante &middot; Lista 7 dias antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pendiente</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="1">
-        <div class="tramite-info"><div class="name">Silla de coche homologada i-Size (grupo 0+)</div><div class="meta">Obligatoria al alta &middot; Instalada y probada antes del 30 abr</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pendiente</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="2">
-        <div class="tramite-info"><div class="name">Plan de parto</div><div class="meta">Semana 36-37 &middot; Entregar al equipo de matronas de Vithas</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pendiente</span></div>
-      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="3">
-        <div class="tramite-info"><div class="name">Logistica del hermano mayor durante el parto</div><div class="meta">Luther King La Laguna &middot; Coordinar recogida/pernocta &middot; 3 dias antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
-        <span class="badge badge-pending">Pendiente</span></div>
-    </div>
+    <!-- JS-rendered: Bebe -->
+    <div id="js-groups-host-bebe"></div>
 
     <!-- INSS -->
     <div class="glass tramite-group" id="grp-inss">
-      <h3>INSS / Seguridad Social &mdash; Prestacion por nacimiento</h3>
+      <h3>Prestaci&oacute;n por nacimiento &mdash; INSS</h3>
       <p class="group-desc">Solicitar por Tu Seguridad Social con Cl@ve, por correo o presencialmente en CAISS con cita. Resolucion: 30 dias.</p>
       <div class="progress-label" id="prog-label-inss">0 / 6 completados</div>
       <div class="progress-track"><div class="progress-fill" id="prog-inss" style="width:0%"></div></div>
@@ -428,7 +410,7 @@ window.sb.auth.getSession().then(({ data }) => {
 
     <!-- BINTER -->
     <div class="glass tramite-group" id="grp-binter">
-      <h3>Binter &mdash; Empresa / RRHH</h3>
+      <h3>Comunicaci&oacute;n a Binter / RRHH</h3>
       <p class="group-desc">Notificar bloques con al menos 15 dias de antelacion para que RRHH emita el certificado de empresa al INSS.</p>
       <div class="progress-label" id="prog-label-binter">0 / 5 completados</div>
       <div class="progress-track"><div class="progress-fill" id="prog-binter" style="width:0%"></div></div>
@@ -450,8 +432,29 @@ window.sb.auth.getSession().then(({ data }) => {
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
-    <!-- JS-rendered groups (Bebe / Ayudas) -->
+    <!-- JS-rendered: Ayudas -->
     <div id="js-groups-host"></div>
+
+    <!-- PREPARACION (completado — al final) -->
+    <div class="glass tramite-group" id="grp-preparacion">
+      <h3>Preparaci&oacute;n pre-parto</h3>
+      <p class="group-desc">Tareas previas al parto. Parto en Vithas Ciudad Jard&iacute;n (Las Palmas de GC).</p>
+      <div class="progress-label" id="prog-label-preparacion">0 / 4 completados</div>
+      <div class="progress-track"><div class="progress-fill" id="prog-preparacion" style="width:0%"></div></div>
+
+      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="0">
+        <div class="tramite-info"><div class="name">Bolsa del hospital lista</div><div class="meta">Vithas &middot; Mama + bebe + acompanante &middot; Lista 7 dias antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
+      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="1">
+        <div class="tramite-info"><div class="name">Silla de coche homologada i-Size (grupo 0+)</div><div class="meta">Obligatoria al alta &middot; Instalada y probada antes del 30 abr</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
+      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="2">
+        <div class="tramite-info"><div class="name">Plan de parto</div><div class="meta">Semana 36-37 &middot; Entregar al equipo de matronas de Vithas</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
+      <div class="tramite-row"><input type="checkbox" data-group="preparacion" data-idx="3">
+        <div class="tramite-info"><div class="name">Logistica del hermano mayor durante el parto</div><div class="meta">Luther King La Laguna &middot; Coordinar recogida/pernocta &middot; 3 dias antes de FPP</div><span class="doc-slot" data-folder="Hospital"></span></div>
+        <span class="badge badge-pending">Pendiente</span></div>
+    </div>
   </section>
 
   <!-- ========== CITAS MEDICAS ========== -->

@@ -797,6 +797,8 @@ section { scroll-margin-top: 20px; }
   content: ' \25BE'; font-size: 14px; color: var(--text-muted); font-weight: 500; margin-left: 6px;
 }
 .tramite-group > h3 { user-select: none; }
+.tramite-group.no-collapse > h3::after { display: none; }
+.tramite-group.no-collapse > h3 { cursor: default; }
 
 /* Journal notes */
 .journal-toggle {
