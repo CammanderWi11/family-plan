@@ -467,7 +467,7 @@
     banner.style.display = '';
     banner.onclick = () => {
       const top = items[0];
-      const tab = document.querySelector('.nav-link[href="#tramites"]');
+      const tab = document.querySelector('.nav-item[data-tab="tramites"]');
       if (tab) tab.click();
       setTimeout(() => {
         const grp = top.box.closest('.tramite-group');
@@ -481,7 +481,8 @@
 
   function navigateToItem(box) {
     const tab = window.getTabForKey(box.dataset.group + '-' + box.dataset.idx);
-    const navLink = document.querySelector('.nav-link[href="' + tab + '"]');
+    var tabId = tab.replace('#', '');
+    var navLink = document.querySelector('.nav-item[data-tab="' + tabId + '"]');
     if (navLink) navLink.click();
     setTimeout(() => {
       const grp = box.closest('.tramite-group');
