@@ -15,12 +15,12 @@ if ('serviceWorker' in navigator) {
 
   // Page titles for header updates
   var pageTitles = {
-    resumen: 'Dashboard',
-    calendario: 'Calendar',
-    tramites: 'Tramites',
-    salud: 'Citas Medicas',
-    documentos: 'Documents',
-    ajustes: 'Settings'
+    resumen: 'Resumen',
+    calendario: 'Calendario',
+    tramites: 'Trámites',
+    salud: 'Citas Médicas',
+    documentos: 'Documentos',
+    ajustes: 'Ajustes'
   };
 
   var pageSysLabels = {
@@ -100,13 +100,13 @@ if ('serviceWorker' in navigator) {
     var icon = document.getElementById('theme-icon');
     var label = document.getElementById('theme-label');
     if (icon) icon.textContent = theme === 'light' ? MOON : SUN;
-    if (label) label.textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
+    if (label) label.textContent = theme === 'light' ? 'Modo oscuro' : 'Modo claro';
 
     // Update mobile toggle
     var mIcon = document.getElementById('mobile-theme-icon');
     var mBtn = document.getElementById('mobile-theme-toggle');
     if (mIcon) mIcon.textContent = theme === 'light' ? MOON : SUN;
-    if (mBtn) mBtn.querySelector('span:last-child').textContent = theme === 'light' ? 'DARK' : 'LIGHT';
+    if (mBtn) mBtn.querySelector('span:last-child').textContent = theme === 'light' ? 'OSCURO' : 'CLARO';
   }
 
   function toggle() {

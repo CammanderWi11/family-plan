@@ -10,9 +10,9 @@
   const typeLabels = {
     'dni-luis': 'DNI Luis', 'dni-madre': 'DNI Colombina',
     'libro-familia': 'Libro de Familia', 'empadronamiento': 'Empadronamiento',
-    'parte-medico': 'Medical birth report', 'informe-mat': 'Maternity report',
-    'cert-empresa': 'Company cert.', 'iban': 'IBAN',
-    'seguro-medico': 'Health insurance', 'otro': 'Other'
+    'parte-medico': 'Parte médico de nacimiento', 'informe-mat': 'Informe de maternidad',
+    'cert-empresa': 'Cert. empresa', 'iban': 'IBAN',
+    'seguro-medico': 'Seguro médico', 'otro': 'Otro'
   };
 
   function toast(msg, kind) {
@@ -32,14 +32,14 @@
 
   async function fetchLibrary() {
     const { data, error } = await sb.from('documents').select('*').order('uploaded_at', { ascending: false });
-    if (error) { toast('⚠ Could not read library: ' + error.message, 'error'); return; }
+    if (error) { toast('⚠ No se pudo leer la biblioteca: ' + error.message, 'error'); return; }
     library = data || [];
     renderLibrary();
     renderAttachedPillsAll();
   }
   async function fetchAttachments() {
     const { data, error } = await sb.from('tramite_attachments').select('*');
-    if (error) { toast('⚠ Could not read attachments: ' + error.message, 'error'); return; }
+    if (error) { toast('⚠ No se pudieron leer los adjuntos: ' + error.message, 'error'); return; }
     attachments = data || [];
     renderAttachedPillsAll();
   }
@@ -47,7 +47,7 @@
   function renderLibrary() {
     const listEl = document.getElementById('lib-list');
     if (!listEl) return;
-    if (!library.length) { listEl.innerHTML = '<div class="doc-list-empty">No documents in library yet.</div>'; return; }
+    if (!library.length) { listEl.innerHTML = '<div class="doc-list-empty">Aún no hay documentos en la biblioteca.</div>'; return; }
     const byType = {};
     library.forEach(d => {
       const k = d.doc_type || 'otro';
@@ -61,8 +61,8 @@
         const count = attachments.filter(a => a.document_id === d.id).length;
         html += '<div class="lib-entry" data-id="' + d.id + '">';
         html += '<a class="lib-name" href="#">' + escapeHtml(d.filename) + '</a>';
-        html += '<span class="lib-attach-count" title="Attached to ' + count + ' procedures">📎 ' + count + '</span>';
-        html += '<button class="lib-del" title="Delete">🗑</button>';
+        html += '<span class="lib-attach-count" title="Adjunto a ' + count + ' trámites">📎 ' + count + '</span>';
+        html += '<button class="lib-del" title="Eliminar">🗑</button>';
         html += '</div>';
       });
       html += '</div>';
@@ -77,13 +77,13 @@
         if (url) window.open(url, '_blank', 'noopener');
       };
       entry.querySelector('.lib-del').onclick = async () => {
-        if (!confirm('Delete "' + doc.filename + '" from library? It will be unlinked from all procedures.')) return;
-        const t = toast('Deleting…', 'loading');
+        if (!confirm('¿Eliminar "' + doc.filename + '" de la biblioteca? Se desvinculará de todos los trámites.')) return;
+        const t = toast('Eliminando…', 'loading');
         await sb.storage.from(BUCKET).remove([doc.storage_path]);
         const { error } = await sb.from('documents').delete().eq('id', doc.id);
         t.remove();
         if (error) { toast('⚠ ' + error.message, 'error'); return; }
-        toast('✓ Deleted', 'success');
+        toast('✓ Eliminado', 'success');
         await Promise.all([fetchLibrary(), fetchAttachments()]);
       };
     });
@@ -130,7 +130,7 @@
       addBtn = document.createElement('button');
       addBtn.className = 'lib-add-btn';
       addBtn.type = 'button';
-      addBtn.title = 'Attach from library';
+      addBtn.title = 'Adjuntar desde biblioteca';
       addBtn.textContent = '📎+';
       row.appendChild(addBtn);
       addBtn.onclick = () => openPickerForTramite(key);
@@ -149,12 +149,12 @@
   function renderPickerList() {
     const list = document.getElementById('lib-picker-list');
     if (!library.length) {
-      list.innerHTML = '<div class="doc-list-empty">Upload documents first from the Docs tab.</div>';
+      list.innerHTML = '<div class="doc-list-empty">Sube documentos primero desde la pestaña Documentos.</div>';
       return;
     }
     const attachedIds = new Set(attachments.filter(a => a.tramite_key === currentPickerTramite).map(a => a.document_id));
     list.innerHTML = library.map(d => {
-      const type = typeLabels[d.doc_type || 'otro'] || 'Other';
+      const type = typeLabels[d.doc_type || 'otro'] || 'Otro';
       const checked = attachedIds.has(d.id) ? 'checked' : '';
       return '<label class="lib-pick-item"><input type="checkbox" data-id="' + d.id + '" ' + checked + '> <span class="lib-pick-name">' + escapeHtml(d.filename) + '</span> <span class="lib-pick-type">' + type + '</span></label>';
     }).join('');
@@ -178,7 +178,7 @@
     const id = crypto.randomUUID();
     const safeName = file.name.replace(/[^\w.\-]+/g, '_');
     const path = LIB_PREFIX + id + '/' + safeName;
-    const t = toast('Uploading…', 'loading');
+    const t = toast('Subiendo…', 'loading');
     const up = await sb.storage.from(BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
     if (up.error) { t.remove(); toast('⚠ ' + up.error.message, 'error'); return null; }
     const ins = await sb.from('documents').insert({
@@ -186,7 +186,7 @@
     }).select().single();
     t.remove();
     if (ins.error) { toast('⚠ ' + ins.error.message, 'error'); return null; }
-    toast('✓ Uploaded', 'success');
+    toast('✓ Subido', 'success');
     await fetchLibrary();
     return ins.data;
   }

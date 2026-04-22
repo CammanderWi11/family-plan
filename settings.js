@@ -15,10 +15,10 @@
     const row = document.createElement('div');
     row.className = 'block-row';
     row.innerHTML =
-      '<input type="text" placeholder="Label" value="' + (data.label || '') + '">' +
+      '<input type="text" placeholder="Nombre" value="' + (data.label || '') + '">' +
       '<input type="date" value="' + (data.start || '') + '">' +
       '<input type="date" value="' + (data.end || '') + '">' +
-      '<button type="button" class="btn-remove" title="Remove">×</button>';
+      '<button type="button" class="btn-remove" title="Eliminar">×</button>';
     row.querySelector('.btn-remove').onclick = () => row.remove();
     container.appendChild(row);
   }
@@ -90,13 +90,13 @@
       // Show feedback
       const btn = document.getElementById('cfg-save');
       const orig = btn.textContent;
-      btn.textContent = '✓ Saved';
+      btn.textContent = '✓ Guardado';
       setTimeout(() => { btn.textContent = orig; }, 1500);
     };
 
     // Reset defaults
     document.getElementById('cfg-reset').onclick = () => {
-      if (!confirm('Reset all calendar settings to defaults?')) return;
+      if (!confirm('¿Restablecer todos los ajustes del calendario a los valores por defecto?')) return;
       const defaults = window.__defaultCalendarConfig;
       populateForm(defaults);
       if (typeof window.__updateCalendarConfig === 'function') {
@@ -113,7 +113,7 @@
     const logoutBtn = document.getElementById('settings-logout-btn');
     if (window.sb) {
       window.sb.auth.getUser().then(({ data }) => {
-        if (emailEl && data && data.user) emailEl.textContent = 'Signed in as: ' + data.user.email;
+        if (emailEl && data && data.user) emailEl.textContent = 'Sesión iniciada como: ' + data.user.email;
       });
     }
     if (logoutBtn) {
@@ -148,8 +148,8 @@
     // Annual leave detail
     const annualDetail = (cfg.annualLeave || []).map(a => fmtShort(a.start) + '–' + fmtShort(a.end)).join(' · ');
     // School detail
-    const schoolDetail = (cfg.lastSchoolDay ? 'Last day ' + fmtShort(cfg.lastSchoolDay) + ' · ' : '') +
-      'Summer school ' + fmtShort(cfg.school.start) + ' – ' + fmtShort(cfg.school.end);
+    const schoolDetail = (cfg.lastSchoolDay ? 'Último día ' + fmtShort(cfg.lastSchoolDay) + ' · ' : '') +
+      'Escuela de verano ' + fmtShort(cfg.school.start) + ' – ' + fmtShort(cfg.school.end);
     // Trips detail
     const tripDetail = (cfg.trips || []).map(t => (t.label || 'Trip') + ' ' + fmtShort(t.start) + '–' + fmtShort(t.end)).join(' · ');
 

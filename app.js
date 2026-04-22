@@ -162,7 +162,7 @@ window.GROUPS = {
 };
 
 window.SCOPE_CHIPS = {
-  nacional:   { label: 'National', emoji: '🇪🇸', cls: 'chip-nac' },
+  nacional:   { label: 'Nacional', emoji: '🇪🇸', cls: 'chip-nac' },
   autonomica: { label: 'Canarias', emoji: '🌴', cls: 'chip-aut' },
   municipal:  { label: 'LPGC', emoji: '🏛', cls: 'chip-mun' },
   privado:    { label: 'Vithas', emoji: '🏥', cls: 'chip-prv' },

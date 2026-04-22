@@ -1,7 +1,7 @@
 // ========== CALENDAR ==========
 (function() {
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const dayLabels = ['M','T','W','T','F','S','S'];
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const dayLabels = ['L','M','X','J','V','S','D'];
 
   // Default config — used when no saved config exists
   const DEFAULT_CONFIG = {
@@ -10,25 +10,25 @@
     shiftDaysOff: 3,
     mandatory: { start: '2026-04-17', end: '2026-05-28' },
     flexibleBlocks: [
-      { label: 'Block 1 – June', start: '2026-06-26', end: '2026-07-02' },
-      { label: 'Block 2 – August', start: '2026-08-10', end: '2026-08-16' },
-      { label: 'Block 3 – La Graciosa', start: '2026-11-08', end: '2026-11-14' },
-      { label: 'Block 4 – Christmas', start: '2026-12-23', end: '2026-12-29' },
-      { label: 'Block 5 – New Year', start: '2026-12-30', end: '2027-01-05' },
-      { label: 'Block 6 – January', start: '2027-01-06', end: '2027-01-12' },
-      { label: 'Block 7 – Japan I', start: '2027-03-26', end: '2027-04-01' },
-      { label: 'Block 8 – Japan II', start: '2027-04-02', end: '2027-04-08' },
-      { label: 'Block 9 – Japan III', start: '2027-04-09', end: '2027-04-15' },
+      { label: 'Bloque 1 – Junio', start: '2026-06-26', end: '2026-07-02' },
+      { label: 'Bloque 2 – Agosto', start: '2026-08-10', end: '2026-08-16' },
+      { label: 'Bloque 3 – La Graciosa', start: '2026-11-08', end: '2026-11-14' },
+      { label: 'Bloque 4 – Navidad', start: '2026-12-23', end: '2026-12-29' },
+      { label: 'Bloque 5 – Año Nuevo', start: '2026-12-30', end: '2027-01-05' },
+      { label: 'Bloque 6 – Enero', start: '2027-01-06', end: '2027-01-12' },
+      { label: 'Bloque 7 – Japón I', start: '2027-03-26', end: '2027-04-01' },
+      { label: 'Bloque 8 – Japón II', start: '2027-04-02', end: '2027-04-08' },
+      { label: 'Bloque 9 – Japón III', start: '2027-04-09', end: '2027-04-15' },
     ],
     annualLeave: [
-      { label: 'Easter', start: '2026-04-21', end: '2026-05-02' },
-      { label: 'Autumn', start: '2026-09-21', end: '2026-10-02' },
-      { label: 'December', start: '2026-12-11', end: '2026-12-22' },
+      { label: 'Semana Santa', start: '2026-04-21', end: '2026-05-02' },
+      { label: 'Otoño', start: '2026-09-21', end: '2026-10-02' },
+      { label: 'Diciembre', start: '2026-12-11', end: '2026-12-22' },
     ],
     trips: [
       { label: 'Siam Park', start: '2026-06-05', end: '2026-06-07' },
       { label: 'La Graciosa', start: '2026-11-05', end: '2026-11-12' },
-      { label: 'Japan', start: '2027-03-26', end: '2027-04-15' },
+      { label: 'Japón', start: '2027-03-26', end: '2027-04-15' },
     ],
     school: { start: '2026-06-22', end: '2026-07-31' },
     lastSchoolDay: '2026-06-19',
@@ -99,8 +99,8 @@
     const target = document.getElementById('parentalDaySummary');
     if (target) {
       target.innerHTML =
-        '<div class="total-box"><div class="num c-purple">' + totalParentalDays + '</div><div class="lbl">Leave days (assigned)</div></div>' +
-        '<div class="total-box"><div class="num c-pink">' + totalWorkDays + '</div><div class="lbl">On shift working days</div></div>';
+        '<div class="total-box"><div class="num c-purple">' + totalParentalDays + '</div><div class="lbl">Días de permiso (asignados)</div></div>' +
+        '<div class="total-box"><div class="num c-pink">' + totalWorkDays + '</div><div class="lbl">Días laborables en turno</div></div>';
     }
 
     // Render months
@@ -145,13 +145,13 @@
         } else {
           cell.classList.add('workday');
         }
-        if (shiftOff) { cell.classList.add('shift-off'); cell.title = 'Shift day off'; }
+        if (shiftOff) { cell.classList.add('shift-off'); cell.title = 'Día libre de turno'; }
         if (tripDay) cell.classList.add('trip');
         if (schoolDay) cell.classList.add('school');
-        if (h.isBirthDay(date)) { cell.classList.add('baby'); cell.title = 'Luca is born!'; }
-        if (h.isLastSchoolDay(date)) { cell.classList.add('last-school'); cell.title = 'Last day of school'; }
+        if (h.isBirthDay(date)) { cell.classList.add('baby'); cell.title = '¡Nace Luca!'; }
+        if (h.isLastSchoolDay(date)) { cell.classList.add('last-school'); cell.title = 'Último día de cole'; }
         const todayCmp = new Date(); todayCmp.setHours(0,0,0,0);
-        if (date.getTime() === todayCmp.getTime()) { cell.classList.add('today'); cell.title = (cell.title ? cell.title + ' · ' : '') + 'Today'; }
+        if (date.getTime() === todayCmp.getTime()) { cell.classList.add('today'); cell.title = (cell.title ? cell.title + ' · ' : '') + 'Hoy'; }
         daysDiv.appendChild(cell);
       }
       monthDiv.appendChild(daysDiv);
@@ -178,7 +178,7 @@
     // Build sorted list of all leave blocks
     const allBlocks = [];
     if (cfg.mandatory && cfg.mandatory.start && cfg.mandatory.end) {
-      allBlocks.push({ label: 'Mandatory', start: parseDate(cfg.mandatory.start), end: parseDate(cfg.mandatory.end) });
+      allBlocks.push({ label: 'Obligatorio', start: parseDate(cfg.mandatory.start), end: parseDate(cfg.mandatory.end) });
     }
     (cfg.flexibleBlocks || []).forEach(b => {
       if (b.start && b.end) allBlocks.push({ label: b.label || 'Flexible', start: parseDate(b.start), end: parseDate(b.end) });
@@ -209,18 +209,18 @@
 
     // Next block info
     let nextText = '—';
-    let nextLabel = 'Next block';
+    let nextLabel = 'Siguiente bloque';
     if (currentBlock) {
       const daysLeft = daysBetween(today, currentBlock.end);
-      nextText = daysLeft + 'd left';
-      nextLabel = currentBlock.label || 'On leave';
+      nextText = daysLeft + 'd restantes';
+      nextLabel = currentBlock.label || 'De permiso';
     } else if (nextBlock) {
       const daysUntil = daysBetween(today, nextBlock.start);
-      nextText = 'in ' + daysUntil + 'd';
-      nextLabel = (nextBlock.label || 'Next') + ' · ' + fmtShort(nextBlock.start);
+      nextText = 'en ' + daysUntil + 'd';
+      nextLabel = (nextBlock.label || 'Siguiente') + ' · ' + fmtShort(nextBlock.start);
     } else {
       nextText = '—';
-      nextLabel = 'All blocks completed';
+      nextLabel = 'Todos los bloques completados';
     }
 
     // Return to work: first working day (not a shift day off) after block ends
@@ -266,9 +266,9 @@
     if (dlEl) {
       var pills = [];
       if (daysToAge1 > 0) {
-        pills.push('<span class="cd-deadline">Flexible leave deadline (age 1): ' + fmtShort(age1) + ' (' + daysToAge1 + 'd)</span>');
+        pills.push('<span class="cd-deadline">Plazo permiso flexible (1 año): ' + fmtShort(age1) + ' (' + daysToAge1 + 'd)</span>');
       }
-      pills.push('<span class="cd-deadline">Additional leave deadline (age 8): ' + fmtShort(age8) + ' (' + daysToAge8 + 'd)</span>');
+      pills.push('<span class="cd-deadline">Plazo permiso adicional (8 años): ' + fmtShort(age8) + ' (' + daysToAge8 + 'd)</span>');
       dlEl.innerHTML = pills.join('');
     }
   };

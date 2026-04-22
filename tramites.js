@@ -107,7 +107,7 @@
     const now = new Date().toISOString();
     lastSavedAt = Date.now();
     if (pendingToast) pendingToast.remove();
-    pendingToast = toast('Syncing…', 'loading');
+    pendingToast = toast('Sincronizando…', 'loading');
     const { error } = await sb.from('app_state').update({
       tramites: state.tramites,
       docs: state.docs,
@@ -117,9 +117,9 @@
     }).eq('id', stateRowId);
     if (pendingToast) pendingToast.remove();
     if (error) {
-      pendingToast = toast('⚠ Could not save: ' + error.message, 'error');
+      pendingToast = toast('⚠ No se pudo guardar: ' + error.message, 'error');
     } else {
-      pendingToast = toast('✓ Saved', 'success');
+      pendingToast = toast('✓ Guardado', 'success');
     }
   }
 
@@ -133,7 +133,7 @@
   async function openDoc(path) {
     const url = await signedUrlFor(path);
     if (url) window.open(url, '_blank', 'noopener');
-    else toast('⚠ Could not open file', 'error');
+    else toast('⚠ No se pudo abrir el archivo', 'error');
   }
 
   // ---------- UI: checkboxes ----------
@@ -236,7 +236,7 @@
       const btn = document.createElement('button');
       btn.className = 'subtask-toggle';
       btn.type = 'button';
-      btn.title = 'Show subtasks';
+      btn.title = 'Ver subtareas';
       btn.textContent = '▾';
       row.appendChild(btn);
 
@@ -284,7 +284,7 @@
       const btn = document.createElement('button');
       btn.className = 'journal-toggle';
       btn.type = 'button';
-      btn.title = 'Notes';
+      btn.title = 'Notas';
       btn.textContent = '📝';
       row.appendChild(btn);
 
@@ -340,7 +340,7 @@
     if (!metaEl) return;
     if (!entry) { metaEl.textContent = ''; return; }
     const d = new Date(entry.updatedAt);
-    metaEl.textContent = 'Last edited: ' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() + ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    metaEl.textContent = 'Última edición: ' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
   function updateJournalDot(key) {
     const row = document.querySelector('.tramite-row input[data-group="' + key.split('-')[0] + '"][data-idx="' + key.split('-').slice(1).join('-') + '"]');
@@ -772,7 +772,7 @@
       slot.appendChild(a);
       const del = document.createElement('button');
       del.className = 'doc-pill-unlink';
-      del.title = 'Unlink';
+      del.title = 'Desvincular';
       del.textContent = '✕';
       del.onclick = (e) => {
         e.preventDefault(); e.stopPropagation();
@@ -784,10 +784,10 @@
     } else {
       const btn = document.createElement('button');
       btn.className = 'doc-pill' + (authed ? '' : ' disabled');
-      btn.title = 'Upload to ' + folder + '/';
-      btn.innerHTML = '<span>⬆</span><span>Upload to ' + folder + '/</span>';
+      btn.title = 'Subir a ' + folder + '/';
+      btn.innerHTML = '<span>⬆</span><span>Subir a ' + folder + '/</span>';
       btn.onclick = () => {
-        if (!authed) { toast('⚠ Sign in first', 'error'); return; }
+        if (!authed) { toast('⚠ Inicia sesión primero', 'error'); return; }
         openAttachPicker(box, folder);
       };
       slot.appendChild(btn);
@@ -831,27 +831,27 @@
 
   async function uploadFile(file, folder) {
     const MAX_HARD = 50 * 1024 * 1024;
-    if (file.size > MAX_HARD) { toast('⚠ File exceeds 50 MB limit', 'error'); return null; }
+    if (file.size > MAX_HARD) { toast('⚠ El archivo supera el límite de 50 MB', 'error'); return null; }
 
     const origBase = (file.name.split('.').slice(0, -1).join('.') || file.name);
     const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
-    const label = prompt('Name for the file (without extension):', origBase);
+    const label = prompt('Nombre del archivo (sin extensión):', origBase);
     if (label === null) return null;
     const slug = slugify(label) || slugify(origBase);
     const fname = yyyymmdd(new Date()) + '-' + slug + '.' + ext;
     const path = folder + '/' + fname;
 
-    const loadingT = toast('Uploading ' + fname + '…', 'loading');
+    const loadingT = toast('Subiendo ' + fname + '…', 'loading');
     const { error } = await sb.storage.from(BUCKET).upload(path, file, {
       upsert: false,
       contentType: file.type || undefined
     });
     loadingT.remove();
     if (error) {
-      toast('⚠ Upload error: ' + error.message, 'error');
+      toast('⚠ Error al subir: ' + error.message, 'error');
       return null;
     }
-    toast('✓ Uploaded', 'success');
+    toast('✓ Subido', 'success');
     return { path, name: fname };
   }
 
@@ -859,13 +859,13 @@
     const folder = GROUP_FOLDERS[group];
     const listEl = document.getElementById('doc-list-' + group);
     if (!listEl) return;
-    if (!authed) { listEl.innerHTML = '<div class="doc-list-empty">Sign in to view documents.</div>'; return; }
-    listEl.innerHTML = '<div class="doc-list-empty">Loading…</div>';
+    if (!authed) { listEl.innerHTML = '<div class="doc-list-empty">Inicia sesión para ver documentos.</div>'; return; }
+    listEl.innerHTML = '<div class="doc-list-empty">Cargando…</div>';
     try {
       const { data, error } = await sb.storage.from(BUCKET).list(folder, { limit: 100, sortBy: { column: 'name', order: 'desc' } });
       if (error) throw error;
       const files = (data || []).filter(f => f.name && !f.name.startsWith('.'));
-      if (!files.length) { listEl.innerHTML = '<div class="doc-list-empty">No documents yet.</div>'; return; }
+      if (!files.length) { listEl.innerHTML = '<div class="doc-list-empty">Sin documentos aún.</div>'; return; }
       listEl.innerHTML = '';
       files.forEach(f => {
         const entry = document.createElement('div');
@@ -878,16 +878,16 @@
         entry.appendChild(a);
         const del = document.createElement('button');
         del.className = 'doc-del';
-        del.title = 'Delete';
+        del.title = 'Eliminar';
         del.textContent = '🗑';
         del.onclick = async () => {
-          if (!confirm('Delete ' + f.name + '?')) return;
-          const loadingT = toast('Deleting…', 'loading');
+          if (!confirm('¿Eliminar ' + f.name + '?')) return;
+          const loadingT = toast('Eliminando…', 'loading');
           const fullPath = folder + '/' + f.name;
           const { error: delErr } = await sb.storage.from(BUCKET).remove([fullPath]);
           loadingT.remove();
           if (delErr) { toast('⚠ Error: ' + delErr.message, 'error'); return; }
-          toast('✓ Deleted', 'success');
+          toast('✓ Eliminado', 'success');
           let dirty = false;
           Object.keys(state.docs).forEach(k => { if (state.docs[k] === fullPath) { delete state.docs[k]; dirty = true; } });
           if (dirty) { applyStateToUI(); queueSave(); }
@@ -911,8 +911,8 @@
       uploader.className = 'uploader' + (authed ? '' : ' hidden');
       uploader.id = 'upl-' + group;
       uploader.innerHTML =
-        '<div>📎 Upload file or drag here → <strong>' + folder + '/</strong></div>' +
-        '<div class="u-hint">PDF or image · max 50 MB</div>';
+        '<div>📎 Sube archivo o arrastra aquí → <strong>' + folder + '/</strong></div>' +
+        '<div class="u-hint">PDF o imagen · máx 50 MB</div>';
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'application/pdf,image/*';
@@ -974,10 +974,10 @@
 
   function updateSyncPill() {
     if (authed) {
-      syncPill.textContent = '☁ Synced';
+      syncPill.textContent = '☁ Sincronizado';
       syncPill.classList.add('synced');
     } else {
-      syncPill.textContent = '📱 Device only';
+      syncPill.textContent = '📱 Solo dispositivo';
       syncPill.classList.remove('synced');
     }
   }
@@ -1023,10 +1023,10 @@
         syncBirthActualToWindow();
         saveLocal();
       } else if (stateRowId === null) {
-        toast('⚠ Missing initial row in app_state', 'error');
+        toast('⚠ Falta la fila inicial en app_state', 'error');
       }
     } catch (e) {
-      toast('⚠ Could not load: ' + (e.message || e), 'error');
+      toast('⚠ No se pudo cargar: ' + (e.message || e), 'error');
     }
     applyStateToUI();
   }

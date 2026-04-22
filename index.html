@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Family Plan</title>
+<title>Plan Familiar</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a0f1a" id="meta-theme-color">
 <meta name="color-scheme" content="dark light">
@@ -22,17 +22,17 @@
 <!-- ========== SUPABASE AUTH GATE ========== -->
 <div id="auth-gate" style="display:none;position:fixed;inset:0;z-index:9999;background:#0a0f1a;background-image:linear-gradient(160deg,#0a0f1a 0%,#0d1525 40%,#111b2e 70%,#0f1724 100%);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',system-ui,sans-serif;">
   <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:40px;max-width:340px;width:90%;text-align:center;">
-    <div style="font-family:'Space Mono',monospace;font-size:12px;color:#fbbf24;letter-spacing:3px;margin-bottom:16px;">FAMILY PLAN_</div>
-    <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:24px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;">AUTHENTICATION REQUIRED</p>
-    <input id="auth-email" type="email" placeholder="Email" autocomplete="email" autofocus
+    <div style="font-family:'Space Mono',monospace;font-size:12px;color:#fbbf24;letter-spacing:3px;margin-bottom:16px;">PLAN FAMILIAR_</div>
+    <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:24px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;">AUTENTICACIÓN REQUERIDA</p>
+    <input id="auth-email" type="email" placeholder="Correo" autocomplete="email" autofocus
       style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.025);color:#e2e8f0;font-size:14px;outline:none;margin-bottom:10px;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
-    <input id="auth-input" type="password" placeholder="Password" autocomplete="current-password"
+    <input id="auth-input" type="password" placeholder="Contraseña" autocomplete="current-password"
       style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.025);color:#e2e8f0;font-size:14px;outline:none;margin-bottom:12px;font-family:'DM Sans',sans-serif;box-sizing:border-box;"
       onkeydown="if(event.key==='Enter')document.getElementById('auth-btn').click()">
     <button id="auth-btn" onclick="checkAuth()"
       style="width:100%;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s;"
-      onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Sign in</button>
-    <p id="auth-error" style="color:#f87171;font-size:12px;margin-top:10px;display:none;font-family:'Space Mono',monospace;">ACCESS DENIED</p>
+      onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Iniciar sesión</button>
+    <p id="auth-error" style="color:#f87171;font-size:12px;margin-top:10px;display:none;font-family:'Space Mono',monospace;">ACCESO DENEGADO</p>
   </div>
 </div>
 <script>
@@ -58,11 +58,11 @@ async function checkAuth(){
   const errEl = document.getElementById('auth-error');
   const btn = document.getElementById('auth-btn');
   errEl.style.display = 'none';
-  btn.disabled = true; btn.textContent = 'Authenticating...';
+  btn.disabled = true; btn.textContent = 'Autenticando...';
   const { error } = await window.sb.auth.signInWithPassword({ email: emailEl.value.trim(), password: passEl.value });
-  btn.disabled = false; btn.textContent = 'Sign in';
+  btn.disabled = false; btn.textContent = 'Iniciar sesión';
   if (error) {
-    errEl.textContent = 'ACCESS DENIED';
+    errEl.textContent = 'ACCESO DENEGADO';
     errEl.style.display = 'block';
     passEl.value = ''; passEl.focus();
     return;
@@ -86,42 +86,42 @@ window.sb.auth.getSession().then(({ data }) => {
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <span class="logo-short">F_</span>
-    <span class="logo-full">FAMILY PLAN_</span>
+    <span class="logo-full">PLAN FAMILIAR_</span>
   </div>
   <div class="sidebar-nav">
     <a href="#resumen" class="nav-item active" data-tab="resumen">
       <span class="nav-icon">&#9632;</span>
-      <span class="nav-label">Dashboard</span>
+      <span class="nav-label">Resumen</span>
     </a>
     <a href="#calendario" class="nav-item" data-tab="calendario">
       <span class="nav-icon">&#9638;</span>
-      <span class="nav-label">Calendar</span>
+      <span class="nav-label">Calendario</span>
     </a>
     <a href="#tramites" class="nav-item" data-tab="tramites">
       <span class="nav-icon">&#9744;</span>
-      <span class="nav-label">Tramites</span>
+      <span class="nav-label">Trámites</span>
       <span class="nav-badge nav-label" id="nav-tramites-badge" style="display:none;">0</span>
     </a>
     <a href="#salud" class="nav-item" data-tab="salud">
       <span class="nav-icon">&#9737;</span>
-      <span class="nav-label">Citas Medicas</span>
+      <span class="nav-label">Citas Médicas</span>
     </a>
     <a href="#documentos" class="nav-item" data-tab="documentos">
       <span class="nav-icon">&#9782;</span>
-      <span class="nav-label">Docs</span>
+      <span class="nav-label">Documentos</span>
     </a>
   </div>
   <div class="sidebar-bottom">
     <a href="#ajustes" class="nav-item" data-tab="ajustes">
       <span class="nav-icon">&#9881;</span>
-      <span class="nav-label">Settings</span>
+      <span class="nav-label">Ajustes</span>
     </a>
-    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
+    <button class="theme-toggle" id="theme-toggle" title="Cambiar modo claro/oscuro">
       <span class="nav-icon" id="theme-icon">&#9788;</span>
-      <span class="nav-label" id="theme-label">Light mode</span>
+      <span class="nav-label" id="theme-label">Modo claro</span>
     </button>
     <div style="padding:8px 10px;margin-top:6px;">
-      <span class="sync-pill" id="sync-pill">Device only</span>
+      <span class="sync-pill" id="sync-pill">Solo dispositivo</span>
     </div>
   </div>
 </nav>
@@ -131,7 +131,7 @@ window.sb.auth.getSession().then(({ data }) => {
   <div class="mobile-tabs-inner">
     <a href="#resumen" class="mobile-tab active" data-tab="resumen">
       <span class="tab-icon">&#9632;</span>
-      <span>HOME</span>
+      <span>INICIO</span>
     </a>
     <a href="#calendario" class="mobile-tab" data-tab="calendario">
       <span class="tab-icon">&#9638;</span>
@@ -139,7 +139,7 @@ window.sb.auth.getSession().then(({ data }) => {
     </a>
     <a href="#tramites" class="mobile-tab" data-tab="tramites">
       <span class="tab-icon">&#9744;</span>
-      <span>TASKS</span>
+      <span>TRÁM</span>
     </a>
     <a href="#salud" class="mobile-tab" data-tab="salud">
       <span class="tab-icon">&#9737;</span>
@@ -149,9 +149,9 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="tab-icon">&#9782;</span>
       <span>DOCS</span>
     </a>
-    <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Toggle light/dark mode">
+    <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Cambiar modo claro/oscuro">
       <span class="tab-icon" id="mobile-theme-icon">&#9788;</span>
-      <span>LIGHT</span>
+      <span>CLARO</span>
     </button>
   </div>
 </nav>
@@ -162,35 +162,35 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== HEADER ========== -->
   <div class="header">
-    <h1>Dashboard <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
-    <div class="sub">Luca &middot; Born 17 Apr 2026</div>
+    <h1>Resumen <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
+    <div class="sub">Luca &middot; Nacido 17 abr 2026</div>
   </div>
 
   <!-- ========== RESUMEN (DASHBOARD) ========== -->
   <section id="resumen" class="tab-section active">
     <div class="urgent-banner" id="urgent-banner" style="display:none;">
-      <span class="urgent-text">URGENT THIS WEEK</span>
+      <span class="urgent-text">URGENTE ESTA SEMANA</span>
       <span class="urgent-arrow">&rarr;</span>
       <button class="urgent-x" id="urgent-dismiss" title="Hide until logout">&times;</button>
     </div>
     <div class="glass countdown-dashboard" id="leave-countdown">
-      <h3 class="dash-label">Leave Countdown</h3>
+      <h3 class="dash-label">Cuenta atrás del permiso</h3>
       <div class="countdown-grid">
         <div class="countdown-item">
           <div class="countdown-num" id="cd-used">&mdash;</div>
-          <div class="countdown-label">Days used</div>
+          <div class="countdown-label">Días usados</div>
         </div>
         <div class="countdown-item">
           <div class="countdown-num" id="cd-remaining">&mdash;</div>
-          <div class="countdown-label">Days remaining</div>
+          <div class="countdown-label">Días restantes</div>
         </div>
         <div class="countdown-item">
           <div class="countdown-num" id="cd-next-in">&mdash;</div>
-          <div class="countdown-label" id="cd-next-label">Next block</div>
+          <div class="countdown-label" id="cd-next-label">Siguiente bloque</div>
         </div>
         <div class="countdown-item">
           <div class="countdown-num" id="cd-return">&mdash;</div>
-          <div class="countdown-label">Return to work</div>
+          <div class="countdown-label">Vuelta al trabajo</div>
         </div>
       </div>
       <div class="countdown-deadlines" id="cd-deadlines"></div>
@@ -201,85 +201,85 @@ window.sb.auth.getSession().then(({ data }) => {
 
     <!-- Leave Blocks (absorbed from bloques tab) -->
     <div class="glass data-card" id="dashboard-leave-blocks">
-      <h2>Leave Blocks</h2>
+      <h2>Bloques de permiso</h2>
       <table class="data-table">
-        <thead><tr><th>Block</th><th>Plan</th><th>Days</th><th>Period</th></tr></thead>
+        <thead><tr><th>Bloque</th><th>Plan</th><th>Días</th><th>Periodo</th></tr></thead>
         <tbody>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#fbbf24"></span>Mandatory</td>
-            <td data-label="Plan">First 6 weeks with Luca at home, family adjustment</td>
-            <td data-label="Days">42</td>
-            <td data-label="Period">17 Apr &ndash; 28 May</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#fbbf24"></span>Obligatorio</td>
+            <td data-label="Plan">Primeras 6 semanas con Luca en casa, adaptación familiar</td>
+            <td data-label="Días">42</td>
+            <td data-label="Periodo">17 abr &ndash; 28 may</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 1 &ndash; June</td>
-            <td data-label="Plan">Settling into life in Tenerife with Luca</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">26 Jun &ndash; 2 Jul</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 1 &ndash; Junio</td>
+            <td data-label="Plan">Instalándose en Tenerife con Luca</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">26 jun &ndash; 2 jul</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 2 &ndash; August</td>
-            <td data-label="Plan">Because August is never given to a pilot</td>
-            <td data-label="Days">12</td>
-            <td data-label="Period">7 &ndash; 18 Aug</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 2 &ndash; Agosto</td>
+            <td data-label="Plan">Porque agosto nunca se lo dan a un piloto</td>
+            <td data-label="Días">12</td>
+            <td data-label="Periodo">7 &ndash; 18 ago</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 3 &ndash; La Graciosa</td>
-            <td data-label="Plan">First trip to La Graciosa as a family of 4</td>
-            <td data-label="Days">12</td>
-            <td data-label="Period">5 &ndash; 16 Nov</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 3 &ndash; La Graciosa</td>
+            <td data-label="Plan">Primer viaje a La Graciosa como familia de 4</td>
+            <td data-label="Días">12</td>
+            <td data-label="Periodo">5 &ndash; 16 nov</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 4 &ndash; Christmas</td>
-            <td data-label="Plan">Christmas week</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">23 &ndash; 29 Dec</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 4 &ndash; Navidad</td>
+            <td data-label="Plan">Semana de Navidad</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">23 &ndash; 29 dic</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 5 &ndash; New Year</td>
-            <td data-label="Plan">New Year week</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">30 Dec &ndash; 5 Jan</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 5 &ndash; Año Nuevo</td>
+            <td data-label="Plan">Semana de Año Nuevo</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">30 dic &ndash; 5 ene</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 6 &ndash; January</td>
-            <td data-label="Plan">Post-holidays week</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">6 &ndash; 12 Jan</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 6 &ndash; Enero</td>
+            <td data-label="Plan">Semana post-fiestas</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">6 &ndash; 12 ene</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 7 &ndash; Japan I</td>
-            <td data-label="Plan">Asia trip for visa renewal</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">26 Mar &ndash; 1 Apr '27</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 7 &ndash; Japón I</td>
+            <td data-label="Plan">Viaje a Asia para renovación de visado</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">26 mar &ndash; 1 abr '27</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 8 &ndash; Japan II</td>
-            <td data-label="Plan">Kyoto</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">2 &ndash; 8 Apr '27</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 8 &ndash; Japón II</td>
+            <td data-label="Plan">Kioto</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">2 &ndash; 8 abr '27</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>Block 9 &ndash; Japan III</td>
-            <td data-label="Plan">Return</td>
-            <td data-label="Days">7</td>
-            <td data-label="Period">9 &ndash; 15 Apr '27</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 9 &ndash; Japón III</td>
+            <td data-label="Plan">Regreso</td>
+            <td data-label="Días">7</td>
+            <td data-label="Periodo">9 &ndash; 15 abr '27</td>
           </tr>
           <tr class="muted-row">
-            <td data-label="Block"><span class="status-dot" style="background:#475569"></span>Reserved (2 blocks)</td>
-            <td data-label="Plan">Possible trip with Father</td>
-            <td data-label="Days">&mdash;</td>
-            <td data-label="Period">TBD</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#475569"></span>Reservado (2 bloques)</td>
+            <td data-label="Plan">Posible viaje con Padre</td>
+            <td data-label="Días">&mdash;</td>
+            <td data-label="Periodo">Por definir</td>
           </tr>
           <tr class="muted-row">
-            <td data-label="Block"><span class="status-dot" style="background:var(--blue)"></span>Additional (2 weeks)</td>
-            <td data-label="Plan">Future use &mdash; available until Luca turns 8</td>
-            <td data-label="Days">14</td>
-            <td data-label="Period">Before Apr 2034</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:var(--blue)"></span>Adicional (2 semanas)</td>
+            <td data-label="Plan">Uso futuro &mdash; disponible hasta que Luca cumpla 8</td>
+            <td data-label="Días">14</td>
+            <td data-label="Periodo">Antes de abr 2034</td>
           </tr>
           <tr class="total-row">
             <td data-label="">Total</td>
-            <td data-label="">19 weeks (17 planned + 2 for future use)</td>
+            <td data-label="">19 semanas (17 planificadas + 2 de uso futuro)</td>
             <td data-label=""></td>
             <td data-label=""></td>
           </tr>
@@ -289,24 +289,24 @@ window.sb.auth.getSession().then(({ data }) => {
 
     <!-- Vacation Summary (absorbed from bloques tab) -->
     <div class="glass data-card">
-      <h2>Annual Vacation</h2>
+      <h2>Vacaciones anuales</h2>
       <table class="data-table">
-        <thead><tr><th>Block</th><th>Period</th><th>Status</th></tr></thead>
+        <thead><tr><th>Bloque</th><th>Periodo</th><th>Estado</th></tr></thead>
         <tbody>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#f59e0b"></span>21 Apr &ndash; 2 May</td>
-            <td data-label="Period">~8 working days</td>
-            <td data-label="Status">Refundable &mdash; overlaps with mandatory leave</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>21 abr &ndash; 2 may</td>
+            <td data-label="Periodo">~8 días laborables</td>
+            <td data-label="Estado">Reembolsable &mdash; solapa con permiso obligatorio</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#4ade80"></span>21 Sep &ndash; 2 Oct</td>
-            <td data-label="Period">~8 working days</td>
-            <td data-label="Status">Approved</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#4ade80"></span>21 sep &ndash; 2 oct</td>
+            <td data-label="Periodo">~8 días laborables</td>
+            <td data-label="Estado">Aprobado</td>
           </tr>
           <tr>
-            <td data-label="Block"><span class="status-dot" style="background:#4ade80"></span>11 &ndash; 22 Dec</td>
-            <td data-label="Period">~8 working days</td>
-            <td data-label="Status">Approved &mdash; links with Christmas blocks</td>
+            <td data-label="Bloque"><span class="status-dot" style="background:#4ade80"></span>11 &ndash; 22 dic</td>
+            <td data-label="Periodo">~8 días laborables</td>
+            <td data-label="Estado">Aprobado &mdash; enlaza con bloques de Navidad</td>
           </tr>
         </tbody>
       </table>
@@ -315,7 +315,7 @@ window.sb.auth.getSession().then(({ data }) => {
     <!-- Action Queue -->
     <div class="glass action-queue-card" id="action-queue-card">
       <div class="aq-header">
-        <h3 class="dash-label">Next Actions</h3>
+        <h3 class="dash-label">Próximas acciones</h3>
         <div class="aq-summary" id="aq-weekly-summary"></div>
       </div>
       <div id="action-queue" class="action-queue"></div>
@@ -325,7 +325,7 @@ window.sb.auth.getSession().then(({ data }) => {
     <!-- Tramites aggregate -->
     <div class="dashboard">
       <div class="glass dash-card">
-        <div class="dash-label">Tramites Completed</div>
+        <div class="dash-label">Trámites completados</div>
         <div class="agg-num"><span id="agg-done">0</span>/<span id="agg-total">0</span></div>
         <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" id="agg-fill" style="width:0%"></div></div>
       </div>
@@ -333,45 +333,45 @@ window.sb.auth.getSession().then(({ data }) => {
 
     <!-- Notes (absorbed from notas tab) -->
     <div class="glass data-card" id="dashboard-notes">
-      <h2>Notes</h2>
+      <h2>Notas</h2>
       <div class="alert">
-        <strong>Vacation overlap:</strong> Approved vacation from 21 Apr to 2 May (~8 working days) overlaps with mandatory parental leave. These days must be refunded to annual vacation balance. Request rescheduling from HR.
+        <strong>Solapamiento de vacaciones:</strong> Las vacaciones aprobadas del 21 abr al 2 may (~8 días laborables) solapan con el permiso obligatorio. Estos días deben ser devueltos al saldo de vacaciones anuales. Solicitar reprogramación a RRHH.
       </div>
       <ul class="notes-list">
-        <li><strong>Shift optimization:</strong> Blocks start at position 3 of the cycle (first working day after 3 days off). Individual blocks: 6/7 working days (85.7%), 12 consecutive days off. Chains of 3: 15/21 (71.4%).</li>
-        <li><strong>Siam Park (5&ndash;7 Jun):</strong> Falls on shift days off &mdash; no leave required.</li>
-        <li><strong>La Graciosa (5&ndash;12 Nov):</strong> 5&ndash;7 Nov shift days off + block 3 (8&ndash;14 Nov). Fully covered.</li>
-        <li><strong>Trip with father (TBD):</strong> Trip with father (77 years old) to Miami or Peru &mdash; destination pending. 2 blocks reserved.</li>
-        <li><strong>Deadline:</strong> 17 of the 19 weeks must be used before Luca turns 1 (17 Apr 2027). Japan blocks end Apr 15 &mdash; 5 days margin. The 2 additional weeks can be used until he turns 8 (Apr 2034).</li>
+        <li><strong>Optimización de turnos:</strong> Los bloques comienzan en la posición 3 del ciclo (primer día de trabajo tras 3 días libres). Bloques individuales: 6/7 días laborables (85,7%), 12 días consecutivos libres. Cadenas de 3: 15/21 (71,4%).</li>
+        <li><strong>Siam Park (5&ndash;7 jun):</strong> Cae en días libres de turno &mdash; no requiere permiso.</li>
+        <li><strong>La Graciosa (5&ndash;12 nov):</strong> 5&ndash;7 nov días libres de turno + bloque 3 (8&ndash;14 nov). Totalmente cubierto.</li>
+        <li><strong>Viaje con padre (por definir):</strong> Viaje con padre (77 años) a Miami o Perú &mdash; destino pendiente. 2 bloques reservados.</li>
+        <li><strong>Plazo:</strong> 17 de las 19 semanas deben usarse antes de que Luca cumpla 1 año (17 abr 2027). Los bloques de Japón terminan el 15 abr &mdash; 5 días de margen. Las 2 semanas adicionales pueden usarse hasta que cumpla 8 (abr 2034).</li>
       </ul>
     </div>
   </section>
 
   <!-- ========== CALENDARIO ========== -->
   <section id="calendario" class="tab-section">
-    <div class="section-title">Annual View</div>
+    <div class="section-title">Vista anual</div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Mandatory parental</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-parental-bg)"></div> Flexible parental</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Annual vacation</div>
-      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, var(--cal-parental-bg) 50%, var(--cal-annual-bg) 50%)"></div> Parental + Vacation</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: inset 0 0 0 2.5px var(--cal-trip-ring)"></div> Trip</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> Shift days off</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); border-bottom: 2.5px solid var(--cal-school-border)"></div> Summer school</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Luca is born</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: 0 0 0 2.5px #fbbf24"></div> Today</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Permiso obligatorio</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-parental-bg)"></div> Permiso flexible</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Vacaciones anuales</div>
+      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, var(--cal-parental-bg) 50%, var(--cal-annual-bg) 50%)"></div> Permiso + Vacaciones</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: inset 0 0 0 2.5px var(--cal-trip-ring)"></div> Viaje</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> Días libres de turno</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); border-bottom: 2.5px solid var(--cal-school-border)"></div> Escuela de verano</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Nace Luca</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: 0 0 0 2.5px #fbbf24"></div> Hoy</div>
     </div>
     <div class="cal-grid" id="yearCalendar"></div>
   </section>
 
   <!-- ========== TRAMITES ========== -->
   <section id="tramites" class="tab-section">
-    <div class="section-title">Tramites</div>
+    <div class="section-title">Trámites</div>
     <div class="alert">
       <strong>Certificados disponibles online:</strong> Todos los certificados (nacimiento, matrimonio, etc.) se pueden obtener en <a href="https://www.administraciondejusticia.gob.es/carpeta-justicia" target="_blank" rel="noopener">administraciondejusticia.gob.es/carpeta-justicia</a>
     </div>
     <div class="tramites-search">
-      <input type="search" id="tramites-search-input" placeholder="Search tramite..." autocomplete="off">
+      <input type="search" id="tramites-search-input" placeholder="Buscar trámite..." autocomplete="off">
       <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
     </div>
 
@@ -453,94 +453,94 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== CITAS MEDICAS ========== -->
   <section id="salud" class="tab-section">
-    <div class="section-title">Citas Medicas</div>
+    <div class="section-title">Citas Médicas</div>
     <div id="js-groups-host-salud"></div>
   </section>
 
   <!-- ========== DOCUMENTOS (biblioteca) ========== -->
   <section id="documentos" class="tab-section">
-    <div class="section-title">Document Library</div>
+    <div class="section-title">Biblioteca de documentos</div>
     <div class="glass data-card">
-      <p style="color: var(--text-muted); margin-bottom: 14px;">Upload each document once and attach it to the procedures that need it.</p>
+      <p style="color: var(--text-muted); margin-bottom: 14px;">Sube cada documento una vez y adjúntalo a los trámites que lo necesiten.</p>
       <div class="lib-uploader">
         <label>
           <input type="file" id="lib-file-input" accept="application/pdf,image/*" style="display:none;">
-          <span class="btn btn-primary" id="lib-pick-btn">Upload document</span>
+          <span class="btn btn-primary" id="lib-pick-btn">Subir documento</span>
         </label>
         <select id="lib-type-select" class="lib-type">
-          <option value="">Type (optional)</option>
+          <option value="">Tipo (opcional)</option>
           <option value="dni-luis">DNI Luis</option>
           <option value="dni-madre">DNI Colombina</option>
-          <option value="libro-familia">Libro de Familia / Certified copy</option>
+          <option value="libro-familia">Libro de Familia / Copia certificada</option>
           <option value="empadronamiento">Empadronamiento</option>
-          <option value="parte-medico">Medical birth report</option>
-          <option value="informe-mat">Maternity report</option>
-          <option value="cert-empresa">Company certificate (Binter)</option>
-          <option value="iban">IBAN ownership certificate</option>
-          <option value="seguro-medico">Health insurance card</option>
-          <option value="otro">Other</option>
+          <option value="parte-medico">Parte médico de nacimiento</option>
+          <option value="informe-mat">Informe de maternidad</option>
+          <option value="cert-empresa">Certificado de empresa (Binter)</option>
+          <option value="iban">Certificado de titularidad IBAN</option>
+          <option value="seguro-medico">Tarjeta de seguro médico</option>
+          <option value="otro">Otro</option>
         </select>
       </div>
       <div class="lib-list" id="lib-list">
-        <div class="doc-list-empty">Loading library...</div>
+        <div class="doc-list-empty">Cargando biblioteca...</div>
       </div>
     </div>
   </section>
 
   <!-- ========== SETTINGS (AJUSTES) ========== -->
   <section id="ajustes" class="tab-section">
-    <div class="section-title">Settings</div>
+    <div class="section-title">Ajustes</div>
 
-    <!-- Session -->
+    <!-- Sesión -->
     <div class="glass data-card">
-      <h2>Session</h2>
-      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">Procedures and documents sync automatically across devices.</p>
+      <h2>Sesión</h2>
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">Los trámites y documentos se sincronizan automáticamente entre dispositivos.</p>
       <p id="settings-session-email" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;"></p>
-      <button class="btn btn-danger" id="settings-logout-btn">Log out</button>
+      <button class="btn btn-danger" id="settings-logout-btn">Cerrar sesión</button>
     </div>
 
-    <!-- Shift Pattern -->
+    <!-- Patrón de turnos -->
     <div class="glass data-card">
-      <h2>Shift Pattern</h2>
+      <h2>Patrón de turnos</h2>
       <div class="settings-row">
-        <label>Reference date</label>
+        <label>Fecha de referencia</label>
         <input type="date" id="cfg-shift-ref">
       </div>
       <div class="settings-row">
-        <label>Cycle length (days)</label>
+        <label>Duración del ciclo (días)</label>
         <input type="number" id="cfg-cycle" min="1" max="30">
       </div>
       <div class="settings-row">
-        <label>Days off per cycle</label>
+        <label>Días libres por ciclo</label>
         <input type="number" id="cfg-days-off" min="0" max="15">
       </div>
     </div>
 
-    <!-- Flexible Blocks -->
+    <!-- Bloques flexibles -->
     <div class="glass data-card">
-      <h2>Flexible Parental Blocks</h2>
+      <h2>Bloques parentales flexibles</h2>
       <div id="cfg-flexible-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-flexible" style="margin-top: 8px;">+ Add block</button>
+      <button class="btn btn-secondary" id="cfg-add-flexible" style="margin-top: 8px;">+ Añadir bloque</button>
     </div>
 
-    <!-- Annual Leave -->
+    <!-- Vacaciones anuales -->
     <div class="glass data-card">
-      <h2>Annual Leave</h2>
+      <h2>Vacaciones anuales</h2>
       <div id="cfg-annual-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-annual" style="margin-top: 8px;">+ Add block</button>
+      <button class="btn btn-secondary" id="cfg-add-annual" style="margin-top: 8px;">+ Añadir bloque</button>
     </div>
 
-    <!-- Trips -->
+    <!-- Viajes -->
     <div class="glass data-card">
-      <h2>Trips</h2>
+      <h2>Viajes</h2>
       <div id="cfg-trips-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px;">+ Add trip</button>
+      <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px;">+ Añadir viaje</button>
     </div>
 
-    <!-- Save -->
+    <!-- Guardar -->
     <div style="margin-top: 16px; display: flex; gap: 10px;">
-      <button class="btn btn-primary" id="cfg-save" style="flex: 1; padding: 14px; font-size: 15px;">Save & rebuild calendar</button>
-      <button class="btn btn-secondary" id="cfg-reset" style="padding: 14px 20px;">Reset defaults</button>
+      <button class="btn btn-primary" id="cfg-save" style="flex: 1; padding: 14px; font-size: 15px;">Guardar y reconstruir calendario</button>
+      <button class="btn btn-secondary" id="cfg-reset" style="padding: 14px 20px;">Restablecer valores</button>
     </div>
   </section>
 
@@ -550,12 +550,12 @@ window.sb.auth.getSession().then(({ data }) => {
 <!-- ========== SETTINGS MODAL ========== -->
 <div class="modal-backdrop" id="settings-modal">
   <div class="modal">
-    <h3>Session</h3>
-    <p>Procedures and documents sync automatically across devices with the same account.</p>
+    <h3>Sesión</h3>
+    <p>Los trámites y documentos se sincronizan automáticamente entre dispositivos con la misma cuenta.</p>
     <p id="session-email" style="font-size:12px;color:var(--text-muted);margin-top:6px;"></p>
     <div class="modal-actions">
-      <button class="btn btn-secondary" id="logout-cancel">Close</button>
-      <button class="btn btn-danger" id="logout-btn">Log out</button>
+      <button class="btn btn-secondary" id="logout-cancel">Cerrar</button>
+      <button class="btn btn-danger" id="logout-btn">Cerrar sesión</button>
     </div>
   </div>
 </div>
@@ -563,12 +563,12 @@ window.sb.auth.getSession().then(({ data }) => {
 <!-- ========== LIBRARY PICKER MODAL ========== -->
 <div class="modal-backdrop" id="lib-picker-modal">
   <div class="modal" style="max-width: 520px;">
-    <h3>Attach documents</h3>
+    <h3>Adjuntar documentos</h3>
     <p id="lib-picker-tramite-name" style="color: var(--text-muted); font-size: 13px; margin-bottom: 10px;"></p>
     <div id="lib-picker-list" class="lib-picker-list"></div>
     <div class="modal-actions">
-      <button class="btn btn-secondary" id="lib-picker-close">Close</button>
-      <button class="btn btn-primary" id="lib-picker-upload">Upload new</button>
+      <button class="btn btn-secondary" id="lib-picker-close">Cerrar</button>
+      <button class="btn btn-primary" id="lib-picker-upload">Subir nuevo</button>
     </div>
   </div>
 </div>
