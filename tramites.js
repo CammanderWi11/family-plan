@@ -130,10 +130,12 @@
       return data && data.signedUrl;
     } catch { return null; }
   }
-  async function openDoc(path) {
-    const url = await signedUrlFor(path);
-    if (url) window.open(url, '_blank', 'noopener');
-    else toast('⚠ No se pudo abrir el archivo', 'error');
+  function openDoc(path) {
+    const w = window.open('about:blank', '_blank');
+    signedUrlFor(path).then(url => {
+      if (url && w) w.location.href = url;
+      else { if (w) w.close(); toast('⚠ No se pudo abrir el archivo', 'error'); }
+    });
   }
 
   // ---------- UI: checkboxes ----------

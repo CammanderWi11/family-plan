@@ -104,10 +104,12 @@
       const doc = library.find(d => d.id === id);
       const panel = listEl.querySelector('.lib-edit-panel[data-id="' + id + '"]');
 
-      entry.querySelector('.lib-name').onclick = async (e) => {
+      entry.querySelector('.lib-name').onclick = (e) => {
         e.preventDefault();
-        const url = await signedUrl(doc.storage_path);
-        if (url) window.open(url, '_blank', 'noopener');
+        const w = window.open('about:blank', '_blank');
+        signedUrl(doc.storage_path).then(url => {
+          if (url && w) w.location.href = url; else if (w) w.close();
+        });
       };
 
       entry.querySelector('.lib-edit-btn').onclick = () => {
@@ -179,7 +181,7 @@
       pill.className = 'lib-pill';
       pill.href = '#';
       pill.innerHTML = '<span>📎</span><span>' + escapeHtml(doc.filename) + '</span>';
-      pill.onclick = async (e) => { e.preventDefault(); const u = await signedUrl(doc.storage_path); if (u) window.open(u, '_blank', 'noopener'); };
+      pill.onclick = (e) => { e.preventDefault(); const w = window.open('about:blank', '_blank'); signedUrl(doc.storage_path).then(u => { if (u && w) w.location.href = u; else if (w) w.close(); }); };
       host.appendChild(pill);
     });
     // "Adjuntar desde biblioteca" button
