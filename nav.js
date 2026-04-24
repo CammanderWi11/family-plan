@@ -127,10 +127,21 @@ if ('serviceWorker' in navigator) {
     try { localStorage.setItem('fp-theme', next); } catch(e) {}
   }
 
-  // Init from saved preference
+  function systemTheme() {
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+
+  // Init from saved preference or system
   var saved = null;
   try { saved = localStorage.getItem('fp-theme'); } catch(e) {}
-  applyTheme(saved || 'dark');
+  applyTheme(saved || systemTheme());
+
+  // Follow system changes when no manual override
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
+    var manual = null;
+    try { manual = localStorage.getItem('fp-theme'); } catch(e) {}
+    if (!manual) applyTheme(systemTheme());
+  });
 
   // Bind clicks
   var btn = document.getElementById('theme-toggle');
