@@ -149,3 +149,19 @@ if ('serviceWorker' in navigator) {
   if (btn) btn.addEventListener('click', toggle);
   if (mBtn) mBtn.addEventListener('click', toggle);
 })();
+
+// ========== HEADER CLOCK ==========
+(function() {
+  var el = document.getElementById('header-clock');
+  if (!el) return;
+  var days = ['Dom','Lun','Mar','Mi\u00e9','Jue','Vie','S\u00e1b'];
+  var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  function tick() {
+    var d = new Date();
+    el.textContent = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() +
+      ' \u00b7 ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
