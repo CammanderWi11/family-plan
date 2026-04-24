@@ -626,6 +626,19 @@ section { scroll-margin-top: 20px; }
 }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
+/* External ICS event dots */
+.ics-dots {
+  position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 2px;
+}
+.ics-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+}
+.ics-dot-0 { background: #60a5fa; }
+.ics-dot-1 { background: #f472b6; }
+.ics-dot-2 { background: #34d399; }
+.cal-day.has-ics-event { cursor: pointer; }
+
 /* ============================================
    TABLES & DATA CARDS
    ============================================ */

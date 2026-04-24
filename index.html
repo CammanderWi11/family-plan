@@ -559,6 +559,25 @@ window.sb.auth.getSession().then(({ data }) => {
       <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px;">+ A&ntilde;adir viaje</button>
     </div>
 
+    <div class="settings-section-label">Calendarios externos (iCloud)</div>
+    <div class="glass data-card">
+      <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Pega la URL p&uacute;blica de un calendario compartido de iCloud. En iCloud.com &rarr; Calendario &rarr; Compartir &rarr; Calendario p&uacute;blico &rarr; copiar enlace.</p>
+      <div class="settings-row">
+        <label>Calendario 1</label>
+        <input type="url" id="cfg-ics-1" placeholder="https://p##-caldav.icloud.com/...">
+      </div>
+      <div class="settings-row">
+        <label>Calendario 2</label>
+        <input type="url" id="cfg-ics-2" placeholder="https://p##-caldav.icloud.com/...">
+      </div>
+      <div class="settings-row">
+        <label>Calendario 3</label>
+        <input type="url" id="cfg-ics-3" placeholder="https://p##-caldav.icloud.com/...">
+      </div>
+      <button class="btn btn-secondary" id="cfg-ics-save" style="margin-top: 8px;">Cargar calendarios</button>
+      <div id="cfg-ics-status" style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"></div>
+    </div>
+
     <div style="margin-top: 16px; display: flex; gap: 10px;">
       <button class="btn btn-primary" id="cfg-save" style="flex: 1; padding: 14px; font-size: 15px;">Guardar y reconstruir calendario</button>
       <button class="btn btn-secondary" id="cfg-reset" style="padding: 14px 20px;">Restablecer valores</button>

@@ -299,6 +299,209 @@
 
   };
 
+  // ========== EXTERNAL ICS CALENDARS ==========
+  var ICS_KEY = 'fp-ics-urls';
+  var ICS_CACHE_KEY = 'fp-ics-events';
+  var CORS_PROXY = 'https://corsproxy.io/?';
+  var externalEvents = {}; // dateKey -> [{summary, calIndex}]
+
+  function dateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function parseICS(text, calIndex) {
+    var events = [];
+    var blocks = text.split('BEGIN:VEVENT');
+    for (var i = 1; i < blocks.length; i++) {
+      var block = blocks[i].split('END:VEVENT')[0];
+      // Unfold lines (RFC 5545: line starting with space/tab is continuation)
+      block = block.replace(/\r?\n[ \t]/g, '');
+      var summary = '', dtstart = '', dtend = '';
+      var lines = block.split(/\r?\n/);
+      for (var j = 0; j < lines.length; j++) {
+        var line = lines[j];
+        if (line.match(/^SUMMARY[;:]/)) summary = line.replace(/^SUMMARY[^:]*:/, '');
+        if (line.match(/^DTSTART[;:]/)) dtstart = line.replace(/^DTSTART[^:]*:/, '');
+        if (line.match(/^DTEND[;:]/)) dtend = line.replace(/^DTEND[^:]*:/, '');
+      }
+      if (!dtstart || !summary) continue;
+      // Parse date: YYYYMMDD or YYYYMMDDTHHMMSSZ
+      var startDate = parseICSDate(dtstart);
+      var endDate = dtend ? parseICSDate(dtend) : startDate;
+      if (!startDate) continue;
+      // For all-day events, DTEND is exclusive
+      if (dtend && dtend.length === 8) {
+        endDate = new Date(endDate); endDate.setDate(endDate.getDate() - 1);
+      }
+      // Add event for each day in range
+      var cur = new Date(startDate);
+      while (cur <= endDate) {
+        var key = dateKey(cur);
+        if (!events[key]) events[key] = [];
+        events[key] = events[key] || [];
+        events[key].push({ summary: summary, calIndex: calIndex });
+        cur = new Date(cur); cur.setDate(cur.getDate() + 1);
+      }
+    }
+    return events;
+  }
+
+  function parseICSDate(s) {
+    if (!s) return null;
+    s = s.replace(/[^0-9TZ]/g, '');
+    if (s.length >= 8) {
+      var y = parseInt(s.substr(0, 4), 10);
+      var m = parseInt(s.substr(4, 2), 10) - 1;
+      var d = parseInt(s.substr(6, 2), 10);
+      if (s.length >= 15) {
+        var hh = parseInt(s.substr(9, 2), 10);
+        var mm = parseInt(s.substr(11, 2), 10);
+        if (s.indexOf('Z') > -1) {
+          var utc = new Date(Date.UTC(y, m, d, hh, mm));
+          return new Date(utc.getFullYear(), utc.getMonth(), utc.getDate());
+        }
+        return new Date(y, m, d);
+      }
+      return new Date(y, m, d);
+    }
+    return null;
+  }
+
+  function loadICSUrls() {
+    try { return JSON.parse(localStorage.getItem(ICS_KEY) || '[]'); } catch(e) { return []; }
+  }
+
+  function saveICSUrls(urls) {
+    try { localStorage.setItem(ICS_KEY, JSON.stringify(urls)); } catch(e) {}
+  }
+
+  function loadCachedEvents() {
+    try {
+      var cached = JSON.parse(localStorage.getItem(ICS_CACHE_KEY) || '{}');
+      if (cached.events && cached.ts && (Date.now() - cached.ts) < 30 * 60000) {
+        externalEvents = cached.events;
+        return true;
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  function saveCachedEvents() {
+    try { localStorage.setItem(ICS_CACHE_KEY, JSON.stringify({ events: externalEvents, ts: Date.now() })); } catch(e) {}
+  }
+
+  function fetchAllICS(callback) {
+    var urls = loadICSUrls().filter(function(u) { return u && u.trim(); });
+    if (!urls.length) { externalEvents = {}; if (callback) callback(); return; }
+    var pending = urls.length;
+    var allEvents = {};
+    urls.forEach(function(url, idx) {
+      var fetchUrl = url.replace(/^webcal:\/\//, 'https://');
+      fetch(CORS_PROXY + encodeURIComponent(fetchUrl))
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+          var parsed = parseICS(text, idx);
+          for (var key in parsed) {
+            if (!allEvents[key]) allEvents[key] = [];
+            allEvents[key] = allEvents[key].concat(parsed[key]);
+          }
+        })
+        .catch(function(err) { console.warn('ICS fetch failed for calendar ' + (idx + 1) + ':', err); })
+        .finally(function() {
+          pending--;
+          if (pending <= 0) {
+            externalEvents = allEvents;
+            saveCachedEvents();
+            if (callback) callback();
+          }
+        });
+    });
+  }
+
+  function getEventsForDate(date) {
+    return externalEvents[dateKey(date)] || [];
+  }
+
+  // Expose for calendar rendering
+  window.__icsGetEvents = getEventsForDate;
+
+  // Apply event dots to already-rendered calendar
+  function applyEventDots() {
+    var cells = document.querySelectorAll('.cal-day[data-date]');
+    cells.forEach(function(cell) {
+      var evts = externalEvents[cell.dataset.date];
+      if (evts && evts.length) {
+        cell.classList.add('has-ics-event');
+        var titles = evts.map(function(e) { return e.summary; });
+        var existing = cell.title || '';
+        cell.title = (existing ? existing + ' · ' : '') + titles.join(', ');
+        // Add dots
+        var dotsEl = cell.querySelector('.ics-dots');
+        if (!dotsEl) {
+          dotsEl = document.createElement('div');
+          dotsEl.className = 'ics-dots';
+          cell.appendChild(dotsEl);
+        }
+        var calIndices = [];
+        evts.forEach(function(e) { if (calIndices.indexOf(e.calIndex) === -1) calIndices.push(e.calIndex); });
+        dotsEl.innerHTML = calIndices.map(function(ci) { return '<span class="ics-dot ics-dot-' + ci + '"></span>'; }).join('');
+      }
+    });
+  }
+
+  // Patch renderCalendar to add data-date attributes
+  var _origRender = renderCalendar;
+  renderCalendar = function(cfg) {
+    _origRender(cfg);
+    // Add data-date to all day cells for event overlay
+    var container = document.getElementById('yearCalendar');
+    if (!container) return;
+    var months = container.querySelectorAll('.cal-month');
+    var monthsToShow = [
+      [2026,3],[2026,4],[2026,5],[2026,6],[2026,7],[2026,8],
+      [2026,9],[2026,10],[2026,11],[2027,0],[2027,1],[2027,2],[2027,3]
+    ];
+    months.forEach(function(monthDiv, mi) {
+      if (mi >= monthsToShow.length) return;
+      var year = monthsToShow[mi][0], month = monthsToShow[mi][1];
+      var dayCells = monthDiv.querySelectorAll('.cal-day:not(.empty)');
+      dayCells.forEach(function(cell, di) {
+        var d = new Date(year, month, di + 1);
+        cell.dataset.date = dateKey(d);
+      });
+    });
+    applyEventDots();
+  };
+
+  // Settings UI
+  function initICSSettings() {
+    var urls = loadICSUrls();
+    for (var i = 0; i < 3; i++) {
+      var input = document.getElementById('cfg-ics-' + (i + 1));
+      if (input && urls[i]) input.value = urls[i];
+    }
+    var saveBtn = document.getElementById('cfg-ics-save');
+    var statusEl = document.getElementById('cfg-ics-status');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        var newUrls = [];
+        for (var i = 0; i < 3; i++) {
+          var input = document.getElementById('cfg-ics-' + (i + 1));
+          newUrls.push(input ? input.value.trim() : '');
+        }
+        saveICSUrls(newUrls);
+        if (statusEl) statusEl.textContent = 'Cargando calendarios...';
+        // Clear cache to force re-fetch
+        try { localStorage.removeItem(ICS_CACHE_KEY); } catch(e) {}
+        fetchAllICS(function() {
+          var count = Object.keys(externalEvents).length;
+          if (statusEl) statusEl.textContent = count + ' días con eventos cargados.';
+          renderCalendar(getConfig());
+        });
+      });
+    }
+  }
+
   // Public API
   window.rebuildCalendar = function() {
     renderCalendar(getConfig());
@@ -307,5 +510,16 @@
   window.__calendarHelpers = { daysBetween: daysBetween, parseDate: parseDate, buildHelpers: buildHelpers };
 
   // Initial render
-  renderCalendar(getConfig());
+  if (loadCachedEvents()) {
+    renderCalendar(getConfig());
+  } else {
+    renderCalendar(getConfig());
+    fetchAllICS(function() { renderCalendar(getConfig()); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initICSSettings);
+  } else {
+    initICSSettings();
+  }
 })();
