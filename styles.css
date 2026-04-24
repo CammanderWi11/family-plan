@@ -1064,6 +1064,11 @@ section { scroll-margin-top: 20px; }
 /* ============================================
    SETTINGS
    ============================================ */
+.settings-section-label {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); margin: 20px 0 10px; padding-left: 2px;
+}
 .settings-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .settings-row label { flex: 0 0 150px; font-size: 13px; color: var(--text-secondary); }
 .settings-row input[type="date"],

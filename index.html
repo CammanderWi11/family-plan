@@ -510,56 +510,66 @@ window.sb.auth.getSession().then(({ data }) => {
   <section id="ajustes" class="tab-section">
     <div class="section-title">Ajustes</div>
 
-    <!-- Sesión -->
+    <!-- Apariencia -->
+    <div class="settings-section-label">Apariencia</div>
     <div class="glass data-card">
-      <h2>Sesión</h2>
-      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">Los trámites y documentos se sincronizan automáticamente entre dispositivos.</p>
-      <p id="settings-session-email" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;"></p>
-      <button class="btn btn-danger" id="settings-logout-btn">Cerrar sesión</button>
+      <div class="settings-row" style="justify-content: space-between;">
+        <label>Tema</label>
+        <button class="btn btn-secondary" id="mobile-theme-toggle" style="display: inline-flex; align-items: center; gap: 6px;">
+          <span id="mobile-theme-icon">&#9788;</span>
+          <span>CLARO</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Patrón de turnos -->
+    <!-- Calendario -->
+    <div class="settings-section-label">Calendario</div>
+
     <div class="glass data-card">
-      <h2>Patrón de turnos</h2>
+      <h2>Patr&oacute;n de turnos</h2>
       <div class="settings-row">
         <label>Fecha de referencia</label>
         <input type="date" id="cfg-shift-ref">
       </div>
       <div class="settings-row">
-        <label>Duración del ciclo (días)</label>
+        <label>Duraci&oacute;n del ciclo (d&iacute;as)</label>
         <input type="number" id="cfg-cycle" min="1" max="30">
       </div>
       <div class="settings-row">
-        <label>Días libres por ciclo</label>
+        <label>D&iacute;as libres por ciclo</label>
         <input type="number" id="cfg-days-off" min="0" max="15">
       </div>
     </div>
 
-    <!-- Bloques flexibles -->
     <div class="glass data-card">
       <h2>Bloques parentales flexibles</h2>
       <div id="cfg-flexible-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-flexible" style="margin-top: 8px;">+ Añadir bloque</button>
+      <button class="btn btn-secondary" id="cfg-add-flexible" style="margin-top: 8px;">+ A&ntilde;adir bloque</button>
     </div>
 
-    <!-- Vacaciones anuales -->
     <div class="glass data-card">
       <h2>Vacaciones anuales</h2>
       <div id="cfg-annual-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-annual" style="margin-top: 8px;">+ Añadir bloque</button>
+      <button class="btn btn-secondary" id="cfg-add-annual" style="margin-top: 8px;">+ A&ntilde;adir bloque</button>
     </div>
 
-    <!-- Viajes -->
     <div class="glass data-card">
       <h2>Viajes</h2>
       <div id="cfg-trips-list"></div>
-      <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px;">+ Añadir viaje</button>
+      <button class="btn btn-secondary" id="cfg-add-trip" style="margin-top: 8px;">+ A&ntilde;adir viaje</button>
     </div>
 
-    <!-- Guardar -->
     <div style="margin-top: 16px; display: flex; gap: 10px;">
       <button class="btn btn-primary" id="cfg-save" style="flex: 1; padding: 14px; font-size: 15px;">Guardar y reconstruir calendario</button>
       <button class="btn btn-secondary" id="cfg-reset" style="padding: 14px 20px;">Restablecer valores</button>
+    </div>
+
+    <!-- Sesión -->
+    <div class="settings-section-label" style="margin-top: 32px;">Sesi&oacute;n</div>
+    <div class="glass data-card">
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">Los tr&aacute;mites y documentos se sincronizan autom&aacute;ticamente entre dispositivos.</p>
+      <p id="settings-session-email" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;"></p>
+      <button class="btn btn-danger" id="settings-logout-btn">Cerrar sesi&oacute;n</button>
     </div>
   </section>
 
