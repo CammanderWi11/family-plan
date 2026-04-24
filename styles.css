@@ -959,6 +959,38 @@ section { scroll-margin-top: 20px; }
 }
 .doc-entry .doc-del:hover { color: var(--red); background: var(--red-soft); }
 
+/* Document library entry edit */
+.lib-entry { flex-direction: column; align-items: stretch; gap: 0; padding: 10px 12px; }
+.lib-entry-main { display: flex; align-items: center; gap: 8px; }
+.lib-entry-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.lib-note-preview {
+  font-size: 11px; color: var(--text-muted); margin-top: 3px;
+  white-space: pre-wrap; line-height: 1.4;
+}
+.lib-edit-btn {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  font-size: 14px; padding: 2px 6px; border-radius: 6px;
+}
+.lib-edit-btn:hover { color: var(--amber); background: var(--amber-soft); }
+.lib-edit-panel {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.lib-edit-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+  color: var(--text-muted); text-transform: uppercase;
+}
+.lib-edit-name, .lib-edit-notes {
+  width: 100%; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 13px; font-family: var(--font-sans);
+  outline: none; resize: vertical;
+}
+.lib-edit-name:focus, .lib-edit-notes:focus { border-color: var(--amber-dark); }
+.lib-edit-notes { min-height: 70px; }
+.lib-edit-btns { display: flex; gap: 8px; margin-top: 4px; }
+
 /* ============================================
    MODALS
    ============================================ */
