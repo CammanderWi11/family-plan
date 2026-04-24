@@ -1266,6 +1266,17 @@ button, .timer-btn, .mobile-tab, .reg-bottle-btn, .reg-nav-btn, .reg-del {
   body { padding-bottom: 0; }
   .main-content { padding: 12px 12px 80px; }
   .cal-grid { grid-template-columns: 1fr; }
+  .reg-timer-row { gap: 8px; }
+  .timer-btn { gap: 6px; padding: 10px 10px; }
+  .timer-icon { font-size: 16px; }
+  .timer-label { font-size: 11px; }
+  .timer-elapsed { font-size: 13px; }
+  .reg-stats-row { flex-wrap: wrap; }
+  .reg-stat { min-width: 45%; flex: 1 1 45%; padding: 6px 4px; }
+  .reg-stat:nth-child(2) { border-right: none; }
+  .reg-stat-val { font-size: 15px; }
+  .reg-stat-lbl { font-size: 8px; }
+  .reg-hero-elapsed { font-size: 22px; }
 }
 
 /* ============================================
@@ -1567,11 +1578,11 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 
 .timer-btn {
   display: flex; flex-direction: row; align-items: center;
-  gap: 10px; padding: 12px 14px; border-radius: 10px; cursor: pointer;
+  gap: 8px; padding: 12px 12px; border-radius: 10px; cursor: pointer;
   border: 1px solid var(--border); background: var(--surface);
   color: var(--text); font-family: var(--font-sans);
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
-  text-align: left; width: 100%;
+  text-align: left; width: 100%; min-width: 0; overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .timer-btn:hover {
@@ -1593,15 +1604,23 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   0%, 100% { box-shadow: 0 0 0 2px var(--amber-dark), 0 0 8px var(--amber-glow); }
   50% { box-shadow: 0 0 0 4px var(--amber-glow), 0 0 20px var(--amber-glow); }
 }
-.timer-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
-.timer-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); flex: 1; }
+.timer-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.timer-label {
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .timer-elapsed {
-  font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--amber); flex-shrink: 0;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--amber);
+  flex-shrink: 0; white-space: nowrap;
 }
 .timer-last {
-  font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); flex-shrink: 0;
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);
+  flex-shrink: 0; white-space: nowrap;
 }
-.timer-tap { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; flex-shrink: 0; }
+.timer-tap {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.5px; flex-shrink: 0; white-space: nowrap;
+}
 
 
 .reg-entry {
