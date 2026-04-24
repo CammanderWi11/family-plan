@@ -221,7 +221,7 @@ body::after {
   content: '';
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: repeating-linear-gradient(0deg, transparent, transparent 3px, var(--mission-scanline) 3px, var(--mission-scanline) 4px);
-  pointer-events: none; z-index: 9998;
+  pointer-events: none; z-index: 1;
 }
 /* Remove old animated orbs */
 body::before { display: none; }
@@ -305,7 +305,7 @@ body::before { display: none; }
   max-width: 1060px;
 }
 
-.container { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+.container { max-width: 960px; margin: 0 auto; position: relative; z-index: 2; }
 
 /* ============================================
    HEADER
