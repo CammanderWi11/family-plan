@@ -110,6 +110,14 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="nav-icon">&#9782;</span>
       <span class="nav-label">Documentos</span>
     </a>
+    <a href="#rutina" class="nav-item" data-tab="rutina">
+      <span class="nav-icon">&#127775;</span>
+      <span class="nav-label">Rutina Leo</span>
+    </a>
+    <a href="#registro" class="nav-item" data-tab="registro">
+      <span class="nav-icon">&#129354;</span>
+      <span class="nav-label">Registro Luca</span>
+    </a>
   </div>
   <div class="sidebar-bottom">
     <a href="#ajustes" class="nav-item" data-tab="ajustes">
@@ -149,10 +157,14 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="tab-icon">&#9782;</span>
       <span>DOCS</span>
     </a>
-    <button class="mobile-theme-toggle" id="mobile-theme-toggle" title="Cambiar modo claro/oscuro">
-      <span class="tab-icon" id="mobile-theme-icon">&#9788;</span>
-      <span>CLARO</span>
-    </button>
+    <a href="#rutina" class="mobile-tab" data-tab="rutina">
+      <span class="tab-icon">&#127775;</span>
+      <span>LEO</span>
+    </a>
+    <a href="#registro" class="mobile-tab" data-tab="registro">
+      <span class="tab-icon">&#129354;</span>
+      <span>LUCA</span>
+    </a>
   </div>
 </nav>
 
@@ -493,6 +505,16 @@ window.sb.auth.getSession().then(({ data }) => {
     </div>
   </section>
 
+  <!-- ========== RUTINA DE LEO ========== -->
+  <section id="rutina" class="tab-section">
+    <div class="section-title">Rutina de Leo</div>
+  </section>
+
+  <!-- ========== REGISTRO DE LUCA ========== -->
+  <section id="registro" class="tab-section">
+    <div class="section-title">Registro de Luca</div>
+  </section>
+
   <!-- ========== SETTINGS (AJUSTES) ========== -->
   <section id="ajustes" class="tab-section">
     <div class="section-title">Ajustes</div>
@@ -587,6 +609,8 @@ window.sb.auth.getSession().then(({ data }) => {
 <script src="tramites.js"></script>
 <script src="library.js"></script>
 <script src="settings.js"></script>
+<script src="rutina.js"></script>
+<script src="registro.js"></script>
 <script src="nav.js"></script>
 
 </div><!-- /main-content -->
