@@ -371,4 +371,10 @@
     pullFromSupabase();
   });
 
+  // Expose for Resumen banners
+  window.getLeoCurrentStep = function() {
+    if (!BLOCKS.length) return null;
+    return findCurrent();
+  };
+  window.LEO_WHO_LABELS = WHO_LABELS;
 })();

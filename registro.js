@@ -500,4 +500,18 @@
   }
   window.addEventListener('auth-ready', pullSharedLog);
 
+  // Expose for Resumen banners
+  window.getLucaLastEntry = function() {
+    var log = getLog();
+    if (!log.length) return null;
+    var last = log[0];
+    return {
+      type: last.type,
+      side: last.side,
+      ml: last.ml || null,
+      startedAt: last.startedAt,
+      elapsedSeconds: elapsedSince(last.startedAt)
+    };
+  };
+  window.fmtLucaElapsed = fmtElapsed;
 })();

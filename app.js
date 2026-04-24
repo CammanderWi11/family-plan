@@ -213,3 +213,98 @@ window.getTabForKey = function(key) {
   var group = window.getGroupForKey(key);
   return group === 'salud' ? '#salud' : '#tramites';
 };
+
+// ========== RESUMEN BANNERS (Leo + Luca) ==========
+(function() {
+  var bannerInterval = null;
+
+  function renderBanners() {
+    var host = document.getElementById('resumen-banners');
+    if (!host) return;
+
+    var html = '<div class="resumen-banner-row">';
+
+    // Leo banner
+    var leoHtml = '';
+    if (window.getLeoCurrentStep) {
+      var cur = window.getLeoCurrentStep();
+      if (cur && cur.currentStep) {
+        var s = cur.currentStep.step;
+        var whoLabel = (window.LEO_WHO_LABELS && window.LEO_WHO_LABELS[s.who]) || s.who;
+        leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
+          '<span class="resumen-banner-icon">\ud83d\udccc</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">Leo ahora</span>' +
+            '<span class="resumen-banner-text">' + s.name + ' \u00b7 ' + s.time + '\u2013' + s.endTime + '</span>' +
+          '</div>' +
+          '<span class="caregiver-badge caregiver-' + s.who + ' badge-sm">' + whoLabel + '</span>' +
+        '</div>';
+      } else {
+        leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
+          '<span class="resumen-banner-icon">\ud83d\udccc</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">Leo ahora</span>' +
+            '<span class="resumen-banner-text resumen-banner-muted">Fuera de horario</span>' +
+          '</div>' +
+        '</div>';
+      }
+    }
+
+    // Luca banner
+    var lucaHtml = '';
+    if (window.getLucaLastEntry) {
+      var last = window.getLucaLastEntry();
+      if (last) {
+        var elapsed = window.fmtLucaElapsed ? window.fmtLucaElapsed(last.elapsedSeconds) : '';
+        var detail = '';
+        if (last.type === 'breast') {
+          detail = 'Pecho ' + (last.side === 'left' ? 'Izq' : 'Der');
+        } else if (last.type === 'pump') {
+          detail = 'Sacaleche ' + (last.side === 'left' ? 'Izq' : 'Der');
+        } else if (last.type === 'bottle') {
+          detail = 'Biber\u00f3n' + (last.ml ? ' ' + last.ml + 'ml' : '');
+        }
+        var isAlert = last.elapsedSeconds > 3 * 3600;
+        lucaHtml = '<div class="resumen-banner resumen-banner-luca' + (isAlert ? ' resumen-banner-alert' : '') + '">' +
+          '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">\u00daltima toma</span>' +
+            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + '</span>' +
+          '</div>' +
+        '</div>';
+      } else {
+        lucaHtml = '<div class="resumen-banner resumen-banner-luca">' +
+          '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">\u00daltima toma</span>' +
+            '<span class="resumen-banner-text resumen-banner-muted">Sin registros a\u00fan</span>' +
+          '</div>' +
+        '</div>';
+      }
+    }
+
+    html += leoHtml + lucaHtml + '</div>';
+    host.innerHTML = html;
+  }
+
+  function startBannerRefresh() {
+    if (bannerInterval) clearInterval(bannerInterval);
+    renderBanners();
+    bannerInterval = setInterval(renderBanners, 60000);
+  }
+
+  // Start on DOMContentLoaded, re-render when switching to resumen
+  function init() {
+    // Delay slightly to let rutina.js and registro.js load their data
+    setTimeout(startBannerRefresh, 500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  window.addEventListener('auth-ready', function() {
+    setTimeout(renderBanners, 1000);
+  });
+})();
