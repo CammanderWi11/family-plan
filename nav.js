@@ -19,7 +19,6 @@ if ('serviceWorker' in navigator) {
     calendario: 'Calendario',
     tramites: 'Trámites',
     salud: 'Citas Médicas',
-    documentos: 'Documentos',
     rutina: 'Rutina de Leo',
     registro: 'Registro de Luca',
     ajustes: 'Ajustes'
@@ -30,7 +29,6 @@ if ('serviceWorker' in navigator) {
     calendario: 'ANNUAL_VIEW',
     tramites: 'TASK_TRACKER',
     salud: 'MEDICAL_LOG',
-    documentos: 'FILE_STORE',
     rutina: 'ROUTINE.2Y',
     registro: 'FEED.LOG',
     ajustes: 'CONFIG'

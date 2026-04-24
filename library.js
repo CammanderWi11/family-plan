@@ -207,7 +207,7 @@
   function renderPickerList() {
     const list = document.getElementById('lib-picker-list');
     if (!library.length) {
-      list.innerHTML = '<div class="doc-list-empty">Sube documentos primero desde la pestaña Documentos.</div>';
+      list.innerHTML = '<div class="doc-list-empty">Sube documentos primero desde la sección Documentos en Trámites.</div>';
       return;
     }
     const attachedIds = new Set(attachments.filter(a => a.tramite_key === currentPickerTramite).map(a => a.document_id));
