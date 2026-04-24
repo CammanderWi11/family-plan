@@ -1203,7 +1203,7 @@ button, .timer-btn, .mobile-tab, .reg-bottle-btn, .reg-nav-btn, .reg-del {
   .main-content {
     margin-left: 0;
     padding: 16px 16px calc(80px + env(safe-area-inset-bottom, 0px));
-    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    padding-top: calc(12px + env(safe-area-inset-top, 20px));
   }
   .mobile-settings-btn { display: flex; }
 
