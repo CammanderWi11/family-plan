@@ -426,15 +426,38 @@
   window.__icsGetEvents = getEventsForDate;
 
   // Apply event dots to already-rendered calendar
+  var tooltip = null;
+  var calNames = ['Mum', 'Daddey', 'Family Matters'];
+
+  function hideTooltip() {
+    if (tooltip) { tooltip.remove(); tooltip = null; }
+  }
+
+  function showTooltip(cell, evts) {
+    hideTooltip();
+    tooltip = document.createElement('div');
+    tooltip.className = 'ics-tooltip';
+    tooltip.innerHTML = evts.map(function(e) {
+      return '<div class="ics-tooltip-item"><span class="ics-dot ics-dot-' + e.calIndex + '"></span>' +
+        '<span>' + e.summary + '</span></div>';
+    }).join('');
+    document.body.appendChild(tooltip);
+    var rect = cell.getBoundingClientRect();
+    var top = rect.bottom + 6;
+    var left = rect.left + rect.width / 2 - 110;
+    if (left < 8) left = 8;
+    if (left + 220 > window.innerWidth) left = window.innerWidth - 228;
+    if (top + 100 > window.innerHeight) top = rect.top - tooltip.offsetHeight - 6;
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }
+
   function applyEventDots() {
     var cells = document.querySelectorAll('.cal-day[data-date]');
     cells.forEach(function(cell) {
       var evts = externalEvents[cell.dataset.date];
       if (evts && evts.length) {
         cell.classList.add('has-ics-event');
-        var titles = evts.map(function(e) { return e.summary; });
-        var existing = cell.title || '';
-        cell.title = (existing ? existing + ' · ' : '') + titles.join(', ');
         // Add dots
         var dotsEl = cell.querySelector('.ics-dots');
         if (!dotsEl) {
@@ -445,9 +468,20 @@
         var calIndices = [];
         evts.forEach(function(e) { if (calIndices.indexOf(e.calIndex) === -1) calIndices.push(e.calIndex); });
         dotsEl.innerHTML = calIndices.map(function(ci) { return '<span class="ics-dot ics-dot-' + ci + '"></span>'; }).join('');
+        // Tooltip on click/tap
+        cell.addEventListener('click', function(e) {
+          e.stopPropagation();
+          showTooltip(cell, evts);
+        });
+        // Tooltip on hover (desktop)
+        cell.addEventListener('mouseenter', function() { showTooltip(cell, evts); });
+        cell.addEventListener('mouseleave', hideTooltip);
       }
     });
   }
+
+  // Dismiss tooltip on outside click
+  document.addEventListener('click', hideTooltip);
 
   // Patch renderCalendar to add data-date attributes
   var _origRender = renderCalendar;
