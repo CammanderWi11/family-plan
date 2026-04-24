@@ -184,36 +184,22 @@
     if (!btn) return;
     var meta = TIMER_META[key];
     var isActive = !!active[key];
-    var isBoob = key === 'breast_left' || key === 'breast_right';
 
-    if (isBoob) {
-      btn.className = 'boob-btn' + (isActive ? ' boob-btn-active' : '');
-      var elapsed = isActive ? active[key].elapsed : 0;
-      if (isActive) {
-        btn.innerHTML = '<span class="boob-nipple"></span><span class="boob-timer">' + fmtDuration(elapsed) + '</span>';
-      } else {
-        var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
-        var lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
-        btn.innerHTML = '<span class="boob-nipple"></span>' +
-          (lastLog ? '<span class="boob-last">' + fmtDuration(lastLog.durationSeconds) + '</span>' : '<span class="boob-tap">Iniciar</span>');
-      }
-    } else {
-      btn.className = 'timer-btn' + (isActive ? ' timer-btn-active' : '');
-      var elapsed = isActive ? active[key].elapsed : 0;
-      var lastLog = null;
-      if (!isActive) {
-        var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
-        lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
-      }
-      btn.innerHTML =
-        '<span class="timer-icon">' + meta.icon + '</span>' +
-        '<span class="timer-label">' + meta.label + '</span>' +
-        (isActive
-          ? '<span class="timer-elapsed">' + fmtDuration(elapsed) + '</span>'
-          : (lastLog
-              ? '<span class="timer-last">' + fmtDuration(lastLog.durationSeconds) + '</span>'
-              : '<span class="timer-tap">Iniciar</span>'));
+    btn.className = 'timer-btn' + (isActive ? ' timer-btn-active' : '');
+    var elapsed = isActive ? active[key].elapsed : 0;
+    var lastLog = null;
+    if (!isActive) {
+      var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
+      lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
     }
+    btn.innerHTML =
+      '<span class="timer-icon">' + meta.icon + '</span>' +
+      '<span class="timer-label">' + meta.label + '</span>' +
+      (isActive
+        ? '<span class="timer-elapsed">' + fmtDuration(elapsed) + '</span>'
+        : (lastLog
+            ? '<span class="timer-last">' + fmtDuration(lastLog.durationSeconds) + '</span>'
+            : '<span class="timer-tap">Iniciar</span>'));
   }
 
   // ---- Bottle input ----
@@ -421,12 +407,12 @@
 
     var html = '';
 
-    // 1. Pecho buttons — boob-shaped hero
-    html += '<div class="glass data-card reg-boob-card">';
+    // 1. Pecho buttons
+    html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\ud83e\udd31 Pecho</h3>';
-    html += '<div class="reg-boob-row">';
-    html += '<div class="reg-boob-wrap"><button class="boob-btn" id="reg-btn-breast_left"></button><span class="boob-label">Izquierdo</span></div>';
-    html += '<div class="reg-boob-wrap"><button class="boob-btn" id="reg-btn-breast_right"></button><span class="boob-label">Derecho</span></div>';
+    html += '<div class="reg-timer-row">';
+    html += '<button class="timer-btn" id="reg-btn-breast_left"></button>';
+    html += '<button class="timer-btn" id="reg-btn-breast_right"></button>';
     html += '</div>';
     html += '</div>';
 
@@ -460,17 +446,7 @@
 
     section.innerHTML = html;
 
-    // Boob buttons
-    ['breast_left', 'breast_right'].forEach(function(key) {
-      var btn = document.getElementById('reg-btn-' + key);
-      if (!btn) return;
-      btn.addEventListener('click', function() {
-        if (active[key]) { stopTimer(key); } else { startTimer(key); }
-      });
-    });
-
-    // Pump buttons
-    ['pump_left', 'pump_right'].forEach(function(key) {
+    TIMER_KEYS.forEach(function(key) {
       var btn = document.getElementById('reg-btn-' + key);
       if (!btn) return;
       btn.addEventListener('click', function() {
