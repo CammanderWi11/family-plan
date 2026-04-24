@@ -44,10 +44,22 @@
     renderAttachedPillsAll();
   }
 
+  // ---- Notes (localStorage) ----
+  function getDocNotes() {
+    try { return JSON.parse(localStorage.getItem('fp-doc-notes') || '{}'); } catch(e) { return {}; }
+  }
+  function saveDocNote(id, note) {
+    const notes = getDocNotes();
+    if (note && note.trim()) notes[id] = note.trim();
+    else delete notes[id];
+    try { localStorage.setItem('fp-doc-notes', JSON.stringify(notes)); } catch(e) {}
+  }
+
   function renderLibrary() {
     const listEl = document.getElementById('lib-list');
     if (!listEl) return;
     if (!library.length) { listEl.innerHTML = '<div class="doc-list-empty">Aún no hay documentos en la biblioteca.</div>'; return; }
+    const notes = getDocNotes();
     const byType = {};
     library.forEach(d => {
       const k = d.doc_type || 'otro';
@@ -59,23 +71,68 @@
       html += '<div class="lib-group-title">' + (typeLabels[type] || type) + ' <span class="lib-group-count">' + byType[type].length + '</span></div>';
       byType[type].forEach(d => {
         const count = attachments.filter(a => a.document_id === d.id).length;
+        const note = notes[d.id] || '';
         html += '<div class="lib-entry" data-id="' + d.id + '">';
+        html += '<div class="lib-entry-main">';
         html += '<a class="lib-name" href="#">' + escapeHtml(d.filename) + '</a>';
-        html += '<span class="lib-attach-count" title="Adjunto a ' + count + ' trámites">📎 ' + count + '</span>';
-        html += '<button class="lib-del" title="Eliminar">🗑</button>';
+        if (note) html += '<div class="lib-note-preview">' + escapeHtml(note) + '</div>';
+        html += '</div>';
+        html += '<div class="lib-entry-actions">';
+        html += '<span class="lib-attach-count" title="Adjunto a ' + count + ' trámites">&#9993; ' + count + '</span>';
+        html += '<button class="lib-edit-btn" title="Editar nombre y notas">&#9998;</button>';
+        html += '<button class="lib-del" title="Eliminar">&#128465;</button>';
+        html += '</div>';
+        html += '</div>';
+        // Edit panel (hidden by default)
+        html += '<div class="lib-edit-panel" data-id="' + d.id + '" style="display:none;">';
+        html += '<label class="lib-edit-label">Nombre del documento</label>';
+        html += '<input class="lib-edit-name" type="text" value="' + escapeHtml(d.filename) + '" placeholder="Nombre del documento">';
+        html += '<label class="lib-edit-label">Notas</label>';
+        html += '<textarea class="lib-edit-notes" placeholder="Añade notas sobre este documento...">' + escapeHtml(note) + '</textarea>';
+        html += '<div class="lib-edit-btns">';
+        html += '<button class="btn btn-primary lib-save-btn">Guardar</button>';
+        html += '<button class="btn btn-secondary lib-cancel-btn">Cancelar</button>';
+        html += '</div>';
         html += '</div>';
       });
       html += '</div>';
     });
     listEl.innerHTML = html;
+
     listEl.querySelectorAll('.lib-entry').forEach(entry => {
       const id = entry.dataset.id;
       const doc = library.find(d => d.id === id);
+      const panel = listEl.querySelector('.lib-edit-panel[data-id="' + id + '"]');
+
       entry.querySelector('.lib-name').onclick = async (e) => {
         e.preventDefault();
         const url = await signedUrl(doc.storage_path);
         if (url) window.open(url, '_blank', 'noopener');
       };
+
+      entry.querySelector('.lib-edit-btn').onclick = () => {
+        const isOpen = panel.style.display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+      };
+
+      panel.querySelector('.lib-cancel-btn').onclick = () => { panel.style.display = 'none'; };
+
+      panel.querySelector('.lib-save-btn').onclick = async () => {
+        const newName = panel.querySelector('.lib-edit-name').value.trim();
+        const newNote = panel.querySelector('.lib-edit-notes').value;
+        if (!newName) { toast('⚠ El nombre no puede estar vacío', 'error'); return; }
+        const t = toast('Guardando…', 'loading');
+        if (newName !== doc.filename) {
+          const { error } = await sb.from('documents').update({ filename: newName }).eq('id', id);
+          if (error) { t.remove(); toast('⚠ ' + error.message, 'error'); return; }
+        }
+        saveDocNote(id, newNote);
+        t.remove();
+        toast('✓ Guardado', 'success');
+        panel.style.display = 'none';
+        await fetchLibrary();
+      };
+
       entry.querySelector('.lib-del').onclick = async () => {
         if (!confirm('¿Eliminar "' + doc.filename + '" de la biblioteca? Se desvinculará de todos los trámites.')) return;
         const t = toast('Eliminando…', 'loading');
@@ -83,6 +140,7 @@
         const { error } = await sb.from('documents').delete().eq('id', doc.id);
         t.remove();
         if (error) { toast('⚠ ' + error.message, 'error'); return; }
+        saveDocNote(id, '');
         toast('✓ Eliminado', 'success');
         await Promise.all([fetchLibrary(), fetchAttachments()]);
       };
