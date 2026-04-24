@@ -212,15 +212,11 @@ window.sb.auth.getSession().then(({ data }) => {
   <section id="calendario" class="tab-section">
     <div class="section-title">Vista anual</div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Permiso obligatorio</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-parental-bg)"></div> Permiso flexible</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Vacaciones anuales</div>
-      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, var(--cal-parental-bg) 50%, var(--cal-annual-bg) 50%)"></div> Permiso + Vacaciones</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Permiso</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Vacaciones</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: inset 0 0 0 2.5px var(--cal-trip-ring)"></div> Viaje</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> Días libres de turno</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); border-bottom: 2.5px solid var(--cal-school-border)"></div> Escuela de verano</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Nace Luca</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: 0 0 0 2.5px #fbbf24"></div> Hoy</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> D&iacute;as Libres</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-school-bg)"></div> Escuela de verano</div>
     </div>
     <div class="cal-grid" id="yearCalendar"></div>
 
