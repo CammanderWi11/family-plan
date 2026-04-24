@@ -50,6 +50,13 @@
     window.sb.from(SHARED_TABLE).delete().eq('entry_id', entryId).then(function() {});
   }
 
+  // Update entry duration in shared Supabase table
+  function updateEntryDuration(entryId, durationSeconds) {
+    if (!window.sb || !window.__authReady) return;
+    window.sb.from(SHARED_TABLE).update({ duration_seconds: durationSeconds })
+      .eq('entry_id', entryId).then(function() {});
+  }
+
   // Pull all entries from shared table, replace local cache
   function pullSharedLog() {
     if (!window.sb || !window.__authReady) return;
@@ -87,6 +94,16 @@
   function removeEntry(entryId) {
     saveLogLocal(getLog().filter(function(e) { return e.id !== entryId; }));
     deleteEntry(entryId);
+  }
+
+  // Update duration locally and in shared table
+  function editDuration(entryId, newSeconds) {
+    var log = getLog();
+    for (var i = 0; i < log.length; i++) {
+      if (log[i].id === entryId) { log[i].durationSeconds = newSeconds; break; }
+    }
+    saveLogLocal(log);
+    updateEntryDuration(entryId, newSeconds);
   }
 
   // ---- Date helpers ----
@@ -363,7 +380,8 @@
           typeLbl = entry.type === 'breast' ? 'Pecho' : 'Sacaleche';
           var sideLbl = entry.side === 'left' ? 'Izq' : 'Der';
           typeLbl += ' ' + sideLbl;
-          detailHtml = '<span class="reg-entry-dur">' + fmtDuration(entry.durationSeconds) + '</span>';
+          var mins = Math.round(entry.durationSeconds / 60);
+          detailHtml = '<span class="reg-entry-dur reg-entry-dur-edit" data-id="' + entry.id + '" data-secs="' + entry.durationSeconds + '" title="Editar duración">' + fmtDuration(entry.durationSeconds) + '</span>';
         }
         logHtml +=
           '<div class="reg-entry">' +
@@ -397,6 +415,33 @@
         var id = btn.dataset.id;
         removeEntry(id);
         renderAll();
+      });
+    });
+
+    el.querySelectorAll('.reg-entry-dur-edit').forEach(function(span) {
+      span.addEventListener('click', function() {
+        var entryId = span.dataset.id;
+        var curSecs = parseInt(span.dataset.secs, 10) || 0;
+        var curMins = Math.round(curSecs / 60);
+        var input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'reg-dur-input';
+        input.value = curMins;
+        input.min = '0';
+        input.inputMode = 'numeric';
+        span.replaceWith(input);
+        input.focus();
+        input.select();
+        function save() {
+          var newMins = parseInt(input.value, 10);
+          if (isNaN(newMins) || newMins < 0) newMins = curMins;
+          editDuration(entryId, newMins * 60);
+          renderAll();
+        }
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        });
       });
     });
   }
