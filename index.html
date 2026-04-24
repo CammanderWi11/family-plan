@@ -91,7 +91,15 @@ window.sb.auth.getSession().then(({ data }) => {
   <div class="sidebar-nav">
     <a href="#resumen" class="nav-item active" data-tab="resumen">
       <span class="nav-icon">&#9632;</span>
-      <span class="nav-label">Resumen</span>
+      <span class="nav-label">Inicio</span>
+    </a>
+    <a href="#registro" class="nav-item" data-tab="registro">
+      <span class="nav-icon">&#9679;</span>
+      <span class="nav-label">Registro Luca</span>
+    </a>
+    <a href="#rutina" class="nav-item" data-tab="rutina">
+      <span class="nav-icon">&#9711;</span>
+      <span class="nav-label">Rutina Leo</span>
     </a>
     <a href="#calendario" class="nav-item" data-tab="calendario">
       <span class="nav-icon">&#9638;</span>
@@ -105,14 +113,6 @@ window.sb.auth.getSession().then(({ data }) => {
     <a href="#salud" class="nav-item" data-tab="salud">
       <span class="nav-icon">&#9737;</span>
       <span class="nav-label">Citas Médicas</span>
-    </a>
-    <a href="#rutina" class="nav-item" data-tab="rutina">
-      <span class="nav-icon">&#9711;</span>
-      <span class="nav-label">Rutina Leo</span>
-    </a>
-    <a href="#registro" class="nav-item" data-tab="registro">
-      <span class="nav-icon">&#9679;</span>
-      <span class="nav-label">Registro Luca</span>
     </a>
   </div>
   <div class="sidebar-bottom">
@@ -137,6 +137,14 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="tab-icon">&#9632;</span>
       <span>INICIO</span>
     </a>
+    <a href="#registro" class="mobile-tab" data-tab="registro">
+      <span class="tab-icon">&#9679;</span>
+      <span>LUCA</span>
+    </a>
+    <a href="#rutina" class="mobile-tab" data-tab="rutina">
+      <span class="tab-icon">&#9711;</span>
+      <span>LEO</span>
+    </a>
     <a href="#calendario" class="mobile-tab" data-tab="calendario">
       <span class="tab-icon">&#9638;</span>
       <span>CAL</span>
@@ -149,14 +157,6 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="tab-icon">&#9737;</span>
       <span>CITAS</span>
     </a>
-    <a href="#rutina" class="mobile-tab" data-tab="rutina">
-      <span class="tab-icon">&#9711;</span>
-      <span>LEO</span>
-    </a>
-    <a href="#registro" class="mobile-tab" data-tab="registro">
-      <span class="tab-icon">&#9679;</span>
-      <span>LUCA</span>
-    </a>
   </div>
 </nav>
 
@@ -166,7 +166,7 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== HEADER ========== -->
   <div class="header">
-    <h1>Resumen <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
+    <h1>Inicio <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
     <div class="sub">Luca &middot; Nacido 17 abr 2026</div>
     <button class="mobile-settings-btn" id="mobile-settings-btn" title="Ajustes">&#9881;</button>
   </div>
@@ -201,14 +201,30 @@ window.sb.auth.getSession().then(({ data }) => {
           <div class="countdown-label">Vuelta al trabajo</div>
         </div>
       </div>
-      <div class="countdown-deadlines" id="cd-deadlines"></div>
       <div class="progress-label" id="cd-progress-label" style="margin-top: 14px;"></div>
       <div class="progress-track">
         <div class="progress-fill" id="cd-progress" style="width:0%"></div>
       </div>
     </div>
+  </section>
 
-    <!-- Leave Blocks (absorbed from bloques tab) -->
+  <!-- ========== CALENDARIO ========== -->
+  <section id="calendario" class="tab-section">
+    <div class="section-title">Vista anual</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Permiso obligatorio</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-parental-bg)"></div> Permiso flexible</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Vacaciones anuales</div>
+      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, var(--cal-parental-bg) 50%, var(--cal-annual-bg) 50%)"></div> Permiso + Vacaciones</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: inset 0 0 0 2.5px var(--cal-trip-ring)"></div> Viaje</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> Días libres de turno</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); border-bottom: 2.5px solid var(--cal-school-border)"></div> Escuela de verano</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Nace Luca</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: 0 0 0 2.5px #fbbf24"></div> Hoy</div>
+    </div>
+    <div class="cal-grid" id="yearCalendar"></div>
+
+    <!-- Leave Blocks -->
     <div class="glass data-card" id="dashboard-leave-blocks">
       <h2>Bloques de permiso</h2>
       <table class="data-table">
@@ -296,7 +312,7 @@ window.sb.auth.getSession().then(({ data }) => {
       </table>
     </div>
 
-    <!-- Vacation Summary (absorbed from bloques tab) -->
+    <!-- Vacation Summary -->
     <div class="glass data-card">
       <h2>Vacaciones anuales</h2>
       <table class="data-table">
@@ -340,7 +356,7 @@ window.sb.auth.getSession().then(({ data }) => {
       </div>
     </div>
 
-    <!-- Notes (absorbed from notas tab) -->
+    <!-- Notes -->
     <div class="glass data-card" id="dashboard-notes">
       <h2>Notas</h2>
       <div class="alert">
@@ -354,23 +370,6 @@ window.sb.auth.getSession().then(({ data }) => {
         <li><strong>Plazo:</strong> 17 de las 19 semanas deben usarse antes de que Luca cumpla 1 año (17 abr 2027). Los bloques de Japón terminan el 15 abr &mdash; 5 días de margen. Las 2 semanas adicionales pueden usarse hasta que cumpla 8 (abr 2034).</li>
       </ul>
     </div>
-  </section>
-
-  <!-- ========== CALENDARIO ========== -->
-  <section id="calendario" class="tab-section">
-    <div class="section-title">Vista anual</div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-mandatory-bg)"></div> Permiso obligatorio</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-parental-bg)"></div> Permiso flexible</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-annual-bg)"></div> Vacaciones anuales</div>
-      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, var(--cal-parental-bg) 50%, var(--cal-annual-bg) 50%)"></div> Permiso + Vacaciones</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: inset 0 0 0 2.5px var(--cal-trip-ring)"></div> Viaje</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); outline: 2.5px solid var(--cal-shift-ring); outline-offset:-2.5px"></div> Días libres de turno</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); border-bottom: 2.5px solid var(--cal-school-border)"></div> Escuela de verano</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-baby-bg)"></div> Nace Luca</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--cal-workday-bg); box-shadow: 0 0 0 2.5px #fbbf24"></div> Hoy</div>
-    </div>
-    <div class="cal-grid" id="yearCalendar"></div>
   </section>
 
   <!-- ========== TRAMITES ========== -->

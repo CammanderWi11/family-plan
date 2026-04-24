@@ -297,17 +297,6 @@
     var progLabel = document.getElementById('cd-progress-label');
     if (progLabel) progLabel.textContent = daysUsed + ' de ' + totalAssigned + ' d\u00edas usados (' + pct + '%)';
 
-    // Deadline pills
-    var dlEl = document.getElementById('cd-deadlines');
-    if (dlEl) {
-      var pills = [];
-      if (daysToAge1 > 0) {
-        var urgency = daysToAge1 < 90 ? ' cd-deadline-urgent' : '';
-        pills.push('<span class="cd-deadline' + urgency + '"><strong>FLEX</strong> ' + fmtShort(age1) + ' <span class="cd-deadline-days">' + daysToAge1 + 'd</span></span>');
-      }
-      pills.push('<span class="cd-deadline cd-deadline-dim"><strong>+ADD</strong> ' + fmtShort(age8) + ' <span class="cd-deadline-days">' + daysToAge8 + 'd</span></span>');
-      dlEl.innerHTML = pills.join('');
-    }
   };
 
   // Public API
