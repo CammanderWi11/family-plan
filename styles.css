@@ -1574,6 +1574,16 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px;
   color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;
 }
+
+/* Salud notes */
+.salud-notes-input {
+  width: 100%; min-height: 100px; resize: vertical;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font-sans); font-size: 14px; line-height: 1.5;
+  padding: 12px; border-radius: 8px;
+}
+.salud-notes-input::placeholder { color: var(--text-muted); }
+.salud-notes-input:focus { outline: none; border-color: var(--amber); }
 .reg-timer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .timer-btn {

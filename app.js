@@ -156,7 +156,7 @@ window.GROUPS = {
   inss:        { title: 'Prestación por nacimiento — INSS', renderMode: 'html' },
   binter:      { title: 'Comunicación a Binter / RRHH', renderMode: 'html' },
   bebe:        { title: '👶 Registro y documentos del bebé', desc: 'Inscripción, empadronamiento, tarjeta sanitaria y demás trámites administrativos tras el nacimiento.', renderMode: 'js', host: 'js-groups-host-bebe', count: 7 },
-  salud:       { title: '🩺 Revisiones y vacunas', desc: 'Seguimiento sanitario entre Vithas (parto) y SCS (postparto La Laguna / LPGC). Calendario vacunal de Canarias.', renderMode: 'js', host: 'js-groups-host-salud', count: 11, noCollapse: true },
+  salud:       { title: '🩺 Revisiones y vacunas', desc: 'Seguimiento sanitario entre Vithas (parto) y SCS (postparto La Laguna / LPGC). Calendario vacunal de Canarias.', renderMode: 'js', host: 'js-groups-host-salud', count: 11 },
   ayudas:      { title: '💶 Deducciones y ayudas económicas', desc: 'Prestaciones y deducciones a nivel nacional, autonómico y municipal.', renderMode: 'js', count: 3 },
   preparacion: { title: '🎒 Preparación pre-parto', desc: 'Tareas previas al parto.', renderMode: 'html' }
 };
@@ -213,6 +213,17 @@ window.getTabForKey = function(key) {
   var group = window.getGroupForKey(key);
   return group === 'salud' ? '#salud' : '#tramites';
 };
+
+// ========== SALUD NOTES ==========
+(function() {
+  var KEY = 'fp-salud-notes';
+  var el = document.getElementById('salud-notes');
+  if (!el) return;
+  try { el.value = localStorage.getItem(KEY) || ''; } catch(e) {}
+  el.addEventListener('input', function() {
+    try { localStorage.setItem(KEY, el.value); } catch(e) {}
+  });
+})();
 
 // ========== RESUMEN BANNERS (Leo + Luca) ==========
 (function() {
