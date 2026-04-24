@@ -1154,16 +1154,23 @@ section { scroll-margin-top: 20px; }
 .reg-bottle-row {
   display: flex; gap: 10px; align-items: center;
 }
+.reg-bottle-input-wrap {
+  position: relative; display: flex; align-items: center; max-width: 140px;
+}
 .reg-bottle-input {
-  flex: 1; max-width: 120px;
+  width: 100%;
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
   font-family: var(--font-mono); font-size: 16px; font-weight: 700;
-  padding: 12px 14px; border-radius: 10px;
+  padding: 12px 14px; padding-right: 32px; border-radius: 10px;
   text-align: center;
   -webkit-appearance: none; -moz-appearance: textfield;
 }
-.reg-bottle-input::placeholder { color: var(--text-muted); font-weight: 400; }
 .reg-bottle-input:focus { outline: none; border-color: var(--amber); }
+.reg-bottle-unit {
+  position: absolute; right: 12px;
+  font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);
+  pointer-events: none;
+}
 .reg-bottle-btn {
   padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 10px;
   min-height: 44px;
@@ -1559,33 +1566,42 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .reg-timer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .timer-btn {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; padding: 18px 10px; border-radius: 12px; cursor: pointer;
+  display: flex; flex-direction: row; align-items: center;
+  gap: 10px; padding: 12px 14px; border-radius: 10px; cursor: pointer;
   border: 1px solid var(--border); background: var(--surface);
   color: var(--text); font-family: var(--font-sans);
-  transition: border-color 0.15s, background 0.15s;
-  min-height: 90px; text-align: center; width: 100%;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
+  text-align: left; width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
-.timer-btn:hover { border-color: var(--border-hover); background: var(--surface-hover); }
+.timer-btn:hover {
+  border-color: var(--border-hover); background: var(--surface-hover);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.timer-btn:active { transform: scale(0.97); box-shadow: none; }
 .timer-btn-active {
   border-color: var(--amber) !important;
-  background: var(--amber-soft) !important;
-  box-shadow: 0 0 0 1px var(--amber-dark);
-  animation: timer-pulse 2s ease-in-out infinite;
+  background: rgba(251,191,36,0.15) !important;
+  box-shadow: 0 0 0 2px var(--amber-dark), 0 0 12px var(--amber-glow);
+  animation: timer-pulse 1.5s ease-in-out infinite;
+}
+.timer-btn-last {
+  border-left: 3px solid var(--amber);
+  background: var(--amber-softer);
 }
 @keyframes timer-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px var(--amber-dark); }
-  50% { box-shadow: 0 0 0 3px var(--amber-glow); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--amber-dark), 0 0 8px var(--amber-glow); }
+  50% { box-shadow: 0 0 0 4px var(--amber-glow), 0 0 20px var(--amber-glow); }
 }
-.timer-icon { font-size: 22px; line-height: 1; }
-.timer-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.timer-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.timer-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); flex: 1; }
 .timer-elapsed {
-  font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--amber);
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--amber); flex-shrink: 0;
 }
 .timer-last {
-  font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);
+  font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); flex-shrink: 0;
 }
-.timer-tap { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; }
+.timer-tap { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; flex-shrink: 0; }
 
 
 .reg-entry {
@@ -1621,8 +1637,13 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  transition: border-color 0.2s;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.15s, transform 0.1s;
 }
+.resumen-banner:hover {
+  border-color: var(--border-hover); background: var(--surface-hover);
+}
+.resumen-banner:active { transform: scale(0.98); }
 .resumen-banner-alert {
   border-color: var(--amber-dark) !important;
   background: rgba(251,191,36,0.04);

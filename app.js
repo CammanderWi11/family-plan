@@ -285,6 +285,21 @@ window.getTabForKey = function(key) {
 
     html += leoHtml + lucaHtml + '</div>';
     host.innerHTML = html;
+
+    var leoBanner = host.querySelector('.resumen-banner-leo');
+    var lucaBanner = host.querySelector('.resumen-banner-luca');
+    if (leoBanner) {
+      leoBanner.addEventListener('click', function() {
+        var nav = document.querySelector('[data-tab="rutina"]');
+        if (nav) nav.click();
+      });
+    }
+    if (lucaBanner) {
+      lucaBanner.addEventListener('click', function() {
+        var nav = document.querySelector('[data-tab="registro"]');
+        if (nav) nav.click();
+      });
+    }
   }
 
   function startBannerRefresh() {

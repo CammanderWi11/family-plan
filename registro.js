@@ -184,14 +184,23 @@
     if (!btn) return;
     var meta = TIMER_META[key];
     var isActive = !!active[key];
-
-    btn.className = 'timer-btn' + (isActive ? ' timer-btn-active' : '');
     var elapsed = isActive ? active[key].elapsed : 0;
     var lastLog = null;
+    var isLastUsed = false;
+
     if (!isActive) {
       var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
       lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
+      if (lastLog && meta.type === 'breast') {
+        var lastBreast = log.find(function(e) { return e.type === 'breast'; });
+        isLastUsed = lastBreast && lastBreast.id === lastLog.id;
+      }
     }
+
+    btn.className = 'timer-btn'
+      + (isActive ? ' timer-btn-active' : '')
+      + (isLastUsed ? ' timer-btn-last' : '');
+
     btn.innerHTML =
       '<span class="timer-icon">' + meta.icon + '</span>' +
       '<span class="timer-label">' + meta.label + '</span>' +
@@ -429,7 +438,10 @@
     html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\ud83c\udf7c Biberón</h3>';
     html += '<div class="reg-bottle-row">';
-    html += '<input type="number" id="reg-bottle-ml" class="reg-bottle-input" placeholder="ml" min="0" step="10" inputmode="numeric">';
+    html += '<div class="reg-bottle-input-wrap">';
+    html += '<input type="number" id="reg-bottle-ml" class="reg-bottle-input" min="0" step="10" inputmode="numeric">';
+    html += '<span class="reg-bottle-unit">ml</span>';
+    html += '</div>';
     html += '<button class="btn-primary reg-bottle-btn" id="reg-bottle-save">Registrar</button>';
     html += '</div>';
     html += '</div>';
