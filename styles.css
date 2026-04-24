@@ -634,9 +634,9 @@ section { scroll-margin-top: 20px; }
 .ics-dot {
   width: 4px; height: 4px; border-radius: 50%;
 }
-.ics-dot-0 { background: #60a5fa; }
-.ics-dot-1 { background: #f472b6; }
-.ics-dot-2 { background: #34d399; }
+.ics-dot-0 { background: #f472b6; }
+.ics-dot-1 { background: #ef4444; }
+.ics-dot-2 { background: #fbbf24; }
 .cal-day.has-ics-event { cursor: pointer; }
 
 /* ============================================
