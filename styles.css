@@ -90,7 +90,7 @@
   --mission-label: var(--text-secondary);
   --mission-sep: var(--amber-dark);
   --mission-accent: var(--amber);
-  --mission-scanline: rgba(251,191,36,0.008);
+  --mission-scanline: rgba(251,191,36,0.06);
   --orb-opacity: 0;
 }
 
@@ -160,7 +160,7 @@
   --nav-active: var(--amber-soft);
   --nav-active-text: var(--amber);
   --nav-link-text: var(--text-muted);
-  --mission-scanline: rgba(0,0,0,0.005);
+  --mission-scanline: rgba(0,0,0,0.04);
   --orb-opacity: 0;
 }
 
@@ -964,7 +964,7 @@ section { scroll-margin-top: 20px; }
    ============================================ */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: 9000;
-  background: rgba(8,6,20,0.8); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  background: rgba(8,6,20,0.85);
   display: none; align-items: center; justify-content: center; padding: 20px;
 }
 .modal-backdrop.open { display: flex; }
