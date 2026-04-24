@@ -304,7 +304,7 @@ body::before { display: none; }
 /* ============================================
    HEADER
    ============================================ */
-.header { padding: 0 0 8px; margin-bottom: 24px; }
+.header { padding: 0 0 8px; margin-bottom: 24px; position: relative; }
 .header h1 {
   font-family: var(--font-sans);
   font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
@@ -1135,13 +1135,70 @@ section { scroll-margin-top: 20px; }
 .mobile-tab:hover { color: var(--text-secondary); }
 
 /* ============================================
+   MOBILE SETTINGS BUTTON
+   ============================================ */
+.mobile-settings-btn {
+  display: none; /* shown only on mobile via media query */
+  position: absolute; right: 0; top: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-muted); font-size: 20px; line-height: 1;
+  width: 40px; height: 40px; border-radius: 10px;
+  cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  align-items: center; justify-content: center;
+}
+.mobile-settings-btn:hover { color: var(--amber); border-color: var(--amber-dark); }
+
+/* ============================================
+   BOTTLE INPUT
+   ============================================ */
+.reg-bottle-row {
+  display: flex; gap: 10px; align-items: center;
+}
+.reg-bottle-input {
+  flex: 1; max-width: 120px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+  padding: 12px 14px; border-radius: 10px;
+  text-align: center;
+  -webkit-appearance: none; -moz-appearance: textfield;
+}
+.reg-bottle-input::placeholder { color: var(--text-muted); font-weight: 400; }
+.reg-bottle-input:focus { outline: none; border-color: var(--amber); }
+.reg-bottle-btn {
+  padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 10px;
+  min-height: 44px;
+}
+
+/* ============================================
+   IPHONE UX OPTIMIZATIONS
+   ============================================ */
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+button, .timer-btn, .mobile-tab, .reg-bottle-btn, .reg-nav-btn, .reg-del {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
   /* Hide sidebar, show bottom tabs */
   .sidebar { display: none; }
   .mobile-tabs { display: block; }
-  .main-content { margin-left: 0; padding: 16px 16px 80px; }
+  .main-content {
+    margin-left: 0;
+    padding: 16px 16px calc(80px + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  }
+  .mobile-settings-btn { display: flex; }
 
   .countdown-grid { grid-template-columns: repeat(2, 1fr); }
   .countdown-num { font-size: 24px; }
@@ -1376,6 +1433,53 @@ section { scroll-margin-top: 20px; }
   top: 1px;
 }
 .rutina-claves-list { counter-reset: list-item; }
+
+/* Edit mode */
+.rutina-toolbar {
+  display: flex; justify-content: flex-end; margin-bottom: 12px;
+}
+.rutina-edit-toggle {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.5px;
+  padding: 8px 16px; border-radius: 8px; cursor: pointer;
+  transition: all 0.15s; touch-action: manipulation;
+  min-height: 44px;
+}
+.rutina-edit-toggle:hover { border-color: var(--amber); color: var(--amber); }
+.rutina-edit-toggle-active {
+  background: var(--amber-soft); border-color: var(--amber-dark); color: var(--amber);
+}
+.rutina-step-editable {
+  cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  border: 1px dashed var(--border);
+}
+.rutina-step-editable:hover {
+  background: var(--amber-softer); border-color: var(--amber-dark);
+}
+.rutina-edit-form {
+  padding: 14px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--amber-dark);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.rutina-edit-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.rutina-edit-row label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.5px; min-width: 50px; text-transform: uppercase;
+}
+.rutina-edit-input {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font-sans); font-size: 14px;
+  padding: 8px 10px; border-radius: 8px; flex: 1; min-width: 0;
+  min-height: 44px;
+}
+.rutina-edit-input:focus { outline: none; border-color: var(--amber); }
+select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
+.rutina-edit-actions {
+  display: flex; gap: 8px; margin-top: 4px;
+}
+.rutina-edit-save, .rutina-edit-cancel { min-height: 44px; }
 
 /* ============================================
    REGISTRO DE LUCA

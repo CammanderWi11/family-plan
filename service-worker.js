@@ -1,4 +1,4 @@
-const VERSION = 'v2-family-plan';
+const VERSION = 'v3-family-plan';
 const SHELL_CACHE = 'family-plan-shell-' + VERSION;
 const DATA_CACHE = 'family-plan-data-' + VERSION;
 const PHOTO_CACHE = 'family-plan-photos-' + VERSION;
@@ -14,7 +14,9 @@ const SHELL = [
   './tramites.js',
   './library.js',
   './settings.js',
-  './nav.js'
+  './nav.js',
+  './registro.js',
+  './rutina.js'
 ];
 const SUPABASE_HOST = 'voirsxfjdayhhvwviaqt.supabase.co';
 

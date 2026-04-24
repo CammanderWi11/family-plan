@@ -85,6 +85,15 @@ if ('serviceWorker' in navigator) {
     });
   });
 
+  // Mobile settings gear button
+  var mobileSettingsBtn = document.getElementById('mobile-settings-btn');
+  if (mobileSettingsBtn) {
+    mobileSettingsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (activate('ajustes')) history.replaceState(null, '', '#ajustes');
+    });
+  }
+
   // Initial tab from hash
   var initial = (location.hash || '').slice(1);
   if (!initial || !activate(initial)) activate('resumen');
