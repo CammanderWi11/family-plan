@@ -373,10 +373,20 @@
   }
 
   function loadICSUrls() {
+    // Prefer synced state (Supabase), fall back to localStorage for migration
+    if (window.__getICSUrls) {
+      var synced = window.__getICSUrls();
+      if (synced) return synced;
+    }
     try { return JSON.parse(localStorage.getItem(ICS_KEY) || '[]'); } catch(e) { return []; }
   }
 
   function saveICSUrls(urls) {
+    // Save to synced state so all devices get them
+    if (window.__updateICSUrls) {
+      window.__updateICSUrls(urls);
+    }
+    // Also keep localStorage as fallback
     try { localStorage.setItem(ICS_KEY, JSON.stringify(urls)); } catch(e) {}
   }
 
@@ -543,8 +553,22 @@
     applyEventDots();
   };
 
+  // Migrate localStorage ICS URLs to synced state on first load
+  function migrateICSUrls() {
+    if (!window.__getICSUrls || !window.__updateICSUrls) return;
+    var synced = window.__getICSUrls();
+    if (synced && synced.some(function(u) { return u && u.trim(); })) return; // already synced
+    try {
+      var local = JSON.parse(localStorage.getItem(ICS_KEY) || '[]');
+      if (local.some(function(u) { return u && u.trim(); })) {
+        window.__updateICSUrls(local);
+      }
+    } catch(e) {}
+  }
+
   // Settings UI
   function initICSSettings() {
+    migrateICSUrls();
     var urls = loadICSUrls();
     for (var i = 0; i < 3; i++) {
       var input = document.getElementById('cfg-ics-' + (i + 1));

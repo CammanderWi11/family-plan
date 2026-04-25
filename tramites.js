@@ -62,6 +62,15 @@
     syncCalendarConfig();
     queueSave();
   };
+  // ICS URLs — synced across devices
+  window.__getICSUrls = function() {
+    return (state.meta && state.meta.icsUrls) || null;
+  };
+  window.__updateICSUrls = function(urls) {
+    state.meta = state.meta || {};
+    state.meta.icsUrls = urls;
+    queueSave();
+  };
 
   function loadLocal() {
     try {
