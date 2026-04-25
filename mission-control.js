@@ -132,9 +132,20 @@
     host.style.display = '';
 
     host.querySelectorAll('.mc-wl-item').forEach(function(item) {
-      item.addEventListener('click', function() {
-        var nav = document.querySelector('.nav-item[data-tab="' + item.dataset.tab + '"]');
-        if (nav) nav.click();
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var tab = item.getAttribute('data-tab');
+        if (!tab) return;
+        // Use the nav activate function via sidebar click
+        var sidebarLink = document.querySelector('.sidebar .nav-item[data-tab="' + tab + '"]');
+        if (sidebarLink) {
+          sidebarLink.click();
+        } else {
+          // Fallback: try mobile tab
+          var mobileLink = document.querySelector('.mobile-tab[data-tab="' + tab + '"]');
+          if (mobileLink) mobileLink.click();
+        }
       });
     });
   }
@@ -229,9 +240,12 @@
     });
 
     host.querySelectorAll('.mc-upcoming-item').forEach(function(item) {
+      item.style.cursor = 'pointer';
       item.addEventListener('click', function() {
-        var nav = document.querySelector('.nav-item[data-tab="' + item.dataset.tab + '"]');
-        if (nav) nav.click();
+        var tab = item.getAttribute('data-tab');
+        var sidebarLink = document.querySelector('.sidebar .nav-item[data-tab="' + tab + '"]');
+        if (sidebarLink) sidebarLink.click();
+        else { var m = document.querySelector('.mobile-tab[data-tab="' + tab + '"]'); if (m) m.click(); }
       });
     });
   }
@@ -332,8 +346,10 @@
 
     dropdown.querySelectorAll('.mc-search-result').forEach(function(el) {
       el.addEventListener('click', function() {
-        var nav = document.querySelector('.nav-item[data-tab="' + el.dataset.tab + '"]');
-        if (nav) nav.click();
+        var tab = el.getAttribute('data-tab');
+        var sidebarLink = document.querySelector('.sidebar .nav-item[data-tab="' + tab + '"]');
+        if (sidebarLink) sidebarLink.click();
+        else { var m = document.querySelector('.mobile-tab[data-tab="' + tab + '"]'); if (m) m.click(); }
         dropdown.style.display = 'none';
       });
     });
