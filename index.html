@@ -110,6 +110,10 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="nav-label">Trámites</span>
       <span class="nav-badge nav-label" id="nav-tramites-badge" style="display:none;">0</span>
     </a>
+    <a href="#salud" class="nav-item" data-tab="salud">
+      <span class="nav-icon">&#9879;</span>
+      <span class="nav-label">Salud</span>
+    </a>
   </div>
   <div class="sidebar-bottom">
     <a href="#ajustes" class="nav-item" data-tab="ajustes">
@@ -148,6 +152,10 @@ window.sb.auth.getSession().then(({ data }) => {
     <a href="#tramites" class="mobile-tab" data-tab="tramites">
       <span class="tab-icon">&#9744;</span>
       <span>TRÁM</span>
+    </a>
+    <a href="#salud" class="mobile-tab" data-tab="salud">
+      <span class="tab-icon">&#9879;</span>
+      <span>SALUD</span>
     </a>
   </div>
 </nav>
@@ -498,6 +506,12 @@ window.sb.auth.getSession().then(({ data }) => {
     <div class="section-title">Registro de Luca</div>
   </section>
 
+  <!-- ========== SALUD ========== -->
+  <section id="salud" class="tab-section">
+    <div class="section-title">Salud familiar</div>
+    <div id="salud-host"></div>
+  </section>
+
   <!-- ========== SETTINGS (AJUSTES) ========== -->
   <section id="ajustes" class="tab-section">
     <div class="section-title">Ajustes</div>
@@ -621,6 +635,7 @@ window.sb.auth.getSession().then(({ data }) => {
 <script src="tramites.js"></script>
 <script src="library.js"></script>
 <script src="doc-tracker.js"></script>
+<script src="salud.js"></script>
 <script src="settings.js"></script>
 <script src="rutina.js"></script>
 <script src="registro.js"></script>

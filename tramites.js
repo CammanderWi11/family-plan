@@ -107,6 +107,15 @@
     state.meta.trackedDocs = docs;
     queueSave();
   };
+  // Medical appointments — synced across devices
+  window.__getMedical = function() {
+    return (state.meta && state.meta.medical) || null;
+  };
+  window.__updateMedical = function(data) {
+    state.meta = state.meta || {};
+    state.meta.medical = data;
+    queueSave();
+  };
 
   function loadLocal() {
     try {
