@@ -80,6 +80,15 @@
     state.meta.saludNotes = text;
     queueSave();
   };
+  // Active timers — synced across devices
+  window.__getActiveTimers = function() {
+    return (state.meta && state.meta.activeTimers) || null;
+  };
+  window.__updateActiveTimers = function(data) {
+    state.meta = state.meta || {};
+    state.meta.activeTimers = data;
+    queueSave();
+  };
   // Document notes — synced across devices
   window.__getDocNotes = function() {
     return (state.meta && state.meta.docNotes) || null;

@@ -17,7 +17,7 @@
 
   var active = {};      // key -> { startedAt, elapsed, intervalId }
 
-  // ---- Active-timer persistence ----
+  // ---- Active-timer persistence (localStorage + Supabase sync) ----
   function saveActiveTimers() {
     var data = {};
     TIMER_KEYS.forEach(function(key) {
@@ -26,6 +26,7 @@
       }
     });
     try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(data)); } catch(e) {}
+    if (window.__updateActiveTimers) window.__updateActiveTimers(data);
   }
 
   function clearActiveTimer(key) {
@@ -33,12 +34,22 @@
       var data = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
       delete data[key];
       localStorage.setItem(ACTIVE_KEY, JSON.stringify(data));
+      if (window.__updateActiveTimers) window.__updateActiveTimers(data);
     } catch(e) {}
+  }
+
+  function getActiveTimerData() {
+    // Prefer synced state, fall back to localStorage
+    if (window.__getActiveTimers) {
+      var synced = window.__getActiveTimers();
+      if (synced) return synced;
+    }
+    try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch(e) { return {}; }
   }
 
   function restoreActiveTimers() {
     try {
-      var data = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
+      var data = getActiveTimerData();
       var now = Date.now();
       Object.keys(data).forEach(function(key) {
         if (!TIMER_META[key] || !data[key].startedAt) return;
