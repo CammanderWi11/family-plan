@@ -302,7 +302,12 @@
   // ========== EXTERNAL ICS CALENDARS ==========
   var ICS_KEY = 'fp-ics-urls';
   var ICS_CACHE_KEY = 'fp-ics-events';
-  var CORS_PROXY = 'https://corsproxy.io/?';
+  var CORS_PROXIES = [
+    { prefix: 'https://corsproxy.io/?', encode: true },
+    { prefix: 'https://api.allorigins.win/raw?url=', encode: true },
+    { prefix: 'https://cors-proxy.fringe.zone/', encode: false },
+  ];
+  var icsDebugLog = [];
   var externalEvents = {}; // dateKey -> [{summary, calIndex}]
 
   function dateKey(d) {
@@ -390,27 +395,58 @@
     try { localStorage.setItem(ICS_CACHE_KEY, JSON.stringify({ events: externalEvents, ts: Date.now() })); } catch(e) {}
   }
 
+  function fetchWithProxy(httpsUrl, proxyIdx) {
+    if (proxyIdx >= CORS_PROXIES.length) {
+      return Promise.reject(new Error('All CORS proxies failed'));
+    }
+    var proxy = CORS_PROXIES[proxyIdx];
+    var proxyUrl = proxy.prefix + (proxy.encode ? encodeURIComponent(httpsUrl) : httpsUrl);
+    return fetch(proxyUrl).then(function(r) {
+      if (!r.ok) throw new Error('Proxy ' + proxyIdx + ' returned ' + r.status);
+      return r.text();
+    }).then(function(text) {
+      if (text.indexOf('BEGIN:VCALENDAR') === -1) throw new Error('Proxy ' + proxyIdx + ' returned non-ICS content');
+      return text;
+    }).catch(function(err) {
+      console.warn('ICS proxy ' + proxyIdx + ' failed:', err.message);
+      return fetchWithProxy(httpsUrl, proxyIdx + 1);
+    });
+  }
+
   function fetchAllICS(callback) {
     var urls = loadICSUrls().filter(function(u) { return u && u.trim(); });
-    if (!urls.length) { externalEvents = {}; if (callback) callback(); return; }
+    icsDebugLog = [];
+    if (!urls.length) {
+      icsDebugLog.push('No ICS URLs configured');
+      externalEvents = {};
+      if (callback) callback();
+      return;
+    }
+    icsDebugLog.push(urls.length + ' ICS feed(s) configured');
     var pending = urls.length;
     var allEvents = {};
     urls.forEach(function(url, idx) {
       var fetchUrl = url.replace(/^webcal:\/\//, 'https://');
-      fetch(CORS_PROXY + encodeURIComponent(fetchUrl))
-        .then(function(r) { return r.text(); })
+      fetchWithProxy(fetchUrl, 0)
         .then(function(text) {
           var parsed = parseICS(text, idx);
+          var dayCount = 0;
           for (var key in parsed) {
             if (!allEvents[key]) allEvents[key] = [];
             allEvents[key] = allEvents[key].concat(parsed[key]);
+            dayCount++;
           }
+          icsDebugLog.push('Feed ' + (idx + 1) + ': ' + dayCount + ' days with events');
         })
-        .catch(function(err) { console.warn('ICS fetch failed for calendar ' + (idx + 1) + ':', err); })
+        .catch(function(err) {
+          icsDebugLog.push('Feed ' + (idx + 1) + ': FAILED — ' + err.message);
+        })
         .finally(function() {
           pending--;
           if (pending <= 0) {
             externalEvents = allEvents;
+            var totalDays = Object.keys(externalEvents).length;
+            icsDebugLog.push('Total: ' + totalDays + ' days with events');
             saveCachedEvents();
             if (callback) callback();
           }
@@ -528,8 +564,7 @@
         // Clear cache to force re-fetch
         try { localStorage.removeItem(ICS_CACHE_KEY); } catch(e) {}
         fetchAllICS(function() {
-          var count = Object.keys(externalEvents).length;
-          if (statusEl) statusEl.textContent = count + ' días con eventos cargados.';
+          if (statusEl) statusEl.textContent = icsDebugLog.join(' · ');
           renderCalendar(getConfig());
         });
       });
@@ -542,10 +577,14 @@
   };
   window.getCalendarConfig = getConfig;
   window.__calendarHelpers = { daysBetween: daysBetween, parseDate: parseDate, buildHelpers: buildHelpers };
+  window.__icsDebugLog = function() { return icsDebugLog; };
 
   // Initial render
   if (loadCachedEvents()) {
+    icsDebugLog.push('Loaded from cache (' + Object.keys(externalEvents).length + ' days)');
     renderCalendar(getConfig());
+    // Still refresh in background
+    fetchAllICS(function() { renderCalendar(getConfig()); });
   } else {
     renderCalendar(getConfig());
     fetchAllICS(function() { renderCalendar(getConfig()); });
