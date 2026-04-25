@@ -382,11 +382,6 @@ window.sb.auth.getSession().then(({ data }) => {
       <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
     </div>
 
-    <!-- Citas Médicas (salud) -->
-    <div class="glass data-card" id="salud-notes-card">
-      <h3 class="reg-sec-title">&#9998; Notas para el pediatra</h3>
-      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
-    </div>
     <div id="js-groups-host-salud"></div>
 
     <!-- JS-rendered: Bebe -->
@@ -511,6 +506,10 @@ window.sb.auth.getSession().then(({ data }) => {
   <!-- ========== SALUD ========== -->
   <section id="salud" class="tab-section">
     <div class="section-title">Salud familiar</div>
+    <div class="glass data-card" id="salud-notes-card">
+      <h3 class="reg-sec-title">&#9998; Notas Medicas</h3>
+      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
+    </div>
     <div id="salud-host"></div>
   </section>
 
