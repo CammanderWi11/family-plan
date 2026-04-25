@@ -1,4 +1,4 @@
-const VERSION = 'v16-family-plan';
+const VERSION = 'v17-family-plan';
 const SHELL_CACHE = 'family-plan-shell-' + VERSION;
 const DATA_CACHE = 'family-plan-data-' + VERSION;
 const PHOTO_CACHE = 'family-plan-photos-' + VERSION;
@@ -13,6 +13,7 @@ const SHELL = [
   './calendar.js',
   './tramites.js',
   './library.js',
+  './doc-tracker.js',
   './settings.js',
   './nav.js',
   './registro.js',

@@ -302,6 +302,20 @@
     subscribeLibRealtime();
   }
 
+  // Expose for doc-tracker.js
+  window.__uploadDocFile = async function(file) {
+    return await uploadToLibrary(file, 'tracked_doc');
+  };
+  window.__viewDocFile = function(docId) {
+    var doc = library.find(function(d) { return d.id === docId; });
+    if (!doc) return;
+    var w = window.open('about:blank', '_blank');
+    signedUrl(doc.storage_path).then(function(url) {
+      if (url && w) w.location.href = url;
+      else { if (w) w.close(); }
+    });
+  };
+
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
 })();
