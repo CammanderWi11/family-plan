@@ -98,6 +98,15 @@
     state.meta.docNotes = notes;
     queueSave();
   };
+  // Tracked documents (expiry tracker) — synced across devices
+  window.__getTrackedDocs = function() {
+    return (state.meta && state.meta.trackedDocs) || [];
+  };
+  window.__updateTrackedDocs = function(docs) {
+    state.meta = state.meta || {};
+    state.meta.trackedDocs = docs;
+    queueSave();
+  };
 
   function loadLocal() {
     try {
@@ -242,25 +251,40 @@
   }
   renderJsGroups();
 
-  // Inject scope chip into every tramite row (existing HTML + JS-rendered)
-  function renderScopeChips() {
-    document.querySelectorAll('.tramite-row input[type="checkbox"]').forEach(box => {
-      const key = box.dataset.group + '-' + box.dataset.idx;
-      const t = window.TRAMITES[key];
-      if (!t || !t.scope) return;
-      const info = box.parentElement.querySelector('.tramite-info');
-      if (!info || info.querySelector('.scope-chip')) return;
-      const chipDef = window.SCOPE_CHIPS[t.scope];
-      if (!chipDef) return;
-      const chip = document.createElement('span');
-      chip.className = 'scope-chip ' + chipDef.cls;
-      chip.textContent = chipDef.emoji + ' ' + chipDef.label;
-      chip.title = 'Scope: ' + chipDef.label;
-      const nameEl = info.querySelector('.name');
-      if (nameEl) nameEl.appendChild(chip);
+  // Inject owner chip into every tramite row (existing HTML + JS-rendered)
+  const OWNER_CYCLE = ['dad', 'mum', 'alfred'];
+  function renderOwnerChipForBox(box) {
+    const key = box.dataset.group + '-' + box.dataset.idx;
+    const t = window.TRAMITES[key];
+    if (!t) return;
+    const info = box.parentElement.querySelector('.tramite-info');
+    if (!info) return;
+    const nameEl = info.querySelector('.name');
+    if (!nameEl) return;
+    nameEl.querySelectorAll('.scope-chip').forEach(c => c.remove());
+    const owner = state.tramites[key + '_owner'] || (t && t.owner) || 'dad';
+    const chipDef = window.OWNER_CHIPS && window.OWNER_CHIPS[owner];
+    if (!chipDef) return;
+    const chip = document.createElement('span');
+    chip.className = 'scope-chip ' + chipDef.cls;
+    chip.textContent = chipDef.emoji + ' ' + chipDef.label;
+    chip.title = 'Responsable: ' + chipDef.label;
+    chip.style.cursor = 'pointer';
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cur = state.tramites[key + '_owner'] || (t && t.owner) || 'dad';
+      const idx = OWNER_CYCLE.indexOf(cur);
+      const next = OWNER_CYCLE[(idx + 1) % OWNER_CYCLE.length];
+      state.tramites[key + '_owner'] = next;
+      queueSave();
+      renderOwnerChipForBox(box);
     });
+    nameEl.appendChild(chip);
   }
-  renderScopeChips();
+  function renderOwnerChips() {
+    document.querySelectorAll('.tramite-row input[type="checkbox"]').forEach(renderOwnerChipForBox);
+  }
+  renderOwnerChips();
 
   // Expandable subtasks UI
   function renderSubtasks() {
@@ -828,6 +852,30 @@
   if (searchInput) {
     searchInput.addEventListener('input', e => applySearchFilter(e.target.value));
     searchClear.addEventListener('click', () => { searchInput.value = ''; applySearchFilter(''); searchInput.focus(); });
+  }
+
+  const ownerFilter = document.getElementById('tramites-owner-filter');
+  if (ownerFilter) {
+    ownerFilter.addEventListener('change', applyOwnerFilter);
+  }
+
+  function applyOwnerFilter() {
+    const sel = ownerFilter ? ownerFilter.value : 'all';
+    document.querySelectorAll('.tramite-row').forEach(row => {
+      if (sel === 'all') { row.style.display = ''; return; }
+      const box = row.querySelector('input[type="checkbox"]');
+      if (!box) return;
+      const key = box.dataset.group + '-' + box.dataset.idx;
+      const t = window.TRAMITES[key];
+      const owner = (state.tramites[key + '_owner']) || (t && t.owner) || 'dad';
+      row.style.display = (owner === sel) ? '' : 'none';
+    });
+    // Hide empty groups
+    document.querySelectorAll('.tramite-group').forEach(g => {
+      const rows = g.querySelectorAll('.tramite-row');
+      const visible = Array.from(rows).filter(r => r.style.display !== 'none').length;
+      g.style.display = visible ? '' : 'none';
+    });
   }
 
   // ---------- Per-row attach ----------

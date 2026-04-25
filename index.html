@@ -362,6 +362,12 @@ window.sb.auth.getSession().then(({ data }) => {
       <strong>Certificados disponibles online:</strong> Todos los certificados (nacimiento, matrimonio, etc.) se pueden obtener en <a href="https://www.administraciondejusticia.gob.es/carpeta-justicia" target="_blank" rel="noopener">administraciondejusticia.gob.es/carpeta-justicia</a>
     </div>
     <div class="tramites-search">
+      <select id="tramites-owner-filter" class="reg-bottle-input" style="flex:0 0 auto;min-width:80px;font-size:12px;">
+        <option value="all">Todos</option>
+        <option value="dad">👨 Dad</option>
+        <option value="mum">👩 Mum</option>
+        <option value="alfred">🎩 Alfred</option>
+      </select>
       <input type="search" id="tramites-search-input" placeholder="Buscar trámite..." autocomplete="off">
       <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
     </div>
