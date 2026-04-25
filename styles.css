@@ -1824,3 +1824,69 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .exp-expired { color: var(--red); font-weight: 700; animation: expBlink 1s step-end infinite; }
 .exp-unknown { color: var(--text-muted); }
 @keyframes expBlink { 50% { opacity: 0.4; } }
+
+/* ---- Salud — Family Medical Tracker ---- */
+.salud-person-card { margin-bottom: 18px; }
+.salud-person-title {
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  color: var(--text); cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.salud-person-toggle {
+  font-size: 12px; color: var(--text-muted); width: 14px; text-align: center;
+}
+.salud-cat-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text-muted); margin: 14px 0 6px;
+}
+.salud-empty { font-size: 12px; color: var(--text-muted); padding: 4px 0; }
+.salud-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.salud-item.salud-done { opacity: 0.4; }
+.salud-check { flex: 0 0 auto; display: flex; align-items: center; }
+.salud-check input { width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; }
+.salud-item-body { flex: 1; min-width: 0; }
+.salud-item-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.salud-item-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.salud-age-badge {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+  padding: 2px 7px; border-radius: 6px; margin-left: 6px;
+  background: var(--blue-soft); color: #93c5fd; border: 1px solid var(--blue-border);
+  vertical-align: middle;
+}
+.salud-item-date {
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+  flex: 0 0 auto; white-space: nowrap;
+}
+.salud-expand-btn {
+  background: none; border: none; color: var(--text-muted); font-size: 18px;
+  cursor: pointer; padding: 4px 8px; flex: 0 0 auto;
+}
+.salud-detail {
+  padding: 12px 0 12px 28px;
+  border-bottom: 1px solid var(--border);
+}
+.salud-detail-row {
+  display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px;
+}
+.salud-detail-row label {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.salud-textarea {
+  min-height: 60px; resize: vertical;
+  font-family: var(--font-sans); font-size: 13px;
+}
+.salud-add-specialist {
+  display: block; width: 100%; margin-top: 8px; padding: 10px;
+  background: none; border: 1px dashed var(--border); border-radius: 8px;
+  color: var(--text-muted); font-size: 12px; cursor: pointer;
+  font-family: var(--font-sans);
+}
+.salud-add-specialist:hover { border-color: var(--amber); color: var(--amber); }
+.salud-add-form {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 0; margin-top: 8px;
+}
