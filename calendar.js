@@ -330,21 +330,32 @@
         if (line.match(/^DTEND[;:]/)) dtend = line.replace(/^DTEND[^:]*:/, '');
       }
       if (!dtstart || !summary) continue;
-      // Parse date: YYYYMMDD or YYYYMMDDTHHMMSSZ
+      var allDay = isAllDay(dtstart);
       var startDate = parseICSDate(dtstart);
       var endDate = dtend ? parseICSDate(dtend) : startDate;
       if (!startDate) continue;
+      // Build time label
+      var timeLabel = null;
+      if (!allDay) {
+        timeLabel = fmtTime(startDate);
+        if (dtend && !isAllDay(dtend) && endDate) {
+          timeLabel += '–' + fmtTime(endDate);
+        }
+      }
+      // For date-only comparisons, normalize to midnight
+      var startDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      var endDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
       // For all-day events, DTEND is exclusive
-      if (dtend && dtend.length === 8) {
-        endDate = new Date(endDate); endDate.setDate(endDate.getDate() - 1);
+      if (allDay && dtend && isAllDay(dtend)) {
+        endDay.setDate(endDay.getDate() - 1);
       }
       // Add event for each day in range
-      var cur = new Date(startDate);
-      while (cur <= endDate) {
+      var cur = new Date(startDay);
+      while (cur <= endDay) {
         var key = dateKey(cur);
         if (!events[key]) events[key] = [];
         events[key] = events[key] || [];
-        events[key].push({ summary: summary, calIndex: calIndex });
+        events[key].push({ summary: summary, calIndex: calIndex, time: timeLabel });
         cur = new Date(cur); cur.setDate(cur.getDate() + 1);
       }
     }
@@ -362,14 +373,21 @@
         var hh = parseInt(s.substr(9, 2), 10);
         var mm = parseInt(s.substr(11, 2), 10);
         if (s.indexOf('Z') > -1) {
-          var utc = new Date(Date.UTC(y, m, d, hh, mm));
-          return new Date(utc.getFullYear(), utc.getMonth(), utc.getDate());
+          return new Date(Date.UTC(y, m, d, hh, mm));
         }
-        return new Date(y, m, d);
+        return new Date(y, m, d, hh, mm);
       }
       return new Date(y, m, d);
     }
     return null;
+  }
+
+  function fmtTime(d) {
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function isAllDay(raw) {
+    return raw && raw.replace(/[^0-9TZ]/g, '').length === 8;
   }
 
   function loadICSUrls() {
@@ -484,8 +502,9 @@
     tooltip = document.createElement('div');
     tooltip.className = 'ics-tooltip';
     tooltip.innerHTML = evts.map(function(e) {
+      var timeHtml = e.time ? '<span class="ics-tooltip-time">' + e.time + '</span> ' : '';
       return '<div class="ics-tooltip-item"><span class="ics-dot ics-dot-' + e.calIndex + '"></span>' +
-        '<span>' + e.summary + '</span></div>';
+        '<span>' + timeHtml + e.summary + '</span></div>';
     }).join('');
     document.body.appendChild(tooltip);
     var rect = cell.getBoundingClientRect();

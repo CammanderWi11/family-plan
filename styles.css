@@ -651,6 +651,7 @@ section { scroll-margin-top: 20px; }
   display: flex; align-items: center; gap: 6px; padding: 2px 0;
 }
 .ics-tooltip-item .ics-dot { width: 6px; height: 6px; flex-shrink: 0; }
+.ics-tooltip-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 @media (max-width: 480px) {
   .ics-dots { bottom: 0px; }
   .ics-dot { width: 5px; height: 5px; }
