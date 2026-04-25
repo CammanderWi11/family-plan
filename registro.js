@@ -566,32 +566,32 @@
     html += '</div>';
     html += '</div>';
 
-    // 3. Biberón
+    // 3. Registro manual (Biberón + Pecho manual merged)
     html += '<div class="glass data-card">';
-    html += '<h3 class="reg-sec-title">\ud83c\udf7c Biberón</h3>';
-    html += '<div class="reg-bottle-row">';
-    html += '<div class="reg-bottle-input-wrap">';
-    html += '<input type="number" id="reg-bottle-ml" class="reg-bottle-input" min="0" step="10" inputmode="numeric">';
+    html += '<h3 class="reg-sec-title">\u270d Registro manual</h3>';
+    html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:6px;">';
+    html += '<select id="reg-manual-type" class="reg-bottle-input" style="flex:0 0 auto;min-width:80px;">';
+    html += '<option value="bottle">\ud83c\udf7c Bib</option>';
+    html += '<option value="breast">\ud83e\udd31 Pecho</option>';
+    html += '</select>';
+    html += '<div id="reg-manual-fields-bottle" style="display:flex;gap:6px;flex:1;min-width:0;">';
+    html += '<div class="reg-bottle-input-wrap" style="flex:1;min-width:60px;">';
+    html += '<input type="number" id="reg-bottle-ml" class="reg-bottle-input" min="0" step="10" inputmode="numeric" placeholder="ml">';
     html += '<span class="reg-bottle-unit">ml</span>';
     html += '</div>';
-    html += '<button class="btn-primary reg-bottle-btn" id="reg-bottle-save">Registrar</button>';
     html += '</div>';
-    html += '</div>';
-
-    // 3b. Manual breast entry
-    html += '<div class="glass data-card">';
-    html += '<h3 class="reg-sec-title">\ud83e\udd31 Registrar pecho manual</h3>';
-    html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:8px;">';
-    html += '<input type="time" id="reg-manual-breast-time" class="reg-bottle-input" style="flex:1;min-width:90px;">';
-    html += '<div class="reg-bottle-input-wrap" style="flex:1;min-width:80px;">';
-    html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="min">';
+    html += '<div id="reg-manual-fields-breast" style="display:none;gap:6px;flex:1;min-width:0;">';
+    html += '<input type="time" id="reg-manual-breast-time" class="reg-bottle-input" style="flex:1;min-width:70px;">';
+    html += '<div class="reg-bottle-input-wrap" style="flex:0 0 auto;min-width:55px;">';
+    html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="min" style="width:50px;">';
     html += '<span class="reg-bottle-unit">min</span>';
     html += '</div>';
-    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:1;min-width:90px;">';
-    html += '<option value="left">Izquierdo</option>';
-    html += '<option value="right">Derecho</option>';
+    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:0 0 auto;min-width:60px;">';
+    html += '<option value="left">Izq</option>';
+    html += '<option value="right">Der</option>';
     html += '</select>';
-    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-breast-save">Registrar</button>';
+    html += '</div>';
+    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save">Registrar</button>';
     html += '</div>';
     html += '</div>';
 
@@ -615,20 +615,29 @@
       });
     });
 
-    var bottleBtn = document.getElementById('reg-bottle-save');
-    if (bottleBtn) {
-      bottleBtn.addEventListener('click', saveBottle);
+    // Manual register type toggle
+    var manualType = document.getElementById('reg-manual-type');
+    var bottleFields = document.getElementById('reg-manual-fields-bottle');
+    var breastFields = document.getElementById('reg-manual-fields-breast');
+    if (manualType) {
+      manualType.addEventListener('change', function() {
+        var isBotl = manualType.value === 'bottle';
+        bottleFields.style.display = isBotl ? 'flex' : 'none';
+        breastFields.style.display = isBotl ? 'none' : 'flex';
+      });
+    }
+    var manualSaveBtn = document.getElementById('reg-manual-save');
+    if (manualSaveBtn) {
+      manualSaveBtn.addEventListener('click', function() {
+        if (manualType.value === 'bottle') saveBottle();
+        else saveManualBreast();
+      });
     }
     var bottleInput = document.getElementById('reg-bottle-ml');
     if (bottleInput) {
       bottleInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') saveBottle();
       });
-    }
-
-    var manualBreastBtn = document.getElementById('reg-manual-breast-save');
-    if (manualBreastBtn) {
-      manualBreastBtn.addEventListener('click', saveManualBreast);
     }
 
     restoreActiveTimers();
