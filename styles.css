@@ -749,11 +749,9 @@ section { scroll-margin-top: 20px; }
   padding: 2px 7px; border-radius: 6px; margin-left: 6px;
   vertical-align: middle; letter-spacing: 0.2px; border: 1px solid transparent;
 }
-.chip-nac { background: var(--pink-soft); color: #fda4af; border-color: var(--pink-border); }
-.chip-aut { background: var(--green-soft); color: #86efac; border-color: var(--green-border); }
-.chip-mun { background: var(--yellow-soft); color: #fcd34d; border-color: var(--yellow-border); }
-.chip-prv { background: var(--blue-soft); color: #93c5fd; border-color: var(--blue-border); }
-.chip-emp { background: var(--amber-softer); color: var(--amber); border-color: rgba(251,191,36,0.25); }
+.chip-dad { background: var(--blue-soft); color: #93c5fd; border-color: var(--blue-border); }
+.chip-mum { background: var(--pink-soft); color: #fda4af; border-color: var(--pink-border); }
+.chip-alfred { background: var(--amber-softer); color: var(--amber); border-color: rgba(251,191,36,0.25); }
 
 /* Subtasks */
 .subtask-toggle {

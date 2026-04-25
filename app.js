@@ -25,7 +25,7 @@ window.BLOQUE_STARTS = {
 // Existing 4 groups are also in HTML; new 3 groups (bebe, salud, ayudas) render from this config.
 window.TRAMITES = {
   // ---------- Preparación ----------
-  'preparacion-0': { deadline: { kind: 'beforeEDD', days: 7, label: 'Lista 7d antes de FPP' }, priority: 'critical', scope: 'privado',
+  'preparacion-0': { deadline: { kind: 'beforeEDD', days: 7, label: 'Lista 7d antes de FPP' }, priority: 'critical', owner: 'mum',
     subtasks: [
       { id: 'mama-ropa', label: 'Mamá: camisones (2) + bata + sujetador lactancia + chanclas' },
       { id: 'mama-higiene', label: 'Mamá: neceser (cepillo, pasta, compresas postparto, toalla)' },
@@ -36,15 +36,15 @@ window.TRAMITES = {
       { id: 'acomp-essentials', label: 'Acompañante: cargador móvil + snacks + botella agua + ropa de cambio' }
     ]
   },
-  'preparacion-1': { deadline: { kind: 'absolute', date: '2026-04-30', label: 'Antes del 30 abr' }, priority: 'critical', scope: 'nacional',
+  'preparacion-1': { deadline: { kind: 'absolute', date: '2026-04-30', label: 'Antes del 30 abr' }, priority: 'critical', owner: 'dad',
     subtasks: [
       { id: 'comprar', label: 'Comprar silla i-Size grupo 0+ homologada' },
       { id: 'instalar', label: 'Instalar en el coche (base isofix o cinturón)' },
       { id: 'probar', label: 'Practicar enganche y desenganche' }
     ]
   },
-  'preparacion-2': { deadline: { kind: 'beforeEDD', days: 14, label: 'Entregar semana 36-37' }, priority: 'high', scope: 'privado' },
-  'preparacion-3': { deadline: { kind: 'beforeEDD', days: 3, label: 'Coordinar 3d antes de FPP' }, priority: 'high', scope: 'privado',
+  'preparacion-2': { deadline: { kind: 'beforeEDD', days: 14, label: 'Entregar semana 36-37' }, priority: 'high', owner: 'mum' },
+  'preparacion-3': { deadline: { kind: 'beforeEDD', days: 3, label: 'Coordinar 3d antes de FPP' }, priority: 'high', owner: 'mum',
     subtasks: [
       { id: 'school', label: 'Confirmar horario/recogida Luther King' },
       { id: 'cuidador', label: 'Confirmar cuidador principal (abuelos/familia)' },
@@ -52,7 +52,7 @@ window.TRAMITES = {
     ]
   },
   // ---------- INSS ----------
-  'inss-0': { deadline: { kind: 'afterBirth', days: 15, label: 'Cuanto antes tras el parto' }, priority: 'high', scope: 'nacional',
+  'inss-0': { deadline: { kind: 'afterBirth', days: 15, label: 'Cuanto antes tras el parto' }, priority: 'high', owner: 'dad',
     subtasks: [
       { id: 'clave', label: 'Tener Cl@ve PIN activo o certificado digital' },
       { id: 'form', label: 'Rellenar formulario MP-1 bis (portal INSS)' },
@@ -62,25 +62,25 @@ window.TRAMITES = {
       { id: 'enviar', label: 'Enviar solicitud y guardar número de referencia' }
     ]
   },
-  'inss-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Con la solicitud' }, scope: 'nacional' },
-  'inss-2': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras el parto' }, scope: 'autonomica' },
-  'inss-3': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción en Registro Civil' }, scope: 'nacional' },
-  'inss-4': { deadline: { kind: 'afterBirth', days: 15, label: 'Certificado de empresa' }, scope: 'empresa' },
-  'inss-5': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15d antes del bloque' }, scope: 'nacional' },
+  'inss-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Con la solicitud' }, owner: 'dad' },
+  'inss-2': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras el parto' }, owner: 'dad' },
+  'inss-3': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción en Registro Civil' }, owner: 'dad' },
+  'inss-4': { deadline: { kind: 'afterBirth', days: 15, label: 'Certificado de empresa' }, owner: 'dad' },
+  'inss-5': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15d antes del bloque' }, owner: 'dad' },
   // ---------- Binter ----------
-  'binter-0': { deadline: { kind: 'beforeEDD', days: 1, label: 'Antes del parto' }, priority: 'critical', scope: 'empresa' },
-  'binter-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción en Registro Civil' }, scope: 'empresa' },
-  'binter-2': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15d antes del bloque' }, scope: 'empresa' },
-  'binter-3': { deadline: { kind: 'absolute', date: '2026-06-20', label: 'Límite 20 jun 2026' }, scope: 'empresa' },
-  'binter-4': { deadline: { kind: 'absolute', date: '2026-04-25', label: 'Límite 25 abr 2026' }, priority: 'high', scope: 'empresa' },
+  'binter-0': { deadline: { kind: 'beforeEDD', days: 1, label: 'Antes del parto' }, priority: 'critical', owner: 'dad' },
+  'binter-1': { deadline: { kind: 'afterBirth', days: 15, label: 'Tras inscripción en Registro Civil' }, owner: 'dad' },
+  'binter-2': { deadline: { kind: 'beforeBloque', bloque: 2, days: 15, label: '15d antes del bloque' }, owner: 'dad' },
+  'binter-3': { deadline: { kind: 'absolute', date: '2026-06-20', label: 'Límite 20 jun 2026' }, owner: 'dad' },
+  'binter-4': { deadline: { kind: 'absolute', date: '2026-04-25', label: 'Límite 25 abr 2026' }, priority: 'high', owner: 'dad' },
   // ---------- Bebé (admin) ----------
   'bebe-0': { name: 'Inscripción nacimiento en Registro Civil (Vithas lo gestiona)', meta: 'Vithas Ciudad Jardín · 72h · Tramitado desde el hospital',
-              deadline: { kind: 'afterBirth', days: 3, label: '72h tras el parto' }, priority: 'critical', scope: 'privado' },
+              deadline: { kind: 'afterBirth', days: 3, label: '72h tras el parto' }, priority: 'critical', owner: 'mum' },
   'bebe-1': { name: 'Libro de Familia / Copia certificada', meta: 'Registro Civil online · Necesario para el resto de trámites',
-              deadline: { kind: 'afterBirth', days: 10, label: '~10 días tras inscripción' }, priority: 'high', scope: 'nacional',
+              deadline: { kind: 'afterBirth', days: 10, label: '~10 días tras inscripción' }, priority: 'high', owner: 'dad',
               dependsOn: ['bebe-0'] },
   'bebe-2': { name: 'Empadronamiento del bebé (Ciudad Jardín, LPGC)', meta: 'Ayuntamiento de Las Palmas · OAC Ciudad Jardín · Requiere Libro de Familia',
-              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes' }, scope: 'municipal',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes' }, owner: 'dad',
               dependsOn: ['bebe-1'],
               subtasks: [
                 { id: 'cita', label: 'Pedir cita en OAC Ciudad Jardín' },
@@ -88,58 +88,58 @@ window.TRAMITES = {
                 { id: 'volante', label: 'Obtener volante de empadronamiento del bebé' }
               ] },
   'bebe-3': { name: 'Tarjeta sanitaria SCS del bebé', meta: 'SCS · Requiere empadronamiento · Asignación de centro de salud',
-              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes' }, scope: 'autonomica',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Primer mes' }, owner: 'dad',
               dependsOn: ['bebe-2'],
               subtasks: [
                 { id: 'online', label: 'Solicitud online en sede electrónica SCS' },
                 { id: 'presencial', label: 'Alternativa: presencial en CS Ciudad Jardín con Libro de Familia + volante empadronamiento' }
               ] },
   'bebe-4': { name: 'Familia Digital (app Mi Familia)', meta: 'Ministerio de Justicia · Sustituye al Libro de Familia en papel · Opcional',
-              deadline: { kind: 'afterBirth', days: 30, label: 'Cuando esté disponible' }, scope: 'nacional',
+              deadline: { kind: 'afterBirth', days: 30, label: 'Cuando esté disponible' }, owner: 'dad',
               dependsOn: ['bebe-1'] },
   'bebe-5': { name: 'DNI del bebé', meta: 'Dirección General de Policía · Cita previa obligatoria · Necesario para pasaporte',
-              deadline: { kind: 'afterBirth', days: 90, label: 'Antes de solicitar pasaporte' }, scope: 'nacional',
+              deadline: { kind: 'afterBirth', days: 90, label: 'Antes de solicitar pasaporte' }, owner: 'dad',
               dependsOn: ['bebe-1'] },
   'bebe-6': { name: 'Pasaporte del bebé', meta: 'Dirección General de Policía · Necesario para viaje a Japón abr 2027 · Iniciar 2 meses antes',
-              deadline: { kind: 'absolute', date: '2027-02-01', label: 'Al menos 2 meses antes del viaje' }, scope: 'nacional',
+              deadline: { kind: 'absolute', date: '2027-02-01', label: 'Al menos 2 meses antes del viaje' }, owner: 'dad',
               dependsOn: ['bebe-5'] },
   // ---------- Salud ----------
   'salud-0': { name: 'Asignación de pediatra (CS Ciudad Jardín)', meta: 'SCS Gran Canaria · Centro de salud por zona',
-               deadline: { kind: 'afterBirth', days: 30, label: 'Tras tarjeta sanitaria' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 30, label: 'Tras tarjeta sanitaria' }, owner: 'dad',
                dependsOn: ['bebe-3'] },
   'salud-1': { name: 'Cribado metabólico (prueba del talón)', meta: 'Vithas · En las primeras 48h · Resultados ~15 días',
-               deadline: { kind: 'afterBirth', days: 2, label: '48h tras el parto' }, priority: 'critical', scope: 'privado' },
+               deadline: { kind: 'afterBirth', days: 2, label: '48h tras el parto' }, priority: 'critical', owner: 'mum' },
   'salud-2': { name: 'Cribado auditivo', meta: 'Vithas · Se realiza en el hospital al nacer',
-               deadline: { kind: 'afterBirth', days: 2, label: '48h tras el parto' }, priority: 'critical', scope: 'privado' },
+               deadline: { kind: 'afterBirth', days: 2, label: '48h tras el parto' }, priority: 'critical', owner: 'mum' },
   'salud-3': { name: 'Revisión postparto con matrona (semana 1 y 6)', meta: 'SCS La Laguna · Primera visita en la primera semana',
-               deadline: { kind: 'afterBirth', days: 7, label: 'Primera semana' }, priority: 'high', scope: 'autonomica' },
+               deadline: { kind: 'afterBirth', days: 7, label: 'Primera semana' }, priority: 'high', owner: 'dad' },
   'salud-4': { name: 'Informe de maternidad (SCS)', meta: 'Matrona o médico de familia · NO lo emite Vithas · Necesario para prestación INSS',
-               deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', scope: 'autonomica' },
+               deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', owner: 'dad' },
   'salud-5': { name: 'Revisión del niño sano (1 mes)', meta: 'Pediatra asignado · Primera visita del Programa de Salud Infantil',
-               deadline: { kind: 'afterBirth', days: 30, label: '~1 mes de vida' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 30, label: '~1 mes de vida' }, owner: 'dad',
                dependsOn: ['salud-0'] },
   'salud-6': { name: 'Vacunas 2 meses (calendario Canarias)', meta: 'Centro de salud asignado · Hexavalente + meningo B + neumococo + rotavirus',
-               deadline: { kind: 'afterBirth', days: 60, label: '2 meses exactos' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 60, label: '2 meses exactos' }, owner: 'dad',
                dependsOn: ['salud-0'] },
   'salud-7': { name: 'Vacunas 4 meses', meta: 'Centro de salud asignado',
-               deadline: { kind: 'afterBirth', days: 120, label: '4 meses' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 120, label: '4 meses' }, owner: 'dad',
                dependsOn: ['salud-6'] },
   'salud-8': { name: 'Vacunas 11 meses', meta: 'Hexavalente + Meningo C',
-               deadline: { kind: 'afterBirth', days: 330, label: '11 meses' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 330, label: '11 meses' }, owner: 'dad',
                dependsOn: ['salud-7'] },
   'salud-9': { name: 'Vacunas 12 meses', meta: 'Triple vírica + Meningo B + Varicela + Neumococo',
-               deadline: { kind: 'afterBirth', days: 365, label: '12 meses' }, scope: 'autonomica',
+               deadline: { kind: 'afterBirth', days: 365, label: '12 meses' }, owner: 'dad',
                dependsOn: ['salud-8'] },
   'salud-10': { name: 'Vacuna 15 meses', meta: 'Hepatitis A',
-                deadline: { kind: 'afterBirth', days: 456, label: '15 meses' }, scope: 'autonomica',
+                deadline: { kind: 'afterBirth', days: 456, label: '15 meses' }, owner: 'dad',
                 dependsOn: ['salud-9'] },
   // ---------- Ayudas económicas ----------
   'ayudas-0': { name: 'Contactar asesora fiscal Elena Melián', meta: 'Verificación IRPF — datos familiares · Actualizar nº hijos para retenciones · Al empleador',
-                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
+                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, owner: 'dad' },
   'ayudas-1': { name: 'Actualizar beneficiarios seguro de vida', meta: 'Compañía de seguros · Incluir al nuevo hijo',
-                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, scope: 'nacional' },
+                deadline: { kind: 'afterBirth', days: 60, label: 'Primeros 2 meses' }, owner: 'dad' },
   'ayudas-2': { name: 'Actualizar seguro médico privado (si aplica)', meta: 'Compañía de seguros · Dar de alta al bebé · Algunas tienen plazo de 15-30 días',
-                deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', scope: 'privado' }
+                deadline: { kind: 'afterBirth', days: 15, label: 'Primeras 2 semanas' }, priority: 'high', owner: 'mum' }
 };
 
 // Backwards-compat alias used by legacy paths.
@@ -161,12 +161,10 @@ window.GROUPS = {
   preparacion: { title: '🎒 Preparación pre-parto', desc: 'Tareas previas al parto.', renderMode: 'html' }
 };
 
-window.SCOPE_CHIPS = {
-  nacional:   { label: 'Nacional', emoji: '🇪🇸', cls: 'chip-nac' },
-  autonomica: { label: 'Canarias', emoji: '🌴', cls: 'chip-aut' },
-  municipal:  { label: 'LPGC', emoji: '🏛', cls: 'chip-mun' },
-  privado:    { label: 'Vithas', emoji: '🏥', cls: 'chip-prv' },
-  empresa:    { label: 'Binter', emoji: '🏢', cls: 'chip-emp' }
+window.OWNER_CHIPS = {
+  dad:    { label: 'Dad', emoji: '👨', cls: 'chip-dad' },
+  mum:    { label: 'Mum', emoji: '👩', cls: 'chip-mum' },
+  alfred: { label: 'Alfred', emoji: '🎩', cls: 'chip-alfred' }
 };
 
 window.resolveDeadline = function(key) {

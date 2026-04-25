@@ -15,7 +15,7 @@ if ('serviceWorker' in navigator) {
 
   // Page titles for header updates
   var pageTitles = {
-    resumen: 'Panel De Control',
+    resumen: 'Mission Control',
     calendario: 'Calendario',
     tramites: 'Trámites',
     salud: 'Citas Médicas',
