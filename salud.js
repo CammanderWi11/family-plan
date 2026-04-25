@@ -72,10 +72,10 @@
       var items = data[person.key] || [];
       html += '<div class="glass data-card salud-person-card">';
       html += '<h2 class="salud-person-title" data-person="' + person.key + '">';
-      html += '<span class="salud-person-toggle" id="salud-toggle-' + person.key + '">▾</span> ';
+      html += '<span class="salud-person-toggle" id="salud-toggle-' + person.key + '">▸</span> ';
       html += person.emoji + ' ' + person.label;
       html += '</h2>';
-      html += '<div class="salud-person-body" id="salud-body-' + person.key + '">';
+      html += '<div class="salud-person-body" id="salud-body-' + person.key + '" style="display:none;">';
 
       CAT_ORDER.forEach(function(cat) {
         var catItems = items.filter(function(it) { return it.category === cat; });

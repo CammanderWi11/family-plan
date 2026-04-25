@@ -1841,14 +1841,15 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 }
 .salud-empty { font-size: 12px; color: var(--text-muted); padding: 4px 0; }
 .salud-item {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 8px;
   padding: 10px 0; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 .salud-item.salud-done { opacity: 0.4; }
 .salud-check { flex: 0 0 auto; display: flex; align-items: center; }
 .salud-check input { width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; }
 .salud-item-body { flex: 1; min-width: 0; }
-.salud-item-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.salud-item-name { font-size: 13px; font-weight: 600; color: var(--text); word-break: break-word; }
 .salud-item-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 .salud-age-badge {
   font-family: var(--font-mono); font-size: 9px; font-weight: 600;
@@ -1865,7 +1866,7 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   cursor: pointer; padding: 4px 8px; flex: 0 0 auto;
 }
 .salud-detail {
-  padding: 12px 0 12px 28px;
+  padding: 12px 0 12px 12px;
   border-bottom: 1px solid var(--border);
 }
 .salud-detail-row {
