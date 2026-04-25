@@ -1891,3 +1891,87 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   display: flex; flex-direction: column; gap: 8px;
   padding: 12px 0; margin-top: 8px;
 }
+
+/* ---- Mission Control — Search, Watchlist, Upcoming ---- */
+
+.mc-search-wrap { position: relative; margin-bottom: 16px; }
+.mc-search-input {
+  width: 100%; padding: 12px 40px 12px 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font-size: 14px; font-family: var(--font-sans); outline: none;
+}
+.mc-search-input::placeholder { color: var(--text-muted); }
+.mc-search-input:focus { border-color: var(--amber); }
+.mc-search-clear {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-muted); font-size: 18px;
+  cursor: pointer; padding: 4px;
+}
+.mc-search-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  margin-top: 4px; max-height: 320px; overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.mc-search-group {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text-muted); padding: 10px 14px 4px;
+}
+.mc-search-result {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  cursor: pointer; border-bottom: 1px solid var(--border);
+}
+.mc-search-result:hover { background: rgba(255,255,255,0.03); }
+.mc-search-result:last-child { border-bottom: none; }
+.mc-search-result-icon { font-size: 16px; flex: 0 0 auto; }
+.mc-search-result-body { flex: 1; min-width: 0; }
+.mc-search-result-label { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-search-result-meta { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-search-empty { padding: 14px; color: var(--text-muted); font-size: 13px; text-align: center; }
+
+.mc-watchlist-card {
+  border-radius: 10px; margin-bottom: 16px; overflow: hidden;
+  border: 1px solid var(--red-border);
+  background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(251,113,133,0.04));
+}
+.mc-watchlist-title {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+  color: var(--red); padding: 12px 14px 6px; font-weight: 700;
+}
+.mc-wl-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+  cursor: pointer; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.04);
+}
+.mc-wl-item:hover { background: rgba(255,255,255,0.03); }
+.mc-wl-icon { font-size: 14px; flex: 0 0 auto; }
+.mc-wl-label { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-wl-sub { font-family: var(--font-mono); font-size: 11px; flex: 0 0 auto; }
+.wl-red .mc-wl-sub { color: var(--red); font-weight: 700; }
+.wl-amber .mc-wl-sub { color: var(--amber); }
+.wl-blue .mc-wl-sub { color: var(--blue); }
+
+.mc-upcoming-card { margin-top: 18px; }
+.mc-upcoming-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mc-upcoming-toggle { display: flex; gap: 4px; }
+.mc-toggle-btn {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.5px;
+  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  background: none; color: var(--text-muted); cursor: pointer;
+}
+.mc-toggle-btn.active { background: var(--amber-softer); color: var(--amber); border-color: rgba(251,191,36,0.25); }
+.mc-upcoming-date {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+  color: var(--text-muted); margin: 12px 0 4px; text-transform: uppercase;
+}
+.mc-upcoming-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px;
+}
+.mc-upcoming-item:hover { color: var(--amber); }
+.mc-upcoming-icon { font-size: 14px; flex: 0 0 auto; }
+.mc-upcoming-label { flex: 1; color: var(--text); }
+
+.salud-followup-extra label {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; display: block;
+}
