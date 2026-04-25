@@ -652,7 +652,9 @@ section { scroll-margin-top: 20px; }
 }
 .ics-tooltip-item .ics-dot { width: 6px; height: 6px; flex-shrink: 0; }
 @media (max-width: 480px) {
-  .ics-dot { width: 4px; height: 4px; }
+  .ics-dots { bottom: 0px; }
+  .ics-dot { width: 5px; height: 5px; }
+  .cal-day { overflow: visible; }
 }
 
 /* ============================================
@@ -1611,8 +1613,8 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .reg-sec-title {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px;
   color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;
-  text-align: center;
 }
+.data-card:has(.reg-timer-row) .reg-sec-title { text-align: center; }
 
 /* Salud notes */
 .salud-notes-input {
