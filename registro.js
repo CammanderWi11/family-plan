@@ -2,7 +2,9 @@
 (function() {
 
   var LOCAL_KEY = 'fp-luca-log';
+  var ACTIVE_KEY = 'fp-luca-active';
   var SHARED_TABLE = 'shared_luca_log';
+  var MAX_ACTIVE_AGE = 2 * 3600 * 1000; // 2 hours — auto-discard stale timers
 
   var TIMER_KEYS = ['breast_left', 'breast_right', 'pump_left', 'pump_right'];
 
@@ -14,6 +16,38 @@
   };
 
   var active = {};      // key -> { startedAt, elapsed, intervalId }
+
+  // ---- Active-timer persistence ----
+  function saveActiveTimers() {
+    var data = {};
+    TIMER_KEYS.forEach(function(key) {
+      if (active[key]) {
+        data[key] = { startedAt: active[key].startedAt };
+      }
+    });
+    try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  function clearActiveTimer(key) {
+    try {
+      var data = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
+      delete data[key];
+      localStorage.setItem(ACTIVE_KEY, JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  function restoreActiveTimers() {
+    try {
+      var data = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
+      var now = Date.now();
+      Object.keys(data).forEach(function(key) {
+        if (!TIMER_META[key] || !data[key].startedAt) return;
+        var age = now - new Date(data[key].startedAt).getTime();
+        if (age > MAX_ACTIVE_AGE) return; // discard stale timers
+        startTimer(key, data[key].startedAt);
+      });
+    } catch(e) {}
+  }
   var viewDate = new Date(); // the date currently shown in the log
   var heroInterval = null;
 
@@ -168,15 +202,17 @@
   }
 
   // ---- Timer ----
-  function startTimer(key) {
+  function startTimer(key, resumeFrom) {
     if (active[key]) return;
-    var startedAt = new Date().toISOString();
+    var startedAt = resumeFrom || new Date().toISOString();
+    var elapsed = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000));
     var id = setInterval(function() {
       if (!active[key]) { clearInterval(id); return; }
       active[key].elapsed = Math.floor((Date.now() - new Date(active[key].startedAt).getTime()) / 1000);
       refreshBtn(key);
     }, 1000);
-    active[key] = { startedAt: startedAt, elapsed: 0, intervalId: id };
+    active[key] = { startedAt: startedAt, elapsed: elapsed, intervalId: id };
+    saveActiveTimers();
     refreshBtn(key);
   }
 
@@ -191,6 +227,7 @@
       durationSeconds: active[key].elapsed
     };
     active[key] = null;
+    clearActiveTimer(key);
     addEntry(entry);
     refreshBtn(key);
     renderAll();
@@ -522,6 +559,7 @@
       });
     }
 
+    restoreActiveTimers();
     renderAll();
     startHeroInterval();
   }
