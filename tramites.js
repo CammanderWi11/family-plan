@@ -514,42 +514,6 @@
     badge.title = 'Deadline: ' + window.fmtLongDate(dl.date) + ' · ' + dl.label;
   }
 
-  function renderUrgentBanner() {
-    const banner = document.getElementById('urgent-banner');
-    if (!banner) return;
-    if (sessionStorage.getItem('urgent-banner-dismissed') === '1') { banner.style.display = 'none'; return; }
-    const items = [];
-    allBoxes.forEach(box => {
-      if (box.checked) return;
-      const key = box.dataset.group + '-' + box.dataset.idx;
-      const dl = window.resolveDeadline(key);
-      if (!dl) return;
-      const rule = window.TRAMITE_DEADLINES[key] || {};
-      const isCritical = rule.priority === 'critical';
-      if (dl.daysUntil <= 3 || (isCritical && dl.daysUntil <= 7)) {
-        items.push({ key, dl, box, isCritical });
-      }
-    });
-    if (!items.length) { banner.style.display = 'none'; return; }
-    items.sort((a,b) => a.dl.daysUntil - b.dl.daysUntil);
-    const overdue = items.filter(i => i.dl.daysUntil < 0).length;
-    const label = overdue ? '⚠ ' + overdue + ' vencidos · ' + items.length + ' urgentes' : '⚠ ' + items.length + ' urgentes esta semana';
-    banner.querySelector('.urgent-text').textContent = label;
-    banner.style.display = '';
-    banner.onclick = () => {
-      const top = items[0];
-      const tab = document.querySelector('.nav-item[data-tab="tramites"]');
-      if (tab) tab.click();
-      setTimeout(() => {
-        const grp = top.box.closest('.tramite-group');
-        if (grp && grp.classList.contains('group-collapsed')) { grp.classList.remove('group-collapsed'); grp.dataset.manualExpand = '1'; }
-        top.box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const row = top.box.closest('.tramite-row');
-        if (row) { row.style.boxShadow = '0 0 0 2px #ef4444'; setTimeout(() => { row.style.boxShadow = ''; }, 1800); }
-      }, 120);
-    };
-  }
-
   function navigateToItem(box) {
     const tab = window.getTabForKey(box.dataset.group + '-' + box.dataset.idx);
     var tabId = tab.replace('#', '');
@@ -582,7 +546,6 @@
   }
 
   function renderDashboard() {
-    renderUrgentBanner();
     const aqEl = document.getElementById('action-queue');
     const bqEl = document.getElementById('blocked-queue');
     const sumEl = document.getElementById('aq-weekly-summary');
@@ -1081,14 +1044,6 @@
       grpEl.appendChild(list);
     });
   }
-
-  // ---------- Urgent banner dismiss ----------
-  const urgDismiss = document.getElementById('urgent-dismiss');
-  if (urgDismiss) urgDismiss.addEventListener('click', (e) => {
-    e.stopPropagation();
-    sessionStorage.setItem('urgent-banner-dismissed', '1');
-    document.getElementById('urgent-banner').style.display = 'none';
-  });
 
   // ---------- Settings (now a tab, not a modal) ----------
   const syncPill = document.getElementById('sync-pill');

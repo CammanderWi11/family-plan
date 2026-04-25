@@ -173,12 +173,13 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== RESUMEN (DASHBOARD) ========== -->
   <section id="resumen" class="tab-section active">
-    <div class="resumen-banners" id="resumen-banners"></div>
-    <div class="urgent-banner" id="urgent-banner" style="display:none;">
-      <span class="urgent-text">URGENTE ESTA SEMANA</span>
-      <span class="urgent-arrow">&rarr;</span>
-      <button class="urgent-x" id="urgent-dismiss" title="Hide until logout">&times;</button>
+    <div class="mc-search-wrap" id="mc-search-wrap">
+      <input type="text" id="mc-search-input" class="mc-search-input" placeholder="Buscar trámites, documentos, citas..." autocomplete="off">
+      <button class="mc-search-clear" id="mc-search-clear" style="display:none;">&times;</button>
+      <div class="mc-search-dropdown" id="mc-search-dropdown" style="display:none;"></div>
     </div>
+    <div class="resumen-banners" id="resumen-banners"></div>
+    <div id="mc-watchlist" style="display:none;"></div>
     <div class="glass countdown-dashboard" id="leave-countdown">
       <h3 class="dash-label">Estado</h3>
       <div class="cd-status" id="cd-status"></div>
@@ -201,6 +202,7 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="progress-fill" id="cd-progress" style="width:0%"></div>
       </div>
     </div>
+    <div id="mc-upcoming"></div>
   </section>
 
   <!-- ========== CALENDARIO ========== -->
@@ -636,6 +638,7 @@ window.sb.auth.getSession().then(({ data }) => {
 <script src="library.js"></script>
 <script src="doc-tracker.js"></script>
 <script src="salud.js"></script>
+<script src="mission-control.js"></script>
 <script src="settings.js"></script>
 <script src="rutina.js"></script>
 <script src="registro.js"></script>
