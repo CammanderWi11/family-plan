@@ -1,4 +1,4 @@
-const VERSION = 'v25-family-plan';
+const VERSION = 'v26-family-plan';
 const SHELL_CACHE = 'family-plan-shell-' + VERSION;
 const DATA_CACHE = 'family-plan-data-' + VERSION;
 const PHOTO_CACHE = 'family-plan-photos-' + VERSION;
@@ -18,7 +18,8 @@ const SHELL = [
   './nav.js',
   './registro.js',
   './rutina.js',
-  './salud.js'
+  './salud.js',
+  './mission-control.js'
 ];
 const SUPABASE_HOST = 'voirsxfjdayhhvwviaqt.supabase.co';
 
