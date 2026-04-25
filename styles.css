@@ -1634,17 +1634,37 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   color: var(--text); font-family: var(--font-sans);
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
   text-align: center; width: 100%; min-width: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  /* 3D raised / push-out look */
+  box-shadow:
+    0 4px 0 rgba(0,0,0,0.25),
+    0 6px 12px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  transform: translateY(0);
 }
 .timer-btn:hover {
   border-color: var(--border-hover); background: var(--surface-hover);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow:
+    0 4px 0 rgba(0,0,0,0.25),
+    0 6px 14px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.15);
 }
-.timer-btn:active { transform: scale(0.97); box-shadow: none; }
+.timer-btn:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.25),
+    0 1px 4px rgba(0,0,0,0.1),
+    inset 0 2px 4px rgba(0,0,0,0.15);
+}
 .timer-btn-active {
   border-color: var(--amber) !important;
   background: rgba(251,191,36,0.15) !important;
-  box-shadow: 0 0 0 2px var(--amber-dark), 0 0 12px var(--amber-glow);
+  /* 3D pressed / push-in look */
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.2),
+    0 1px 4px rgba(0,0,0,0.1),
+    inset 0 2px 6px rgba(0,0,0,0.2),
+    0 0 12px var(--amber-glow);
   animation: timer-pulse 1.5s ease-in-out infinite;
 }
 .timer-btn-last {
@@ -1652,8 +1672,20 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   background: var(--amber-softer);
 }
 @keyframes timer-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px var(--amber-dark), 0 0 8px var(--amber-glow); }
-  50% { box-shadow: 0 0 0 4px var(--amber-glow), 0 0 20px var(--amber-glow); }
+  0%, 100% {
+    box-shadow:
+      0 1px 0 rgba(0,0,0,0.2),
+      0 1px 4px rgba(0,0,0,0.1),
+      inset 0 2px 6px rgba(0,0,0,0.2),
+      0 0 8px var(--amber-glow);
+  }
+  50% {
+    box-shadow:
+      0 1px 0 rgba(0,0,0,0.2),
+      0 1px 4px rgba(0,0,0,0.1),
+      inset 0 2px 6px rgba(0,0,0,0.2),
+      0 0 20px var(--amber-glow);
+  }
 }
 .timer-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
 .timer-label {
