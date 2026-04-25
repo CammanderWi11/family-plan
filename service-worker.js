@@ -1,4 +1,4 @@
-const VERSION = 'v8-family-plan';
+const VERSION = 'v9-family-plan';
 const SHELL_CACHE = 'family-plan-shell-' + VERSION;
 const DATA_CACHE = 'family-plan-data-' + VERSION;
 const PHOTO_CACHE = 'family-plan-photos-' + VERSION;

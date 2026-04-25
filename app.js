@@ -315,14 +315,13 @@ window.getTabForKey = function(key) {
           var isRight = last.nextSide === 'Der';
           var nextSideLabel = isRight ? 'Derecho \u2192' : '\u2190 Izquierdo';
           var nextSideClass = isRight ? 'caregiver-badge caregiver-daddey' : 'caregiver-badge caregiver-mum';
-          nextSideHtml = '<span class="resumen-banner-text">Pr\u00f3xima toma <span class="' + nextSideClass + ' badge-sm">' + nextSideLabel + '</span></span>';
+          nextSideHtml = '<div class="reg-hero-next-side">Pr\u00f3xima toma <span class="' + nextSideClass + '">' + nextSideLabel + '</span></div>';
         }
         var isAlert = last.elapsedSeconds > 3 * 3600;
         lucaHtml = '<div class="resumen-banner resumen-banner-luca' + (isAlert ? ' resumen-banner-alert' : '') + '">' +
-          '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
-          '<div class="resumen-banner-body">' +
-            '<span class="resumen-banner-title">\u00daltima toma</span>' +
-            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + '</span>' +
+          '<div class="resumen-banner-body" style="width:100%">' +
+            '<div class="reg-hero-label">\u00daLTIMA TOMA</div>' +
+            '<div class="reg-hero-elapsed' + (isAlert ? ' reg-hero-elapsed-alert' : '') + '">' + elapsed + '</div>' +
             nextSideHtml +
           '</div>' +
         '</div>';
