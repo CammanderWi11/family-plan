@@ -136,11 +136,10 @@ if ('serviceWorker' in navigator) {
   try { saved = localStorage.getItem('fp-theme'); } catch(e) {}
   applyTheme(saved || systemTheme());
 
-  // Follow system changes when no manual override
+  // Always follow system theme changes (clears any manual override)
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
-    var manual = null;
-    try { manual = localStorage.getItem('fp-theme'); } catch(e) {}
-    if (!manual) applyTheme(systemTheme());
+    try { localStorage.removeItem('fp-theme'); } catch(e) {}
+    applyTheme(systemTheme());
   });
 
   // Bind clicks
