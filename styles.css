@@ -1771,7 +1771,7 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   color: var(--text-muted); text-transform: uppercase;
 }
 .resumen-banner-text {
-  font-size: 13px; font-weight: 600; color: var(--text);
+  font-size: 15px; font-weight: 600; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .resumen-banner-muted { color: var(--text-muted) !important; font-weight: 400 !important; }
