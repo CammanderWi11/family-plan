@@ -569,6 +569,7 @@
     // 3. Registro manual (Biberón + Pecho manual merged)
     html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\u270d Registro manual</h3>';
+    html += '<div style="display:flex;flex-direction:column;gap:8px;">';
     html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:6px;">';
     html += '<select id="reg-manual-type" class="reg-bottle-input" style="flex:0 0 auto;min-width:110px;padding-right:14px;">';
     html += '<option value="bottle">\ud83c\udf7c Biberón</option>';
@@ -591,7 +592,8 @@
     html += '<option value="right">Der</option>';
     html += '</select>';
     html += '</div>';
-    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save">Registrar</button>';
+    html += '</div>';
+    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save" style="width:100%;">Registrar</button>';
     html += '</div>';
     html += '</div>';
 
