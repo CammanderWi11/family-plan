@@ -210,8 +210,7 @@ window.getGroupForKey = function(key) {
   return key.split('-')[0];
 };
 window.getTabForKey = function(key) {
-  var group = window.getGroupForKey(key);
-  return group === 'salud' ? '#salud' : '#tramites';
+  return '#tramites';
 };
 
 // ========== SALUD NOTES ==========

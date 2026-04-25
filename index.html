@@ -110,10 +110,6 @@ window.sb.auth.getSession().then(({ data }) => {
       <span class="nav-label">Trámites</span>
       <span class="nav-badge nav-label" id="nav-tramites-badge" style="display:none;">0</span>
     </a>
-    <a href="#salud" class="nav-item" data-tab="salud">
-      <span class="nav-icon">&#9737;</span>
-      <span class="nav-label">Citas Médicas</span>
-    </a>
   </div>
   <div class="sidebar-bottom">
     <a href="#ajustes" class="nav-item" data-tab="ajustes">
@@ -152,10 +148,6 @@ window.sb.auth.getSession().then(({ data }) => {
     <a href="#tramites" class="mobile-tab" data-tab="tramites">
       <span class="tab-icon">&#9744;</span>
       <span>TRÁM</span>
-    </a>
-    <a href="#salud" class="mobile-tab" data-tab="salud">
-      <span class="tab-icon">&#9737;</span>
-      <span>CITAS</span>
     </a>
   </div>
 </nav>
@@ -379,6 +371,13 @@ window.sb.auth.getSession().then(({ data }) => {
       <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
     </div>
 
+    <!-- Citas Médicas (salud) -->
+    <div class="glass data-card" id="salud-notes-card">
+      <h3 class="reg-sec-title">&#9998; Notas para el pediatra</h3>
+      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
+    </div>
+    <div id="js-groups-host-salud"></div>
+
     <!-- JS-rendered: Bebe -->
     <div id="js-groups-host-bebe"></div>
 
@@ -484,16 +483,6 @@ window.sb.auth.getSession().then(({ data }) => {
         <div class="doc-list-empty">Cargando biblioteca...</div>
       </div>
     </div>
-  </section>
-
-  <!-- ========== CITAS MEDICAS ========== -->
-  <section id="salud" class="tab-section">
-    <div class="section-title">Citas Médicas</div>
-    <div class="glass data-card" id="salud-notes-card">
-      <h3 class="reg-sec-title">&#9998; Notas para el pediatra</h3>
-      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
-    </div>
-    <div id="js-groups-host-salud"></div>
   </section>
 
   <!-- ========== RUTINA DE LEO ========== -->

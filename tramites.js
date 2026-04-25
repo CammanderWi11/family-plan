@@ -545,8 +545,8 @@
 
     // Weekly summary
     const dueThisWeek = actionable.filter(i => i.dl.daysUntil <= 7);
-    const tramWeek = dueThisWeek.filter(i => window.getTabForKey(i.key) === '#tramites').length;
-    const saludWeek = dueThisWeek.filter(i => window.getTabForKey(i.key) === '#salud').length;
+    const saludWeek = dueThisWeek.filter(i => window.getGroupForKey(i.key) === 'salud').length;
+    const tramWeek = dueThisWeek.length - saludWeek;
     if (sumEl) {
       const parts = [];
       if (tramWeek) parts.push(tramWeek + ' trámite' + (tramWeek > 1 ? 's' : ''));
@@ -667,7 +667,44 @@
     });
   });
 
+  function sortCompletedToBottom() {
+    document.querySelectorAll('.tramite-group').forEach(grpEl => {
+      const rows = Array.from(grpEl.querySelectorAll('.tramite-row'));
+      if (!rows.length) return;
+      // Collect each row + its trailing panels (subtasks, journal)
+      const items = rows.map(row => {
+        const nodes = [row];
+        let next = row.nextElementSibling;
+        while (next && !next.classList.contains('tramite-row') && !next.classList.contains('progress-track') && !next.classList.contains('uploader') && !next.classList.contains('doc-list') && next.tagName !== 'H3' && next.tagName !== 'P') {
+          if (next.classList.contains('subtasks-panel') || next.classList.contains('journal-panel')) {
+            nodes.push(next);
+          } else {
+            break;
+          }
+          next = next.nextElementSibling;
+        }
+        const cb = row.querySelector('input[type="checkbox"]');
+        const checked = cb ? cb.checked : false;
+        return { nodes, checked };
+      });
+      // Stable sort: pending first, completed last
+      const pending = items.filter(i => !i.checked);
+      const done = items.filter(i => i.checked);
+      const sorted = pending.concat(done);
+      // Find insertion point (after progress bar)
+      const progTrack = grpEl.querySelector('.progress-track');
+      let anchor = progTrack ? progTrack.nextSibling : null;
+      sorted.forEach(item => {
+        item.nodes.forEach(node => {
+          if (anchor) grpEl.insertBefore(node, anchor);
+          else grpEl.appendChild(node);
+        });
+      });
+    });
+  }
+
   function autoCollapseCompleted() {
+    sortCompletedToBottom();
     document.querySelectorAll('.tramite-group').forEach(grpEl => {
       if (grpEl.classList.contains('no-collapse')) return;
       if (!grpEl.dataset.manualExpand) grpEl.classList.add('group-collapsed');
