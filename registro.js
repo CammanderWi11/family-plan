@@ -582,12 +582,12 @@
     html += '</div>';
     html += '</div>';
     html += '<div id="reg-manual-fields-breast" style="display:none;gap:6px;flex:1;min-width:0;">';
-    html += '<input type="time" id="reg-manual-breast-time" class="reg-bottle-input" style="flex:1;min-width:90px;padding-right:8px;">';
-    html += '<div class="reg-bottle-input-wrap" style="flex:0 0 auto;min-width:55px;">';
-    html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="0" style="width:50px;">';
+    html += '<input type="time" id="reg-manual-breast-time" class="reg-bottle-input" style="flex:1;min-width:0;padding-right:8px;">';
+    html += '<div class="reg-bottle-input-wrap" style="flex:1;min-width:0;">';
+    html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="0" style="width:100%;">';
     html += '<span class="reg-bottle-unit">min</span>';
     html += '</div>';
-    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:0 0 auto;width:auto;min-width:0;padding:10px 6px;padding-right:6px;font-size:14px;">';
+    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:1;min-width:0;padding:10px 6px;padding-right:6px;font-size:14px;">';
     html += '<option value="left">Izq</option>';
     html += '<option value="right">Der</option>';
     html += '</select>';
