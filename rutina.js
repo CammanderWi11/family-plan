@@ -252,7 +252,14 @@
         html += '<div class="rutina-hero-name">' + cs.name + '</div>';
         if (cs.desc) html += '<div class="rutina-hero-desc">' + cs.desc + '</div>';
       } else {
-        html += '<div class="rutina-hero-name rutina-hero-off">Fuera de horario</div>';
+        var nowM = nowMinutes();
+        var firstStart = BLOCKS.length ? BLOCKS[0].startH * 60 + BLOCKS[0].startM : 0;
+        var lastEnd = BLOCKS.length ? BLOCKS[BLOCKS.length - 1].endH * 60 + BLOCKS[BLOCKS.length - 1].endM : 0;
+        if (nowM >= lastEnd || nowM < firstStart) {
+          html += '<div class="rutina-hero-name rutina-hero-off">Durmiendo \ud83d\ude34</div>';
+        } else {
+          html += '<div class="rutina-hero-name rutina-hero-off">Fuera de horario</div>';
+        }
       }
       if (cur.nextStep) {
         var ns = cur.nextStep.step;
@@ -374,7 +381,12 @@
   // Expose for Resumen banners
   window.getLeoCurrentStep = function() {
     if (!BLOCKS.length) return null;
-    return findCurrent();
+    var result = findCurrent();
+    var nowM = nowMinutes();
+    var firstStart = BLOCKS[0].startH * 60 + BLOCKS[0].startM;
+    var lastEnd = BLOCKS[BLOCKS.length - 1].endH * 60 + BLOCKS[BLOCKS.length - 1].endM;
+    result.isSleeping = (nowM >= lastEnd || nowM < firstStart);
+    return result;
   };
   window.LEO_WHO_LABELS = WHO_LABELS;
 })();

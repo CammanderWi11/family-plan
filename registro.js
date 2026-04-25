@@ -313,7 +313,8 @@
       return;
     }
 
-    var secs = elapsedSince(lastAny.startedAt);
+    var endTime = new Date(new Date(lastAny.startedAt).getTime() + (lastAny.durationSeconds || 0) * 1000);
+    var secs = Math.floor((Date.now() - endTime.getTime()) / 1000);
     var isAlert = secs > 3 * 3600;
     el.className = 'glass reg-hero' + (isAlert ? ' reg-hero-alert' : '');
 
@@ -431,6 +432,8 @@
           var mins = Math.round(entry.durationSeconds / 60);
           detailHtml = '<span class="reg-entry-dur reg-entry-dur-edit" data-id="' + entry.id + '" data-secs="' + entry.durationSeconds + '" title="Editar duración">' + fmtDuration(entry.durationSeconds) + '</span>';
         }
+        var endDate = new Date(new Date(entry.startedAt).getTime() + entry.durationSeconds * 1000);
+        var timeRange = fmtTime(entry.startedAt) + '\u2013' + fmtTime(endDate.toISOString());
         logHtml +=
           '<div class="reg-entry">' +
           '<span class="reg-entry-icon">' + icon + '</span>' +
@@ -438,7 +441,7 @@
             '<span class="reg-entry-name">' + typeLbl + '</span>' +
             detailHtml +
           '</div>' +
-          '<span class="reg-entry-time">' + fmtTime(entry.startedAt) + '</span>' +
+          '<span class="reg-entry-time">' + timeRange + '</span>' +
           (todayFlag ? '<button class="reg-del" data-id="' + entry.id + '" title="Borrar">\u00d7</button>' : '') +
           '</div>';
       });
@@ -587,12 +590,15 @@
     var log = getLog();
     if (!log.length) return null;
     var last = log[0];
+    var endTime = new Date(new Date(last.startedAt).getTime() + (last.durationSeconds || 0) * 1000);
+    var lastBreast = log.filter(function(e) { return e.type === 'breast'; })[0] || null;
     return {
       type: last.type,
       side: last.side,
       ml: last.ml || null,
       startedAt: last.startedAt,
-      elapsedSeconds: elapsedSince(last.startedAt)
+      elapsedSeconds: Math.floor((Date.now() - endTime.getTime()) / 1000),
+      nextSide: lastBreast ? (lastBreast.side === 'left' ? 'Der' : 'Izq') : null
     };
   };
   window.fmtLucaElapsed = fmtElapsed;

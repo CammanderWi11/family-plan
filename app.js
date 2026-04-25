@@ -285,11 +285,12 @@ window.getTabForKey = function(key) {
           '<span class="caregiver-badge caregiver-' + s.who + ' badge-sm">' + whoLabel + '</span>' +
         '</div>';
       } else {
+        var offLabel = (cur.isSleeping) ? 'Durmiendo \ud83d\ude34' : 'Fuera de horario';
         leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
-          '<span class="resumen-banner-icon">\ud83d\udccc</span>' +
+          '<span class="resumen-banner-icon">' + (cur.isSleeping ? '\ud83d\ude34' : '\ud83d\udccc') + '</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">Leo ahora</span>' +
-            '<span class="resumen-banner-text resumen-banner-muted">Fuera de horario</span>' +
+            '<span class="resumen-banner-text resumen-banner-muted">' + offLabel + '</span>' +
           '</div>' +
         '</div>';
       }
@@ -309,12 +310,13 @@ window.getTabForKey = function(key) {
         } else if (last.type === 'bottle') {
           detail = 'Biber\u00f3n' + (last.ml ? ' ' + last.ml + 'ml' : '');
         }
+        var nextSideText = last.nextSide ? ' \u00b7 Toca ' + last.nextSide : '';
         var isAlert = last.elapsedSeconds > 3 * 3600;
         lucaHtml = '<div class="resumen-banner resumen-banner-luca' + (isAlert ? ' resumen-banner-alert' : '') + '">' +
           '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">\u00daltima toma</span>' +
-            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + '</span>' +
+            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + nextSideText + '</span>' +
           '</div>' +
         '</div>';
       } else {
