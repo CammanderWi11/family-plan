@@ -218,9 +218,44 @@ window.getTabForKey = function(key) {
   var KEY = 'fp-salud-notes';
   var el = document.getElementById('salud-notes');
   if (!el) return;
-  try { el.value = localStorage.getItem(KEY) || ''; } catch(e) {}
+  var saveTimer = null;
+
+  function load() {
+    // Prefer synced state, fall back to localStorage
+    if (window.__getSaludNotes) {
+      var synced = window.__getSaludNotes();
+      if (synced !== null) { el.value = synced; return; }
+    }
+    try { el.value = localStorage.getItem(KEY) || ''; } catch(e) {}
+  }
+
+  function save() {
+    var text = el.value;
+    if (window.__updateSaludNotes) window.__updateSaludNotes(text);
+    try { localStorage.setItem(KEY, text); } catch(e) {}
+  }
+
+  // Migrate localStorage to synced state
+  function migrate() {
+    if (!window.__getSaludNotes || !window.__updateSaludNotes) return;
+    if (window.__getSaludNotes() !== null) return;
+    try {
+      var local = localStorage.getItem(KEY);
+      if (local) window.__updateSaludNotes(local);
+    } catch(e) {}
+  }
+
+  // Load once auth is ready (synced state available)
+  function init() { migrate(); load(); }
+  if (window.__authReady) init();
+  else window.addEventListener('auth-ready', init, { once: true });
+
+  // Fallback: load from localStorage immediately
+  load();
+
   el.addEventListener('input', function() {
-    try { localStorage.setItem(KEY, el.value); } catch(e) {}
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 800);
   });
 })();
 

@@ -71,6 +71,15 @@
     state.meta.icsUrls = urls;
     queueSave();
   };
+  // Salud notes — synced across devices
+  window.__getSaludNotes = function() {
+    return (state.meta && state.meta.saludNotes) || null;
+  };
+  window.__updateSaludNotes = function(text) {
+    state.meta = state.meta || {};
+    state.meta.saludNotes = text;
+    queueSave();
+  };
 
   function loadLocal() {
     try {
