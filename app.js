@@ -294,7 +294,7 @@ window.getTabForKey = function(key) {
       }
     }
 
-    html += leoHtml + lucaHtml + '</div>';
+    html += lucaHtml + leoHtml + '</div>';
     host.innerHTML = html;
 
     var leoBanner = host.querySelector('.resumen-banner-leo');

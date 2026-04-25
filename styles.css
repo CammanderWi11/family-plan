@@ -1611,6 +1611,7 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .reg-sec-title {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px;
   color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;
+  text-align: center;
 }
 
 /* Salud notes */
@@ -1625,12 +1626,12 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .reg-timer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .timer-btn {
-  display: flex; flex-direction: row; align-items: center;
-  gap: 8px; padding: 12px 12px; border-radius: 10px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 12px 8px; border-radius: 10px; cursor: pointer;
   border: 1px solid var(--border); background: var(--surface);
   color: var(--text); font-family: var(--font-sans);
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
-  text-align: left; width: 100%; min-width: 0; overflow: hidden;
+  text-align: center; width: 100%; min-width: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .timer-btn:hover {
@@ -1655,7 +1656,7 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .timer-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
 .timer-label {
   font-size: 12px; font-weight: 600; color: var(--text-secondary);
-  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  white-space: normal; text-align: center;
 }
 .timer-elapsed {
   font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--amber);
