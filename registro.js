@@ -587,13 +587,13 @@
     html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="0" style="width:50px;">';
     html += '<span class="reg-bottle-unit">min</span>';
     html += '</div>';
-    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:0 0 auto;min-width:50px;padding:10px 8px;padding-right:14px;">';
+    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:0 0 auto;width:auto;min-width:0;padding:10px 6px;padding-right:6px;font-size:14px;">';
     html += '<option value="left">Izq</option>';
     html += '<option value="right">Der</option>';
     html += '</select>';
     html += '</div>';
     html += '</div>';
-    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save" style="width:100%;">Registrar</button>';
+    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save" style="width:100%;">Save</button>';
     html += '</div>';
     html += '</div>';
 
