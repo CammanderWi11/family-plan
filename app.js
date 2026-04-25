@@ -310,13 +310,20 @@ window.getTabForKey = function(key) {
         } else if (last.type === 'bottle') {
           detail = 'Biber\u00f3n' + (last.ml ? ' ' + last.ml + 'ml' : '');
         }
-        var nextSideText = last.nextSide ? ' \u00b7 Toca ' + last.nextSide : '';
+        var nextSideHtml = '';
+        if (last.nextSide) {
+          var isRight = last.nextSide === 'Der';
+          var nextSideLabel = isRight ? 'Derecho \u2192' : '\u2190 Izquierdo';
+          var nextSideClass = isRight ? 'caregiver-badge caregiver-daddey' : 'caregiver-badge caregiver-mum';
+          nextSideHtml = '<span class="resumen-banner-text">Pr\u00f3xima toma <span class="' + nextSideClass + ' badge-sm">' + nextSideLabel + '</span></span>';
+        }
         var isAlert = last.elapsedSeconds > 3 * 3600;
         lucaHtml = '<div class="resumen-banner resumen-banner-luca' + (isAlert ? ' resumen-banner-alert' : '') + '">' +
           '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">\u00daltima toma</span>' +
-            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + nextSideText + '</span>' +
+            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + '</span>' +
+            nextSideHtml +
           '</div>' +
         '</div>';
       } else {
