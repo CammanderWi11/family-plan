@@ -173,7 +173,9 @@
 
   window.updateLeaveCountdown = function(cfg) {
     const today = new Date(); today.setHours(0,0,0,0);
-    const birthDate = parseDate(cfg.birthDate || cfg.mandatory.start);
+
+    // Total entitlement: 19 weeks = 133 days
+    const TOTAL_ENTITLEMENT = 133;
 
     // Build sorted list of all leave blocks
     const allBlocks = [];
@@ -185,15 +187,13 @@
     });
     allBlocks.sort((a, b) => a.start - b.start);
 
-    // Calculate totals
-    let totalAssigned = 0;
+    // Calculate days used
     let daysUsed = 0;
     let currentBlock = null;
     let nextBlock = null;
 
     for (const block of allBlocks) {
       const blockDays = daysBetween(block.start, block.end) + 1;
-      totalAssigned += blockDays;
 
       if (today > block.end) {
         daysUsed += blockDays;
@@ -205,25 +205,9 @@
       }
     }
 
-    const remaining = totalAssigned - daysUsed;
+    const remaining = TOTAL_ENTITLEMENT - daysUsed;
 
-    // Next block info
-    let nextText = '—';
-    let nextLabel = 'Siguiente bloque';
-    if (currentBlock) {
-      const daysLeft = daysBetween(today, currentBlock.end);
-      nextText = daysLeft + 'd restantes';
-      nextLabel = currentBlock.label || 'De permiso';
-    } else if (nextBlock) {
-      const daysUntil = daysBetween(today, nextBlock.start);
-      nextText = 'en ' + daysUntil + 'd';
-      nextLabel = (nextBlock.label || 'Siguiente') + ' · ' + fmtShort(nextBlock.start);
-    } else {
-      nextText = '—';
-      nextLabel = 'Todos los bloques completados';
-    }
-
-    // Return to work: first working day (not a shift day off) after block ends
+    // Days off until next work day (factors in leave block end + shift pattern)
     function nextWorkDay(date) {
       const shiftRef = parseDate(cfg.shiftRef);
       const cycle = cfg.shiftCycle || 9;
@@ -237,24 +221,16 @@
       }
       return d;
     }
-    let returnText = '—';
-    let returnSub = '';
+
+    let daysOff = '—';
     if (currentBlock) {
       const ret = new Date(currentBlock.end); ret.setDate(ret.getDate() + 1);
       const returnDate = nextWorkDay(ret);
-      const daysUntilReturn = daysBetween(today, returnDate);
-      returnText = fmtShort(returnDate);
-      returnSub = 'en ' + daysUntilReturn + ' días';
+      daysOff = daysBetween(today, returnDate);
     } else if (nextBlock) {
-      const ret = new Date(nextBlock.end); ret.setDate(ret.getDate() + 1);
-      returnText = fmtShort(nextWorkDay(ret));
+      // Not on leave — show days until next work day (today or next shift day)
+      daysOff = 0;
     }
-
-    // Deadlines
-    const age1 = new Date(birthDate); age1.setFullYear(age1.getFullYear() + 1);
-    const age8 = new Date(birthDate); age8.setFullYear(age8.getFullYear() + 8);
-    const daysToAge1 = daysBetween(today, age1);
-    const daysToAge8 = daysBetween(today, age8);
 
     // Update DOM
     var el;
@@ -265,13 +241,14 @@
       if (currentBlock) {
         var daysInBlock = daysBetween(currentBlock.start, currentBlock.end) + 1;
         var dayNum = daysBetween(currentBlock.start, today) + 1;
-        statusEl.textContent = '\u25CF EN PERMISO \u2014 ' + currentBlock.label + ' (d\u00eda ' + dayNum + ' de ' + daysInBlock + ')';
+        var blockLabel = currentBlock.label === 'Obligatorio' ? 'Paternidad Obligatoria' : ('Paternidad \u2014 ' + currentBlock.label);
+        statusEl.textContent = '\u25CF ' + blockLabel + ' (d\u00eda ' + dayNum + ' de ' + daysInBlock + ')';
         statusEl.style.color = 'var(--green)';
       } else if (nextBlock) {
         statusEl.textContent = '\u25CB TRABAJANDO \u2014 pr\u00f3ximo permiso en ' + daysBetween(today, nextBlock.start) + ' d\u00edas';
         statusEl.style.color = 'var(--text-muted)';
       } else {
-        statusEl.textContent = '\u25A0 PERMISO COMPLETADO';
+        statusEl.textContent = '\u25A0 PATERNIDAD COMPLETADA';
         statusEl.style.color = 'var(--text-muted)';
       }
     }
@@ -279,23 +256,14 @@
     // Stat cards
     el = document.getElementById('cd-used'); if (el) el.textContent = daysUsed;
     el = document.getElementById('cd-remaining'); if (el) el.textContent = remaining;
-    el = document.getElementById('cd-next-in'); if (el) el.textContent = nextText;
-    el = document.getElementById('cd-next-label'); if (el) el.textContent = nextLabel;
-    el = document.getElementById('cd-return'); if (el) el.textContent = returnText;
-    el = document.getElementById('cd-return-sub'); if (el) el.textContent = returnSub;
-
-    // Block-active highlight on 3rd card
-    var gridItems = document.querySelectorAll('#leave-countdown .countdown-item');
-    if (gridItems[2]) {
-      gridItems[2].classList.toggle('block-active', !!currentBlock);
-    }
+    el = document.getElementById('cd-days-off'); if (el) el.textContent = daysOff;
 
     // Progress bar with label
-    var pct = totalAssigned ? Math.round((daysUsed / totalAssigned) * 100) : 0;
+    var pct = TOTAL_ENTITLEMENT ? Math.round((daysUsed / TOTAL_ENTITLEMENT) * 100) : 0;
     el = document.getElementById('cd-progress');
     if (el) el.style.width = pct + '%';
     var progLabel = document.getElementById('cd-progress-label');
-    if (progLabel) progLabel.textContent = daysUsed + ' de ' + totalAssigned + ' d\u00edas usados (' + pct + '%)';
+    if (progLabel) progLabel.textContent = daysUsed + ' de ' + TOTAL_ENTITLEMENT + ' d\u00edas usados (' + pct + '%)';
 
   };
 

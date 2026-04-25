@@ -165,14 +165,14 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== RESUMEN (DASHBOARD) ========== -->
   <section id="resumen" class="tab-section active">
+    <div class="resumen-banners" id="resumen-banners"></div>
     <div class="urgent-banner" id="urgent-banner" style="display:none;">
       <span class="urgent-text">URGENTE ESTA SEMANA</span>
       <span class="urgent-arrow">&rarr;</span>
       <button class="urgent-x" id="urgent-dismiss" title="Hide until logout">&times;</button>
     </div>
-    <div class="resumen-banners" id="resumen-banners"></div>
     <div class="glass countdown-dashboard" id="leave-countdown">
-      <h3 class="dash-label">Estado del permiso</h3>
+      <h3 class="dash-label">Estado</h3>
       <div class="cd-status" id="cd-status"></div>
       <div class="countdown-grid">
         <div class="countdown-item">
@@ -184,13 +184,8 @@ window.sb.auth.getSession().then(({ data }) => {
           <div class="countdown-label">Días restantes</div>
         </div>
         <div class="countdown-item">
-          <div class="countdown-num" id="cd-next-in">&mdash;</div>
-          <div class="countdown-label" id="cd-next-label">Siguiente bloque</div>
-        </div>
-        <div class="countdown-item">
-          <div class="countdown-num" id="cd-return">&mdash;</div>
-          <div class="countdown-sub" id="cd-return-sub"></div>
-          <div class="countdown-label">Vuelta al trabajo</div>
+          <div class="countdown-num" id="cd-days-off">&mdash;</div>
+          <div class="countdown-label">Días libres hasta ✈️</div>
         </div>
       </div>
       <div class="progress-label" id="cd-progress-label" style="margin-top: 14px;"></div>
