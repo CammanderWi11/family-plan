@@ -4,7 +4,7 @@
   var LOCAL_KEY = 'fp-luca-log';
   var ACTIVE_KEY = 'fp-luca-active';
   var SHARED_TABLE = 'shared_luca_log';
-  var MAX_ACTIVE_AGE = 2 * 3600 * 1000; // 2 hours — auto-discard stale timers
+  var MAX_ACTIVE_AGE = 45 * 60 * 1000; // 45 min — auto-stop forgotten timers
 
   var TIMER_KEYS = ['breast_left', 'breast_right', 'pump_left', 'pump_right'];
 
@@ -43,7 +43,18 @@
       Object.keys(data).forEach(function(key) {
         if (!TIMER_META[key] || !data[key].startedAt) return;
         var age = now - new Date(data[key].startedAt).getTime();
-        if (age > MAX_ACTIVE_AGE) return; // discard stale timers
+        if (age > MAX_ACTIVE_AGE) {
+          // Auto-register as 45 min feeding (someone forgot to stop)
+          clearActiveTimer(key);
+          addEntry({
+            id: new Date(data[key].startedAt).getTime() + '_' + key,
+            type: TIMER_META[key].type,
+            side: TIMER_META[key].side,
+            startedAt: data[key].startedAt,
+            durationSeconds: 45 * 60
+          });
+          return;
+        }
         startTimer(key, data[key].startedAt);
       });
     } catch(e) {}
