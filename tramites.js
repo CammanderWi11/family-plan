@@ -80,6 +80,15 @@
     state.meta.saludNotes = text;
     queueSave();
   };
+  // Document notes — synced across devices
+  window.__getDocNotes = function() {
+    return (state.meta && state.meta.docNotes) || null;
+  };
+  window.__updateDocNotes = function(notes) {
+    state.meta = state.meta || {};
+    state.meta.docNotes = notes;
+    queueSave();
+  };
 
   function loadLocal() {
     try {

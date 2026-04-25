@@ -44,8 +44,12 @@
     renderAttachedPillsAll();
   }
 
-  // ---- Notes (localStorage) ----
+  // ---- Notes (synced via Supabase state.meta, localStorage fallback) ----
   function getDocNotes() {
+    if (window.__getDocNotes) {
+      var synced = window.__getDocNotes();
+      if (synced) return synced;
+    }
     try { return JSON.parse(localStorage.getItem('fp-doc-notes') || '{}'); } catch(e) { return {}; }
   }
   function saveDocNote(id, note) {
@@ -53,6 +57,7 @@
     if (note && note.trim()) notes[id] = note.trim();
     else delete notes[id];
     try { localStorage.setItem('fp-doc-notes', JSON.stringify(notes)); } catch(e) {}
+    if (window.__updateDocNotes) window.__updateDocNotes(notes);
   }
 
   function renderLibrary() {
