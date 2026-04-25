@@ -276,6 +276,31 @@
             : '<span class="timer-tap">Iniciar</span>'));
   }
 
+  // ---- Manual breast entry ----
+  function saveManualBreast() {
+    var timeInput = document.getElementById('reg-manual-breast-time');
+    var durInput  = document.getElementById('reg-manual-breast-dur');
+    var sideInput = document.getElementById('reg-manual-breast-side');
+    if (!timeInput || !timeInput.value || !durInput || !sideInput) return;
+    var durMins = parseInt(durInput.value, 10);
+    if (!durMins || durMins <= 0) return;
+    // Build startedAt from the time input + today's date
+    var parts = timeInput.value.split(':');
+    var d = new Date();
+    d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+    var entry = {
+      id: Date.now() + '_manual_breast',
+      type: 'breast',
+      side: sideInput.value,
+      startedAt: d.toISOString(),
+      durationSeconds: durMins * 60
+    };
+    addEntry(entry);
+    timeInput.value = '';
+    durInput.value = '';
+    renderAll();
+  }
+
   // ---- Bottle input ----
   function saveBottle() {
     var input = document.getElementById('reg-bottle-ml');
@@ -542,6 +567,23 @@
     html += '</div>';
     html += '</div>';
 
+    // 3b. Manual breast entry
+    html += '<div class="glass data-card">';
+    html += '<h3 class="reg-sec-title">\ud83e\udd31 Registrar pecho manual</h3>';
+    html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:8px;">';
+    html += '<input type="time" id="reg-manual-breast-time" class="reg-bottle-input" style="flex:1;min-width:90px;">';
+    html += '<div class="reg-bottle-input-wrap" style="flex:1;min-width:80px;">';
+    html += '<input type="number" id="reg-manual-breast-dur" class="reg-bottle-input" min="1" step="1" inputmode="numeric" placeholder="min">';
+    html += '<span class="reg-bottle-unit">min</span>';
+    html += '</div>';
+    html += '<select id="reg-manual-breast-side" class="reg-bottle-input" style="flex:1;min-width:90px;">';
+    html += '<option value="left">Izquierdo</option>';
+    html += '<option value="right">Derecho</option>';
+    html += '</select>';
+    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-breast-save">Registrar</button>';
+    html += '</div>';
+    html += '</div>';
+
     // 4. Última toma hero
     html += '<div class="glass reg-hero" id="reg-hero"></div>';
 
@@ -571,6 +613,11 @@
       bottleInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') saveBottle();
       });
+    }
+
+    var manualBreastBtn = document.getElementById('reg-manual-breast-save');
+    if (manualBreastBtn) {
+      manualBreastBtn.addEventListener('click', saveManualBreast);
     }
 
     restoreActiveTimers();
