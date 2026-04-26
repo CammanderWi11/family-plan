@@ -85,9 +85,8 @@
       });
     }
 
-    html += '<p style="color:var(--text-muted);font-size:12px;margin-top:14px;margin-bottom:8px;">Selecciona el documento y pulsa Registrar. Se añade con fecha de caducidad pendiente.</p>';
-    html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">';
-    html += '<select id="doc-tracker-quick-select" class="doc-tracker-input" style="flex:1;min-width:160px;">';
+    html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;">';
+    html += '<select id="doc-tracker-quick-select" style="flex:1;min-width:160px;padding:10px 12px;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);-webkit-appearance:menulist;appearance:menulist;cursor:pointer;">';
     html += '<option value="" disabled selected>Seleccionar Documento</option>';
     html += '<optgroup label="Dad">';
     html += '<option value="dad|passport|Pasaporte Dad">🛂 Pasaporte Dad</option>';
@@ -118,7 +117,6 @@
     html += '<option value="other|other|">📄 Otro...</option>';
     html += '</optgroup>';
     html += '</select>';
-    html += '<button class="btn-primary" id="doc-tracker-quick-add">Registrar</button>';
     html += '</div>';
     html += '</div>';
 
@@ -188,11 +186,11 @@
       }
     });
 
-    var quickAddBtn = document.getElementById('doc-tracker-quick-add');
-    if (quickAddBtn) {
-      quickAddBtn.addEventListener('click', function() {
-        var sel = document.getElementById('doc-tracker-quick-select');
-        if (!sel || !sel.value) return;
+    var quickSel = document.getElementById('doc-tracker-quick-select');
+    if (quickSel) {
+      quickSel.addEventListener('change', function() {
+        var sel = quickSel;
+        if (!sel.value) return;
         var parts = sel.value.split('|');
         var person = parts[0], type = parts[1], label = parts[2];
         if (type === 'other' && !label) {

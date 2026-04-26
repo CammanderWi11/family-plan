@@ -1806,7 +1806,11 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .doc-tracker-input {
   background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
   padding: 8px 12px; color: var(--text); font-size: 13px; font-family: var(--font-sans);
-  outline: none;
+  outline: none; -webkit-appearance: none; appearance: none;
+}
+select.doc-tracker-input {
+  -webkit-appearance: menulist; appearance: menulist;
+  cursor: pointer;
 }
 .doc-tracker-input:focus { border-color: var(--amber); }
 .doc-tracker-btn {
