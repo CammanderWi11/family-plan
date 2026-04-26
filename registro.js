@@ -194,9 +194,9 @@
 
   // ---- Format helpers ----
   function fmtDuration(secs) {
-    var m = Math.floor(secs / 60), s = secs % 60;
-    if (m === 0) return s + 's';
-    return m + 'min' + (s > 0 ? ' ' + s + 's' : '');
+    var m = Math.round(secs / 60);
+    if (m === 0) return '<1min';
+    return m + 'min';
   }
 
   function fmtInterval(secs) {
@@ -380,13 +380,35 @@
     heroInterval = setInterval(renderHero, 30000);
   }
 
+  // ---- Breast L/R percentage helper ----
+  function breastPct(entries) {
+    var leftSecs = 0, rightSecs = 0;
+    entries.forEach(function(e) {
+      if (e.type !== 'breast') return;
+      if (e.side === 'left') leftSecs += e.durationSeconds;
+      else if (e.side === 'right') rightSecs += e.durationSeconds;
+    });
+    var total = leftSecs + rightSecs;
+    if (total === 0) return null;
+    return { left: Math.round((leftSecs / total) * 100), right: Math.round((rightSecs / total) * 100) };
+  }
+
   // ---- Stats row ----
   function renderStats() {
     var el = document.getElementById('reg-stats');
     if (!el) return;
-    var dayLog = getLog().filter(function(e) { return isSameDay(e.startedAt, viewDate); });
+    var allLog = getLog();
+    var dayLog = allLog.filter(function(e) { return isSameDay(e.startedAt, viewDate); });
     var breast = dayLog.filter(function(e) { return e.type === 'breast'; })
       .slice().sort(function(a, b) { return new Date(a.startedAt) - new Date(b.startedAt); });
+
+    // Breast L/R percentages — daily
+    var dayPct = breastPct(dayLog);
+    var dayPctHtml = dayPct ? dayPct.left + '% / ' + dayPct.right + '%' : '\u2014';
+
+    // Breast L/R percentages — all time
+    var allPct = breastPct(allLog);
+    var allPctHtml = allPct ? allPct.left + '% / ' + allPct.right + '%' : '\u2014';
 
     var tomasHtml = String(breast.length);
 
@@ -412,6 +434,8 @@
     var bottleHtml = bottleMl > 0 ? bottleMl + 'ml' : '\u2014';
 
     el.innerHTML =
+      '<div class="reg-stat"><span class="reg-stat-val">' + dayPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (hoy)</span></div>' +
+      '<div class="reg-stat"><span class="reg-stat-val">' + allPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (total)</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + tomasHtml + '</span><span class="reg-stat-lbl">Tomas</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + avgIntervalHtml + '</span><span class="reg-stat-lbl">Media entre tomas</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + avgDurHtml + '</span><span class="reg-stat-lbl">Media/sesi\u00f3n</span></div>' +
