@@ -43,7 +43,6 @@
     var docs = getDocs();
 
     var html = '<div class="glass data-card">';
-    html += '<h2 class="tramite-group-title">📁 Documentos</h2>';
 
     if (!docs.length) {
       html += '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">Sin documentos registrados</div>';

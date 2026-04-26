@@ -459,38 +459,8 @@ window.sb.auth.getSession().then(({ data }) => {
         <span class="badge badge-pending">Pendiente</span></div>
     </div>
 
+    <div class="section-title" style="margin-top: 32px;">Seguimiento De Caducidad Documental</div>
     <div id="doc-tracker-host"></div>
-
-    <!-- ========== DOCUMENTOS (biblioteca) ========== -->
-    <div class="section-title" style="margin-top: 32px;">Documentos</div>
-    <div class="glass data-card">
-      <p style="color: var(--text-muted); margin-bottom: 14px;">Sube cada documento una vez y adjúntalo a los trámites que lo necesiten.</p>
-      <div class="lib-uploader">
-        <label>
-          <input type="file" id="lib-file-input" accept="application/pdf,image/*" style="display:none;">
-          <span class="btn btn-primary" id="lib-pick-btn">Subir documento</span>
-        </label>
-        <select id="lib-type-select" class="lib-type">
-          <option value="">Tipo (opcional)</option>
-          <option value="dni-luis">DNI Luis</option>
-          <option value="dni-madre">DNI Colombina</option>
-          <option value="libro-familia">Libro de Familia / Copia certificada</option>
-          <option value="empadronamiento">Empadronamiento</option>
-          <option value="parte-medico">Parte médico de nacimiento</option>
-          <option value="informe-mat">Informe de maternidad</option>
-          <option value="cert-empresa">Certificado de empresa (Binter)</option>
-          <option value="iban">Certificado de titularidad IBAN</option>
-          <option value="seguro-medico">Tarjeta de seguro médico</option>
-          <option value="otro">Otro</option>
-        </select>
-      </div>
-      <div class="lib-list" id="lib-list">
-        <div class="doc-list-empty">Cargando biblioteca...</div>
-      </div>
-    </div>
-    <div class="alert" style="margin-top:18px;">
-      <strong>Certificados disponibles online:</strong> Todos los certificados (nacimiento, matrimonio, etc.) se pueden obtener en <a href="https://www.administraciondejusticia.gob.es/carpeta-justicia" target="_blank" rel="noopener">administraciondejusticia.gob.es/carpeta-justicia</a>
-    </div>
   </section>
 
   <!-- ========== RUTINA DE LEO ========== -->
