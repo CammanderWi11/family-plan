@@ -86,7 +86,40 @@
       });
     }
 
-    html += '<button class="btn-primary" id="doc-tracker-add" style="margin-top:12px;width:100%;">+ Añadir documento</button>';
+    html += '<p style="color:var(--text-muted);font-size:12px;margin-top:14px;margin-bottom:8px;">Selecciona el documento y pulsa Registrar. Se añade con fecha de caducidad pendiente.</p>';
+    html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">';
+    html += '<select id="doc-tracker-quick-select" class="doc-tracker-input" style="flex:1;min-width:160px;">';
+    html += '<optgroup label="Dad">';
+    html += '<option value="dad|passport|Pasaporte Dad">🛂 Pasaporte Dad</option>';
+    html += '<option value="dad|dni|DNI Dad">🪪 DNI Dad</option>';
+    html += '<option value="dad|health_card|Tarjeta sanitaria Dad">🏥 Tarjeta sanitaria Dad</option>';
+    html += '<option value="dad|insurance|Seguro médico Dad">📋 Seguro médico Dad</option>';
+    html += '</optgroup>';
+    html += '<optgroup label="Mum">';
+    html += '<option value="mum|passport|Pasaporte Mum">🛂 Pasaporte Mum</option>';
+    html += '<option value="mum|dni|DNI Mum">🪪 DNI Mum</option>';
+    html += '<option value="mum|health_card|Tarjeta sanitaria Mum">🏥 Tarjeta sanitaria Mum</option>';
+    html += '<option value="mum|insurance|Seguro médico Mum">📋 Seguro médico Mum</option>';
+    html += '</optgroup>';
+    html += '<optgroup label="Leo">';
+    html += '<option value="leo|passport|Pasaporte Leo">🛂 Pasaporte Leo</option>';
+    html += '<option value="leo|dni|DNI Leo">🪪 DNI Leo</option>';
+    html += '<option value="leo|health_card|Tarjeta sanitaria Leo">🏥 Tarjeta sanitaria Leo</option>';
+    html += '<option value="leo|insurance|Seguro médico Leo">📋 Seguro médico Leo</option>';
+    html += '<option value="leo|school|Escolar Leo">🎒 Escolar Leo</option>';
+    html += '</optgroup>';
+    html += '<optgroup label="Luca">';
+    html += '<option value="luca|passport|Pasaporte Luca">🛂 Pasaporte Luca</option>';
+    html += '<option value="luca|dni|DNI Luca">🪪 DNI Luca</option>';
+    html += '<option value="luca|health_card|Tarjeta sanitaria Luca">🏥 Tarjeta sanitaria Luca</option>';
+    html += '<option value="luca|insurance|Seguro médico Luca">📋 Seguro médico Luca</option>';
+    html += '</optgroup>';
+    html += '<optgroup label="Otro">';
+    html += '<option value="other|other|">📄 Otro...</option>';
+    html += '</optgroup>';
+    html += '</select>';
+    html += '<button class="btn-primary" id="doc-tracker-quick-add">Registrar</button>';
+    html += '</div>';
     html += '</div>';
 
     host.innerHTML = html;
@@ -155,75 +188,35 @@
       }
     });
 
-    var addBtn = document.getElementById('doc-tracker-add');
-    if (addBtn) {
-      addBtn.addEventListener('click', showAddForm);
-    }
-  }
-
-  function showAddForm() {
-    var host = document.getElementById('doc-tracker-host');
-    if (!host || document.getElementById('doc-tracker-add-form')) return;
-
-    var form = document.createElement('div');
-    form.id = 'doc-tracker-add-form';
-    form.className = 'glass data-card';
-    form.innerHTML =
-      '<h3 class="reg-sec-title">Nuevo documento</h3>' +
-      '<div style="display:flex;flex-direction:column;gap:8px;">' +
-        '<select id="dta-person" class="doc-tracker-input">' +
-          '<option value="dad">Dad</option><option value="mum">Mum</option>' +
-          '<option value="leo">Leo</option><option value="luca">Luca</option>' +
-        '</select>' +
-        '<select id="dta-type" class="doc-tracker-input">' +
-          '<option value="passport">🛂 Pasaporte</option><option value="dni">🪪 DNI</option>' +
-          '<option value="health_card">🏥 Tarjeta sanitaria</option><option value="insurance">📋 Seguro</option>' +
-          '<option value="school">🎒 Escolar/Admin</option><option value="other">📄 Otro</option>' +
-        '</select>' +
-        '<input type="text" id="dta-label" class="doc-tracker-input" placeholder="Nombre (ej: Pasaporte Leo)">' +
-        '<input type="date" id="dta-expiry" class="doc-tracker-input">' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button class="btn-primary" id="dta-save" style="flex:1;">Guardar</button>' +
-          '<button class="doc-tracker-btn" id="dta-cancel" style="flex:0 0 auto;">Cancelar</button>' +
-        '</div>' +
-      '</div>';
-
-    host.appendChild(form);
-
-    var typeSelect = document.getElementById('dta-type');
-    var personSelect = document.getElementById('dta-person');
-    var labelInput = document.getElementById('dta-label');
-    function autoLabel() {
-      var typeLabels = { passport: 'Pasaporte', dni: 'DNI', health_card: 'Tarjeta sanitaria', insurance: 'Seguro', school: 'Escolar/Admin', other: 'Otro' };
-      var personLabels = { dad: 'Dad', mum: 'Mum', leo: 'Leo', luca: 'Luca' };
-      labelInput.value = (typeLabels[typeSelect.value] || '') + ' ' + (personLabels[personSelect.value] || '');
-    }
-    typeSelect.addEventListener('change', autoLabel);
-    personSelect.addEventListener('change', autoLabel);
-    autoLabel();
-
-    document.getElementById('dta-save').addEventListener('click', function() {
-      var label = labelInput.value.trim();
-      if (!label) return;
-      var docs = getDocs();
-      docs.push({
-        id: 'doc_' + Date.now(),
-        type: typeSelect.value,
-        label: label,
-        person: personSelect.value,
-        expiryDate: document.getElementById('dta-expiry').value || null,
-        fileId: null,
-        notes: ''
+    var quickAddBtn = document.getElementById('doc-tracker-quick-add');
+    if (quickAddBtn) {
+      quickAddBtn.addEventListener('click', function() {
+        var sel = document.getElementById('doc-tracker-quick-select');
+        if (!sel || !sel.value) return;
+        var parts = sel.value.split('|');
+        var person = parts[0], type = parts[1], label = parts[2];
+        if (type === 'other' && !label) {
+          label = prompt('Nombre del documento:');
+          if (!label || !label.trim()) return;
+          label = label.trim();
+          person = prompt('¿De quién? (dad/mum/leo/luca):', 'dad') || 'dad';
+        }
+        var docs = getDocs();
+        docs.push({
+          id: 'doc_' + Date.now(),
+          type: type,
+          label: label,
+          person: person,
+          expiryDate: null,
+          fileId: null,
+          notes: ''
+        });
+        saveDocs(docs);
+        render();
       });
-      saveDocs(docs);
-      form.remove();
-      render();
-    });
-
-    document.getElementById('dta-cancel').addEventListener('click', function() {
-      form.remove();
-    });
+    }
   }
+
 
   function init() { render(); }
 
