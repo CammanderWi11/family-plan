@@ -135,7 +135,8 @@
       link.addEventListener('click', function(e) {
         e.stopPropagation();
         var id = link.dataset.docId;
-        if (window.__viewDocFile) window.__viewDocFile(id);
+        var doc = getDocs().find(function(d) { return d.id === id; });
+        if (doc && doc.fileId && window.__viewDocFile) window.__viewDocFile(doc.fileId);
       });
     });
 
