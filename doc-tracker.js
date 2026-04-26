@@ -57,7 +57,11 @@
           html += '<div class="doc-tracker-row" data-doc-id="' + doc.id + '">';
           html += '<span class="doc-tracker-icon">' + (TYPE_ICONS[doc.type] || '📄') + '</span>';
           html += '<div class="doc-tracker-info">';
-          html += '<span class="doc-tracker-label">' + doc.label + '</span>';
+          if (doc.fileId) {
+            html += '<span class="doc-tracker-label doc-tracker-link" data-action="view" data-doc-id="' + doc.id + '">' + doc.label + ' 📎</span>';
+          } else {
+            html += '<span class="doc-tracker-label">' + doc.label + '</span>';
+          }
           html += '<span class="doc-tracker-expiry ' + status.cls + '">' + fmtDate(doc.expiryDate) + ' · ' + status.label + '</span>';
           html += '</div>';
           html += '<button class="doc-tracker-expand-btn" data-doc-id="' + doc.id + '">⋯</button>';
@@ -124,6 +128,16 @@
   }
 
   function bindEvents() {
+    // Clickable doc labels to view document
+    document.querySelectorAll('.doc-tracker-link').forEach(function(link) {
+      link.style.cursor = 'pointer';
+      link.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var id = link.dataset.docId;
+        if (window.__viewDocFile) window.__viewDocFile(id);
+      });
+    });
+
     document.querySelectorAll('.doc-tracker-expand-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var id = btn.dataset.docId;
@@ -189,7 +203,8 @@
           notes: ''
         });
         saveDocs(docs);
-        // Immediately open file picker to upload photo
+        render();
+        // Open file picker to upload document
         var fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*,application/pdf';

@@ -1787,6 +1787,8 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .doc-tracker-icon { font-size: 18px; flex: 0 0 auto; }
 .doc-tracker-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .doc-tracker-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.doc-tracker-link { color: var(--blue); cursor: pointer; }
+.doc-tracker-link:hover { text-decoration: underline; }
 .doc-tracker-expiry { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.5px; }
 .doc-tracker-expand-btn {
   background: none; border: none; color: var(--text-muted); font-size: 18px;
