@@ -88,6 +88,7 @@
     html += '<p style="color:var(--text-muted);font-size:12px;margin-top:14px;margin-bottom:8px;">Selecciona el documento y pulsa Registrar. Se añade con fecha de caducidad pendiente.</p>';
     html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">';
     html += '<select id="doc-tracker-quick-select" class="doc-tracker-input" style="flex:1;min-width:160px;">';
+    html += '<option value="" disabled selected>Seleccionar Documento</option>';
     html += '<optgroup label="Dad">';
     html += '<option value="dad|passport|Pasaporte Dad">🛂 Pasaporte Dad</option>';
     html += '<option value="dad|dni|DNI Dad">🪪 DNI Dad</option>';
