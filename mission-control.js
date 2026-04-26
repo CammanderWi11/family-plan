@@ -70,6 +70,48 @@
     return items;
   }
 
+  // ========== SCROLL TO ITEM ==========
+
+  function scrollToItem(tab, key) {
+    var el = null;
+    if (tab === 'tramites') {
+      // Trámite key like "binter-0" → find checkbox with data-group="binter" data-idx="0"
+      var parts = key.split('-');
+      var group = parts[0];
+      var idx = parts.slice(1).join('-');
+      var box = document.querySelector('#tramites input[type="checkbox"][data-group="' + group + '"][data-idx="' + idx + '"]');
+      if (box) {
+        el = box.closest('.tramite-row');
+        // Expand group if collapsed
+        var grp = el && el.closest('.tramite-group');
+        if (grp && grp.classList.contains('group-collapsed')) {
+          grp.classList.remove('group-collapsed');
+          grp.dataset.manualExpand = '1';
+        }
+      }
+      // Also try doc tracker
+      if (!el) {
+        el = document.querySelector('.doc-tracker-row[data-doc-id="' + key + '"]');
+      }
+    } else if (tab === 'salud') {
+      el = document.querySelector('.salud-item[data-id="' + key + '"]');
+      // Expand person section if collapsed
+      if (el) {
+        var body = el.closest('.salud-person-body');
+        if (body && body.style.display === 'none') {
+          body.style.display = '';
+          var toggle = body.previousElementSibling && body.previousElementSibling.querySelector('.salud-person-toggle');
+          if (toggle) toggle.textContent = '▾';
+        }
+      }
+    }
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.boxShadow = '0 0 0 2px var(--amber)';
+      setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+    }
+  }
+
   // ========== WATCHLIST ==========
 
   function renderWatchlist() {
@@ -81,18 +123,18 @@
     collectTramiteItems().forEach(function(t) {
       if (t.done || !t.deadline) return;
       if (t.deadline.daysUntil < 0) {
-        alerts.push({ priority: 1, cls: 'wl-red', icon: '📋', label: t.name, sub: Math.abs(t.deadline.daysUntil) + 'd vencido', tab: 'tramites' });
+        alerts.push({ priority: 1, cls: 'wl-red', icon: '📋', label: t.name, sub: Math.abs(t.deadline.daysUntil) + 'd vencido', tab: 'tramites', key: t.key });
       } else if (t.deadline.daysUntil <= 7) {
-        alerts.push({ priority: 5, cls: 'wl-amber', icon: '📋', label: t.name, sub: 'en ' + t.deadline.daysUntil + 'd', tab: 'tramites' });
+        alerts.push({ priority: 5, cls: 'wl-amber', icon: '📋', label: t.name, sub: 'en ' + t.deadline.daysUntil + 'd', tab: 'tramites', key: t.key });
       }
     });
 
     collectDocItems().forEach(function(d) {
       if (d.expDays === null) return;
       if (d.expDays < 0) {
-        alerts.push({ priority: 2, cls: 'wl-red', icon: '📁', label: d.label, sub: 'Caducado', tab: 'tramites' });
+        alerts.push({ priority: 2, cls: 'wl-red', icon: '📁', label: d.label, sub: 'Caducado', tab: 'tramites', key: d.id });
       } else if (d.expDays < 30) {
-        alerts.push({ priority: 4, cls: 'wl-amber', icon: '📁', label: d.label, sub: 'caduca en ' + d.expDays + 'd', tab: 'tramites' });
+        alerts.push({ priority: 4, cls: 'wl-amber', icon: '📁', label: d.label, sub: 'caduca en ' + d.expDays + 'd', tab: 'tramites', key: d.id });
       }
     });
 
@@ -101,15 +143,15 @@
       if (m.followUpDue) {
         var fuDiff = daysDiff(now, parseDate(m.followUpDue));
         if (fuDiff < 0) {
-          alerts.push({ priority: 3, cls: 'wl-red', icon: '🩺', label: m.name + ' — seguimiento', sub: Math.abs(fuDiff) + 'd vencido', tab: 'salud' });
+          alerts.push({ priority: 3, cls: 'wl-red', icon: '🩺', label: m.name + ' — seguimiento', sub: Math.abs(fuDiff) + 'd vencido', tab: 'salud', key: m.id });
         } else if (fuDiff <= 7) {
-          alerts.push({ priority: 5, cls: 'wl-amber', icon: '🩺', label: m.name + ' — seguimiento', sub: 'en ' + fuDiff + 'd', tab: 'salud' });
+          alerts.push({ priority: 5, cls: 'wl-amber', icon: '🩺', label: m.name + ' — seguimiento', sub: 'en ' + fuDiff + 'd', tab: 'salud', key: m.id });
         }
       }
       if (m.date) {
         var apptDiff = daysDiff(now, parseDate(m.date));
         if (apptDiff >= 0 && apptDiff <= 7) {
-          alerts.push({ priority: 6, cls: 'wl-blue', icon: '🩺', label: m.name, sub: apptDiff === 0 ? 'Hoy' : 'en ' + apptDiff + 'd', tab: 'salud' });
+          alerts.push({ priority: 6, cls: 'wl-blue', icon: '🩺', label: m.name, sub: apptDiff === 0 ? 'Hoy' : 'en ' + apptDiff + 'd', tab: 'salud', key: m.id });
         }
       }
     });
@@ -121,7 +163,7 @@
     var html = '<div class="mc-watchlist-card">';
     html += '<div class="mc-watchlist-title">⚠ Atención</div>';
     alerts.forEach(function(a) {
-      html += '<div class="mc-wl-item ' + a.cls + '" data-tab="' + a.tab + '">';
+      html += '<div class="mc-wl-item ' + a.cls + '" data-tab="' + a.tab + '" data-key="' + (a.key || '') + '">';
       html += '<span class="mc-wl-icon">' + a.icon + '</span>';
       html += '<span class="mc-wl-label">' + a.label + '</span>';
       html += '<span class="mc-wl-sub">' + a.sub + '</span>';
@@ -136,15 +178,14 @@
       item.addEventListener('click', function(e) {
         e.stopPropagation();
         var tab = item.getAttribute('data-tab');
+        var key = item.getAttribute('data-key');
         if (!tab) return;
-        // Use the nav activate function via sidebar click
         var sidebarLink = document.querySelector('.sidebar .nav-item[data-tab="' + tab + '"]');
-        if (sidebarLink) {
-          sidebarLink.click();
-        } else {
-          // Fallback: try mobile tab
-          var mobileLink = document.querySelector('.mobile-tab[data-tab="' + tab + '"]');
-          if (mobileLink) mobileLink.click();
+        if (sidebarLink) sidebarLink.click();
+        else { var m = document.querySelector('.mobile-tab[data-tab="' + tab + '"]'); if (m) m.click(); }
+        // After tab switch, scroll to the specific item
+        if (key) {
+          setTimeout(function() { scrollToItem(tab, key); }, 150);
         }
       });
     });
