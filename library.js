@@ -308,12 +308,25 @@
   };
   window.__viewDocFile = function(docId) {
     var doc = library.find(function(d) { return d.id === docId; });
-    if (!doc) return;
     var w = window.open('about:blank', '_blank');
-    signedUrl(doc.storage_path).then(function(url) {
-      if (url && w) w.location.href = url;
-      else { if (w) w.close(); }
-    });
+    if (doc) {
+      signedUrl(doc.storage_path).then(function(url) {
+        if (url && w) w.location.href = url;
+        else { if (w) w.close(); }
+      });
+    } else {
+      // Fallback: fetch document record directly from Supabase
+      sb.from('documents').select('storage_path').eq('id', docId).maybeSingle().then(function(res) {
+        if (res.data && res.data.storage_path) {
+          signedUrl(res.data.storage_path).then(function(url) {
+            if (url && w) w.location.href = url;
+            else { if (w) w.close(); }
+          });
+        } else {
+          if (w) w.close();
+        }
+      });
+    }
   };
 
   if (window.__authReady) init();

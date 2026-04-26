@@ -74,9 +74,8 @@
           html += '</div>';
           html += '<div class="doc-tracker-detail-row" style="gap:8px;display:flex;">';
           if (doc.fileId) {
-            html += '<button class="btn-primary doc-tracker-btn" data-action="view" data-doc-id="' + doc.id + '">Ver foto</button>';
+            html += '<button class="btn-primary doc-tracker-btn" data-action="view" data-doc-id="' + doc.id + '">Ver documento</button>';
           }
-          html += '<button class="btn-primary doc-tracker-btn" data-action="upload" data-doc-id="' + doc.id + '">📷 Subir foto</button>';
           html += '<button class="doc-tracker-btn doc-tracker-del" data-action="delete" data-doc-id="' + doc.id + '">Eliminar</button>';
           html += '</div>';
           html += '</div>';
@@ -161,27 +160,6 @@
           var doc = getDocs().find(function(d) { return d.id === id; });
           if (!doc || !doc.fileId) return;
           if (window.__viewDocFile) window.__viewDocFile(doc.fileId);
-        });
-      }
-      if (action === 'upload') {
-        btn.addEventListener('click', function() {
-          var input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'image/*';
-          input.capture = 'environment';
-          input.onchange = async function() {
-            if (!input.files[0]) return;
-            var uploaded = await window.__uploadDocFile(input.files[0]);
-            if (uploaded) {
-              var docs = getDocs();
-              for (var i = 0; i < docs.length; i++) {
-                if (docs[i].id === id) { docs[i].fileId = uploaded.id; break; }
-              }
-              saveDocs(docs);
-              render();
-            }
-          };
-          input.click();
         });
       }
     });
