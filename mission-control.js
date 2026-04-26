@@ -21,8 +21,15 @@
       var parts = key.split('-');
       var box = document.querySelector('input[type="checkbox"][data-group="' + parts[0] + '"][data-idx="' + parts.slice(1).join('-') + '"]');
       if (box) done = box.checked;
+      // Get name from config, or from DOM if not in config (HTML-rendered groups)
+      var name = t.name || '';
+      if (!name && box) {
+        var nameEl = box.parentElement && box.parentElement.querySelector('.tramite-info .name');
+        if (nameEl) name = nameEl.textContent.replace(/\s*[👨👩🎩].*$/, '').trim();
+      }
+      if (!name) name = key;
       var dl = window.resolveDeadline ? window.resolveDeadline(key) : null;
-      items.push({ key: key, name: t.name || key, meta: t.meta || '', done: done, deadline: dl, source: 'tramite' });
+      items.push({ key: key, name: name, meta: t.meta || '', done: done, deadline: dl, source: 'tramite' });
     });
     return items;
   }
