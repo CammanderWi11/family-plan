@@ -302,13 +302,11 @@
       var startDate = parseICSDate(dtstart);
       var endDate = dtend ? parseICSDate(dtend) : startDate;
       if (!startDate) continue;
-      // Build time label
+      // Build time label (start time only)
       var timeLabel = null;
+      var sortMinutes = allDay ? -1 : startDate.getHours() * 60 + startDate.getMinutes();
       if (!allDay) {
         timeLabel = fmtTime(startDate);
-        if (dtend && !isAllDay(dtend) && endDate) {
-          timeLabel += '–' + fmtTime(endDate);
-        }
       }
       // For date-only comparisons, normalize to midnight
       var startDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
@@ -323,7 +321,7 @@
         var key = dateKey(cur);
         if (!events[key]) events[key] = [];
         events[key] = events[key] || [];
-        events[key].push({ summary: summary, calIndex: calIndex, time: timeLabel });
+        events[key].push({ summary: summary, calIndex: calIndex, time: timeLabel, sortMin: sortMinutes });
         cur = new Date(cur); cur.setDate(cur.getDate() + 1);
       }
     }
@@ -469,7 +467,8 @@
     hideTooltip();
     tooltip = document.createElement('div');
     tooltip.className = 'ics-tooltip';
-    tooltip.innerHTML = evts.map(function(e) {
+    var sorted = evts.slice().sort(function(a, b) { return (a.sortMin || 0) - (b.sortMin || 0); });
+    tooltip.innerHTML = sorted.map(function(e) {
       var timeHtml = e.time ? '<span class="ics-tooltip-time">' + e.time + '</span> ' : '';
       return '<div class="ics-tooltip-item"><span class="ics-dot ics-dot-' + e.calIndex + '"></span>' +
         '<span>' + timeHtml + e.summary + '</span></div>';
