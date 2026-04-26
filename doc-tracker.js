@@ -76,7 +76,8 @@
           html += '<label>Notas</label>';
           html += '<input type="text" class="doc-tracker-input" value="' + (doc.notes || '') + '" placeholder="Notas..." data-field="notes" data-doc-id="' + doc.id + '">';
           html += '</div>';
-          html += '<div class="doc-tracker-detail-row" style="gap:8px;display:flex;">';
+          html += '<div class="doc-tracker-detail-row" style="gap:8px;display:flex;flex-wrap:wrap;">';
+          html += '<button class="btn-primary doc-tracker-btn" data-action="upload" data-doc-id="' + doc.id + '">' + (doc.fileId ? '📎 Reemplazar archivo' : '📎 Subir archivo') + '</button>';
           if (doc.fileId) {
             html += '<button class="btn-primary doc-tracker-btn" data-action="view" data-doc-id="' + doc.id + '">Ver documento</button>';
           }
@@ -176,6 +177,28 @@
           if (window.__viewDocFile) window.__viewDocFile(doc.fileId);
         });
       }
+      if (action === 'upload') {
+        btn.addEventListener('click', function() {
+          var fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*,application/pdf';
+          fileInput.onchange = async function() {
+            if (!fileInput.files[0]) return;
+            btn.textContent = 'Subiendo...';
+            btn.disabled = true;
+            var uploaded = await window.__uploadDocFile(fileInput.files[0]);
+            if (uploaded) {
+              var docs = getDocs();
+              for (var i = 0; i < docs.length; i++) {
+                if (docs[i].id === id) { docs[i].fileId = uploaded.id; break; }
+              }
+              saveDocs(docs);
+            }
+            render();
+          };
+          fileInput.click();
+        });
+      }
     });
 
     var quickSel = document.getElementById('doc-tracker-quick-select');
@@ -203,27 +226,13 @@
           notes: ''
         });
         saveDocs(docs);
-        render();
-        // Open file picker to upload document
-        var fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*,application/pdf';
-        fileInput.capture = 'environment';
-        fileInput.onchange = async function() {
-          if (!fileInput.files[0]) { render(); return; }
-          var uploaded = await window.__uploadDocFile(fileInput.files[0]);
-          if (uploaded) {
-            var docs2 = getDocs();
-            for (var i = 0; i < docs2.length; i++) {
-              if (docs2[i].id === newId) { docs2[i].fileId = uploaded.id; break; }
-            }
-            saveDocs(docs2);
-          }
-          render();
-        };
-        fileInput.click();
-        // Reset dropdown
         sel.selectedIndex = 0;
+        render();
+        // Auto-expand the new entry's detail panel so user can upload
+        setTimeout(function() {
+          var detail = document.getElementById('doc-detail-' + newId);
+          if (detail) detail.style.display = '';
+        }, 100);
       });
     }
   }
