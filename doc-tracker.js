@@ -201,9 +201,10 @@
           label = label.trim();
           person = prompt('¿De quién? (dad/mum/leo/luca):', 'dad') || 'dad';
         }
+        var newId = 'doc_' + Date.now();
         var docs = getDocs();
         docs.push({
-          id: 'doc_' + Date.now(),
+          id: newId,
           type: type,
           label: label,
           person: person,
@@ -212,7 +213,26 @@
           notes: ''
         });
         saveDocs(docs);
-        render();
+        // Immediately open file picker to upload photo
+        var fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*,application/pdf';
+        fileInput.capture = 'environment';
+        fileInput.onchange = async function() {
+          if (!fileInput.files[0]) { render(); return; }
+          var uploaded = await window.__uploadDocFile(fileInput.files[0]);
+          if (uploaded) {
+            var docs2 = getDocs();
+            for (var i = 0; i < docs2.length; i++) {
+              if (docs2[i].id === newId) { docs2[i].fileId = uploaded.id; break; }
+            }
+            saveDocs(docs2);
+          }
+          render();
+        };
+        fileInput.click();
+        // Reset dropdown
+        sel.selectedIndex = 0;
       });
     }
   }
