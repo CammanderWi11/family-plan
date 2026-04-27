@@ -162,6 +162,70 @@
     if (typeof window.updateLeaveCountdown === 'function') {
       window.updateLeaveCountdown(cfg);
     }
+    renderLeaveBlocks(cfg);
+  }
+
+  function fmtBlockDate(d) {
+    var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    var day = d.getDate();
+    var mon = months[d.getMonth()];
+    var yr = d.getFullYear();
+    return day + ' ' + mon + (yr !== 2026 ? " '" + String(yr).slice(2) : '');
+  }
+
+  function renderLeaveBlocks(cfg) {
+    var host = document.getElementById('leave-blocks-table');
+    if (!host) return;
+    var blocks = [];
+    var today = new Date(); today.setHours(0,0,0,0);
+
+    // Mandatory block
+    if (cfg.mandatory && cfg.mandatory.start && cfg.mandatory.end) {
+      var ms = parseDate(cfg.mandatory.start), me = parseDate(cfg.mandatory.end);
+      var days = daysBetween(ms, me) + 1;
+      var done = today > me;
+      var active = today >= ms && today <= me;
+      blocks.push({ label: 'Obligatorio', start: ms, end: me, days: days, mandatory: true, done: done, active: active });
+    }
+
+    // Flexible blocks
+    (cfg.flexibleBlocks || []).forEach(function(b) {
+      if (!b.start || !b.end) return;
+      var bs = parseDate(b.start), be = parseDate(b.end);
+      var days = daysBetween(bs, be) + 1;
+      var done = today > be;
+      var active = today >= bs && today <= be;
+      blocks.push({ label: b.label || 'Flexible', start: bs, end: be, days: days, mandatory: false, done: done, active: active });
+    });
+
+    // Sort chronologically
+    blocks.sort(function(a, b) { return a.start - b.start; });
+
+    var totalDays = blocks.reduce(function(s, b) { return s + b.days; }, 0);
+    var usedDays = blocks.reduce(function(s, b) {
+      if (b.done) return s + b.days;
+      if (b.active) return s + daysBetween(b.start, today) + 1;
+      return s;
+    }, 0);
+
+    var html = '<table class="data-table">';
+    html += '<thead><tr><th>Bloque</th><th>Periodo</th><th>D\u00edas</th><th>Estado</th></tr></thead>';
+    html += '<tbody>';
+    blocks.forEach(function(b) {
+      var statusCls = b.done ? 'exp-green' : (b.active ? 'exp-amber' : '');
+      var statusLabel = b.done ? 'Completado' : (b.active ? 'En curso' : 'Pendiente');
+      var dotColor = b.mandatory ? '#fbbf24' : '#f59e0b';
+      var rowCls = b.done ? ' class="muted-row"' : (b.active ? ' class="active-row"' : '');
+      html += '<tr' + rowCls + '>';
+      html += '<td data-label="Bloque"><span class="status-dot" style="background:' + dotColor + '"></span>' + b.label + '</td>';
+      html += '<td data-label="Periodo">' + fmtBlockDate(b.start) + ' \u2013 ' + fmtBlockDate(b.end) + '</td>';
+      html += '<td data-label="D\u00edas">' + b.days + '</td>';
+      html += '<td data-label="Estado"><span class="' + statusCls + '">' + statusLabel + '</span></td>';
+      html += '</tr>';
+    });
+    html += '<tr class="total-row"><td>Total</td><td>' + usedDays + ' de ' + totalDays + ' d\u00edas usados</td><td>' + totalDays + '</td><td></td></tr>';
+    html += '</tbody></table>';
+    host.innerHTML = html;
   }
 
   // ========== LEAVE COUNTDOWN ==========

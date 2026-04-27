@@ -217,92 +217,10 @@ window.sb.auth.getSession().then(({ data }) => {
     </div>
     <div class="cal-grid" id="yearCalendar"></div>
 
-    <!-- Leave Blocks -->
+    <!-- Leave Blocks (dynamically rendered from config) -->
     <div class="glass data-card" id="dashboard-leave-blocks">
       <h2>Bloques de permiso</h2>
-      <table class="data-table">
-        <thead><tr><th>Bloque</th><th>Plan</th><th>Días</th><th>Periodo</th></tr></thead>
-        <tbody>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#fbbf24"></span>Obligatorio</td>
-            <td data-label="Plan">Primeras 6 semanas con Luca en casa, adaptación familiar</td>
-            <td data-label="Días">42</td>
-            <td data-label="Periodo">17 abr &ndash; 28 may</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 1 &ndash; Junio</td>
-            <td data-label="Plan">Instalándose en Tenerife con Luca</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">26 jun &ndash; 2 jul</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 2 &ndash; Agosto</td>
-            <td data-label="Plan">Porque agosto nunca se lo dan a un piloto</td>
-            <td data-label="Días">12</td>
-            <td data-label="Periodo">7 &ndash; 18 ago</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 3 &ndash; La Graciosa</td>
-            <td data-label="Plan">Primer viaje a La Graciosa como familia de 4</td>
-            <td data-label="Días">12</td>
-            <td data-label="Periodo">5 &ndash; 16 nov</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 4 &ndash; Navidad</td>
-            <td data-label="Plan">Semana de Navidad</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">23 &ndash; 29 dic</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 5 &ndash; Año Nuevo</td>
-            <td data-label="Plan">Semana de Año Nuevo</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">30 dic &ndash; 5 ene</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 6 &ndash; Enero</td>
-            <td data-label="Plan">Semana post-fiestas</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">6 &ndash; 12 ene</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 7 &ndash; Japón I</td>
-            <td data-label="Plan">Viaje a Asia para renovación de visado</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">26 mar &ndash; 1 abr '27</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 8 &ndash; Japón II</td>
-            <td data-label="Plan">Kioto</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">2 &ndash; 8 abr '27</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>Bloque 9 &ndash; Japón III</td>
-            <td data-label="Plan">Regreso</td>
-            <td data-label="Días">7</td>
-            <td data-label="Periodo">9 &ndash; 15 abr '27</td>
-          </tr>
-          <tr class="muted-row">
-            <td data-label="Bloque"><span class="status-dot" style="background:#475569"></span>Reservado (2 bloques)</td>
-            <td data-label="Plan">Posible viaje con Padre</td>
-            <td data-label="Días">&mdash;</td>
-            <td data-label="Periodo">Por definir</td>
-          </tr>
-          <tr class="muted-row">
-            <td data-label="Bloque"><span class="status-dot" style="background:var(--blue)"></span>Adicional (2 semanas)</td>
-            <td data-label="Plan">Uso futuro &mdash; disponible hasta que Luca cumpla 8</td>
-            <td data-label="Días">14</td>
-            <td data-label="Periodo">Antes de abr 2034</td>
-          </tr>
-          <tr class="total-row">
-            <td data-label="">Total</td>
-            <td data-label="">19 semanas (17 planificadas + 2 de uso futuro)</td>
-            <td data-label=""></td>
-            <td data-label=""></td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="leave-blocks-table"></div>
     </div>
 
     <!-- Vacation Summary -->
