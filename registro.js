@@ -678,8 +678,8 @@
     html += '<div class="reg-reminder-add">';
     html += '<input type="text" id="reg-reminder-text" class="reg-bottle-input" placeholder="Nuevo recordatorio...">';
     html += '<select id="reg-reminder-cat" class="reg-bottle-input" style="width:auto;">';
+    html += '<option value="cuidado">Cuidados</option>';
     html += '<option value="medicina">Medicina</option>';
-    html += '<option value="cuidado">Cuidado Diario</option>';
     html += '</select>';
     html += '<select id="reg-reminder-freq" class="reg-bottle-input" style="width:auto;">';
     html += '<option value="daily">Diario</option>';
@@ -807,7 +807,7 @@
     { id: 'luz',       cat: 'cuidado',  freq: 'daily', text: '1 min junto a la ventana varias veces al d\u00eda (luz)', time: null, builtin: true }
   ];
 
-  var CAT_LABELS_REM = { medicina: 'Medicina', cuidado: 'Cuidado Diario' };
+  var CAT_LABELS_REM = { medicina: 'Medicina', cuidado: 'Cuidados' };
 
   function getReminders() {
     try {
@@ -925,7 +925,7 @@
     var checks = getChecks();
     var today = todayKey();
     var html = '';
-    ['medicina', 'cuidado'].forEach(function(cat) {
+    ['cuidado', 'medicina'].forEach(function(cat) {
       var items = due.filter(function(r) { return r.cat === cat; });
       if (!items.length) return;
       html += '<div class="reg-remind-group">' + CAT_LABELS_REM[cat] + '</div>';
