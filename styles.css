@@ -1543,7 +1543,8 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
    ============================================ */
 .reg-summary {
   display: flex; flex-wrap: wrap; gap: 0;
-  padding: 0; margin-bottom: 12px; overflow: hidden;
+  padding: 0; margin-top: 12px; margin-bottom: 0; overflow: hidden;
+  border-top: 1px solid var(--border);
 }
 .reg-sum-item {
   flex: 1; min-width: 110px;
@@ -1820,6 +1821,20 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 }
 .reg-del:hover { color: var(--red); background: var(--red-soft); }
 .reg-empty { font-size: 13px; color: var(--text-muted); padding: 16px 0; text-align: center; }
+
+/* Collapsible sections */
+.reg-collapsible-header {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; padding: 2px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.reg-collapsible-chevron {
+  font-size: 14px; color: var(--text-muted);
+  transition: transform 0.2s;
+}
+.reg-collapsible-body {
+  margin-top: 10px;
+}
 
 /* Resumen banners (Leo + Luca) */
 .resumen-banners { margin-bottom: 16px; }

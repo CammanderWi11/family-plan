@@ -636,7 +636,10 @@
 
     var html = '';
 
-    // 1. Pecho buttons
+    // 1. Hero — última toma (most glanced info, top of page)
+    html += '<div class="glass reg-hero" id="reg-hero"></div>';
+
+    // 2. Pecho buttons
     html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\ud83e\udd31 Pecho</h3>';
     html += '<div class="reg-timer-row">';
@@ -646,23 +649,55 @@
     html += '<div class="reg-pecho-pct" id="reg-pecho-pct"></div>';
     html += '</div>';
 
-    // 2. Sacaleche
-    html += '<div class="glass data-card">';
-    html += '<h3 class="reg-sec-title">\ud83c\udf7c Sacaleche</h3>';
+    // 3. Sacaleche (collapsible)
+    html += '<div class="glass data-card reg-collapsible" id="reg-sacaleche-card">';
+    html += '<div class="reg-collapsible-header" id="reg-sacaleche-toggle">';
+    html += '<h3 class="reg-sec-title" style="margin-bottom:0;">\ud83c\udf7c Sacaleche</h3>';
+    html += '<span class="reg-collapsible-chevron" id="reg-sacaleche-chevron">\u25b8</span>';
+    html += '</div>';
+    html += '<div class="reg-collapsible-body" id="reg-sacaleche-body">';
     html += '<div class="reg-timer-row">';
     html += '<button class="timer-btn" id="reg-btn-pump_left"></button>';
     html += '<button class="timer-btn" id="reg-btn-pump_right"></button>';
     html += '</div>';
     html += '</div>';
+    html += '</div>';
 
-    // 3. Registro manual (Biberón + Pecho manual merged)
+    // 4. Daily log + summary footer
+    html += '<div class="glass data-card"><div id="registro-log"></div>';
+    html += '<div class="reg-summary" id="registro-summary"></div>';
+    html += '</div>';
+
+    // 5. Stats
+    html += '<div class="glass data-card reg-stats-card"><div class="reg-stats-row" id="reg-stats"></div></div>';
+
+    // 6. Reminders
+    html += '<div class="glass data-card">';
+    html += '<div class="reg-remind-header"><h3 class="reg-sec-title">\ud83d\udccb Recordatorios</h3><button class="reg-remind-edit-btn" id="reg-remind-edit">\u270f\ufe0f</button></div>';
+    html += '<div id="reg-reminders"></div>';
+    html += '<div class="reg-reminder-add">';
+    html += '<input type="text" id="reg-reminder-text" class="reg-bottle-input" placeholder="Nuevo recordatorio...">';
+    html += '<select id="reg-reminder-cat" class="reg-bottle-input" style="width:auto;">';
+    html += '<option value="medicina">Medicina</option>';
+    html += '<option value="cuidado">Cuidado Diario</option>';
+    html += '</select>';
+    html += '<select id="reg-reminder-freq" class="reg-bottle-input" style="width:auto;">';
+    html += '<option value="daily">Diario</option>';
+    html += '<option value="weekly">Semanal</option>';
+    html += '</select>';
+    html += '<input type="time" id="reg-reminder-time" class="reg-bottle-input" style="width:auto;">';
+    html += '<button class="btn-primary" id="reg-reminder-add-btn" style="white-space:nowrap;">A\u00f1adir</button>';
+    html += '</div>';
+    html += '</div>';
+
+    // 7. Manual entry (rare action, bottom)
     html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\u270d Registro manual</h3>';
     html += '<div style="display:flex;flex-direction:column;gap:8px;">';
     html += '<input type="date" id="reg-manual-date" class="reg-bottle-input" value="' + new Date().toISOString().slice(0, 10) + '">';
     html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:6px;">';
     html += '<select id="reg-manual-type" class="reg-bottle-input" style="flex:0 0 auto;min-width:110px;padding-right:14px;">';
-    html += '<option value="bottle">\ud83c\udf7c Biberón</option>';
+    html += '<option value="bottle">\ud83c\udf7c Biber\u00f3n</option>';
     html += '<option value="breast">\ud83e\udd31 Pecho</option>';
     html += '</select>';
     html += '<div id="reg-manual-fields-bottle" style="display:flex;gap:6px;flex:1;min-width:0;">';
@@ -687,36 +722,25 @@
     html += '</div>';
     html += '</div>';
 
-    // 4. Última toma hero
-    html += '<div class="glass reg-hero" id="reg-hero"></div>';
-
-    // 4.5 Recordatorios (unified)
-    html += '<div class="glass data-card">';
-    html += '<div class="reg-remind-header"><h3 class="reg-sec-title">\ud83d\udccb Recordatorios</h3><button class="reg-remind-edit-btn" id="reg-remind-edit">\u270f\ufe0f</button></div>';
-    html += '<div id="reg-reminders"></div>';
-    html += '<div class="reg-reminder-add">';
-    html += '<input type="text" id="reg-reminder-text" class="reg-bottle-input" placeholder="Nuevo recordatorio...">';
-    html += '<select id="reg-reminder-cat" class="reg-bottle-input" style="width:auto;">';
-    html += '<option value="medicina">Medicina</option>';
-    html += '<option value="cuidado">Cuidado Diario</option>';
-    html += '</select>';
-    html += '<select id="reg-reminder-freq" class="reg-bottle-input" style="width:auto;">';
-    html += '<option value="daily">Diario</option>';
-    html += '<option value="weekly">Semanal</option>';
-    html += '</select>';
-    html += '<input type="time" id="reg-reminder-time" class="reg-bottle-input" style="width:auto;">';
-    html += '<button class="btn-primary" id="reg-reminder-add-btn" style="white-space:nowrap;">A\u00f1adir</button>';
-    html += '</div>';
-    html += '</div>';
-
-    // 5. Daily log
-    html += '<div class="glass data-card"><div id="registro-log"></div></div>';
-
-    // 6. Summary + stats at bottom
-    html += '<div class="glass reg-summary" id="registro-summary"></div>';
-    html += '<div class="glass data-card reg-stats-card"><div class="reg-stats-row" id="reg-stats"></div></div>';
-
     section.innerHTML = html;
+
+    // Sacaleche collapsible
+    var sacaBody = document.getElementById('reg-sacaleche-body');
+    var sacaToggle = document.getElementById('reg-sacaleche-toggle');
+    var sacaChevron = document.getElementById('reg-sacaleche-chevron');
+    var sacaOpen = localStorage.getItem('fp-reg-sacaleche-open') === '1';
+
+    function setSacaState(open) {
+      sacaOpen = open;
+      sacaBody.style.display = open ? 'block' : 'none';
+      sacaChevron.textContent = open ? '\u25be' : '\u25b8';
+      localStorage.setItem('fp-reg-sacaleche-open', open ? '1' : '0');
+    }
+    setSacaState(sacaOpen);
+
+    sacaToggle.addEventListener('click', function() {
+      setSacaState(!sacaOpen);
+    });
 
     TIMER_KEYS.forEach(function(key) {
       var btn = document.getElementById('reg-btn-' + key);
