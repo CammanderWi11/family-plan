@@ -163,6 +163,7 @@
       window.updateLeaveCountdown(cfg);
     }
     renderLeaveBlocks(cfg);
+    renderVacationBlocks(cfg);
   }
 
   function fmtBlockDate(d) {
@@ -224,6 +225,37 @@
       html += '</tr>';
     });
     html += '<tr class="total-row"><td>Total</td><td>' + usedDays + ' de ' + totalDays + ' d\u00edas usados</td><td>' + totalDays + '</td><td></td></tr>';
+    html += '</tbody></table>';
+    host.innerHTML = html;
+  }
+
+  function renderVacationBlocks(cfg) {
+    var host = document.getElementById('vacation-blocks-table');
+    if (!host) return;
+    var today = new Date(); today.setHours(0,0,0,0);
+    var blocks = (cfg.annualLeave || []).map(function(a) {
+      if (!a.start || !a.end) return null;
+      var s = parseDate(a.start), e = parseDate(a.end);
+      var done = today > e;
+      var active = today >= s && today <= e;
+      return { label: a.label || 'Vacaciones', start: s, end: e, done: done, active: active };
+    }).filter(Boolean);
+
+    if (!blocks.length) { host.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Sin vacaciones configuradas</p>'; return; }
+
+    var html = '<table class="data-table">';
+    html += '<thead><tr><th>Bloque</th><th>Periodo</th><th>Estado</th></tr></thead>';
+    html += '<tbody>';
+    blocks.forEach(function(b) {
+      var statusCls = b.done ? 'exp-green' : (b.active ? 'exp-amber' : '');
+      var statusLabel = b.done ? 'Completado' : (b.active ? 'En curso' : 'Pendiente');
+      var rowCls = b.done ? ' class="muted-row"' : (b.active ? ' class="active-row"' : '');
+      html += '<tr' + rowCls + '>';
+      html += '<td data-label="Bloque"><span class="status-dot" style="background:#4ade80"></span>' + b.label + '</td>';
+      html += '<td data-label="Periodo">' + fmtBlockDate(b.start) + ' \u2013 ' + fmtBlockDate(b.end) + '</td>';
+      html += '<td data-label="Estado"><span class="' + statusCls + '">' + statusLabel + '</span></td>';
+      html += '</tr>';
+    });
     html += '</tbody></table>';
     host.innerHTML = html;
   }

@@ -223,29 +223,10 @@ window.sb.auth.getSession().then(({ data }) => {
       <div id="leave-blocks-table"></div>
     </div>
 
-    <!-- Vacation Summary -->
-    <div class="glass data-card">
+    <!-- Vacation Summary (dynamically rendered) -->
+    <div class="glass data-card" id="dashboard-vacation-blocks">
       <h2>Vacaciones anuales</h2>
-      <table class="data-table">
-        <thead><tr><th>Bloque</th><th>Periodo</th><th>Estado</th></tr></thead>
-        <tbody>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#f59e0b"></span>21 abr &ndash; 2 may</td>
-            <td data-label="Periodo">~8 días laborables</td>
-            <td data-label="Estado">Reembolsable &mdash; solapa con permiso obligatorio</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#4ade80"></span>21 sep &ndash; 2 oct</td>
-            <td data-label="Periodo">~8 días laborables</td>
-            <td data-label="Estado">Aprobado</td>
-          </tr>
-          <tr>
-            <td data-label="Bloque"><span class="status-dot" style="background:#4ade80"></span>11 &ndash; 22 dic</td>
-            <td data-label="Periodo">~8 días laborables</td>
-            <td data-label="Estado">Aprobado &mdash; enlaza con bloques de Navidad</td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="vacation-blocks-table"></div>
     </div>
 
     <!-- Action Queue -->
@@ -267,20 +248,6 @@ window.sb.auth.getSession().then(({ data }) => {
       </div>
     </div>
 
-    <!-- Notes -->
-    <div class="glass data-card" id="dashboard-notes">
-      <h2>Notas</h2>
-      <div class="alert">
-        <strong>Solapamiento de vacaciones:</strong> Las vacaciones aprobadas del 21 abr al 2 may (~8 días laborables) solapan con el permiso obligatorio. Estos días deben ser devueltos al saldo de vacaciones anuales. Solicitar reprogramación a RRHH.
-      </div>
-      <ul class="notes-list">
-        <li><strong>Optimización de turnos:</strong> Los bloques comienzan en la posición 3 del ciclo (primer día de trabajo tras 3 días libres). Bloques individuales: 6/7 días laborables (85,7%), 12 días consecutivos libres. Cadenas de 3: 15/21 (71,4%).</li>
-        <li><strong>Siam Park (5&ndash;7 jun):</strong> Cae en días libres de turno &mdash; no requiere permiso.</li>
-        <li><strong>La Graciosa (5&ndash;12 nov):</strong> 5&ndash;7 nov días libres de turno + bloque 3 (8&ndash;14 nov). Totalmente cubierto.</li>
-        <li><strong>Viaje con padre (por definir):</strong> Viaje con padre (77 años) a Miami o Perú &mdash; destino pendiente. 2 bloques reservados.</li>
-        <li><strong>Plazo:</strong> 17 de las 19 semanas deben usarse antes de que Luca cumpla 1 año (17 abr 2027). Los bloques de Japón terminan el 15 abr &mdash; 5 días de margen. Las 2 semanas adicionales pueden usarse hasta que cumpla 8 (abr 2034).</li>
-      </ul>
-    </div>
   </section>
 
   <!-- ========== TRAMITES ========== -->
