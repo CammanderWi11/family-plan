@@ -818,6 +818,79 @@
   }
   function saveReminders(list) { localStorage.setItem('fp-reg-reminders', JSON.stringify(list)); }
 
+  function pushReminders(list) {
+    if (!window.sb || !window.__authReady) return;
+    window.sb.auth.getSession().then(function(res) {
+      var session = res.data && res.data.session;
+      if (!session) return;
+      window.sb.from('shared_luca_reminders').delete().neq('id', 0).then(function() {
+        var rows = list.map(function(r) {
+          return {
+            reminder_id: r.id,
+            cat: r.cat,
+            text: r.text,
+            freq: r.freq,
+            time: r.time || null,
+            day_of_week: r.dayOfWeek != null ? r.dayOfWeek : null,
+            created_by: session.user.id,
+            builtin: !!r.builtin
+          };
+        });
+        if (rows.length) window.sb.from('shared_luca_reminders').insert(rows).then(function() {});
+      });
+    });
+  }
+
+  function pullReminders() {
+    if (!window.sb || !window.__authReady) return;
+    window.sb.from('shared_luca_reminders').select('*').order('id').then(function(res) {
+      if (res.data && Array.isArray(res.data) && res.data.length) {
+        var list = res.data.map(function(row) {
+          return {
+            id: row.reminder_id,
+            cat: row.cat,
+            text: row.text,
+            freq: row.freq,
+            time: row.time,
+            dayOfWeek: row.day_of_week,
+            builtin: row.builtin
+          };
+        });
+        saveReminders(list);
+        renderReminders();
+      }
+    });
+  }
+
+  function pushCheck(key, checked) {
+    if (!window.sb || !window.__authReady) return;
+    window.sb.auth.getSession().then(function(res) {
+      var session = res.data && res.data.session;
+      if (!session) return;
+      if (checked) {
+        window.sb.from('shared_luca_checks').upsert({
+          check_key: key,
+          checked_by: session.user.id
+        }, { onConflict: 'check_key' }).then(function() {});
+      } else {
+        window.sb.from('shared_luca_checks').delete().eq('check_key', key).then(function() {});
+      }
+    });
+  }
+
+  function pullChecks() {
+    if (!window.sb || !window.__authReady) return;
+    var today = todayKey();
+    window.sb.from('shared_luca_checks').select('*').like('check_key', today + '%').then(function(res) {
+      if (res.data && Array.isArray(res.data)) {
+        var checks = {};
+        res.data.forEach(function(row) { checks[row.check_key] = true; });
+        saveChecks(checks);
+        renderReminders();
+      }
+    });
+  }
+
   function getChecks() {
     try { return JSON.parse(localStorage.getItem('fp-reg-fixed-checks') || '{}'); } catch(e) { return {}; }
   }
@@ -873,6 +946,7 @@
         if (cb.checked) c[cb.dataset.remindKey] = true;
         else delete c[cb.dataset.remindKey];
         saveChecks(c);
+        pushCheck(cb.dataset.remindKey, cb.checked);
       });
     });
     el.querySelectorAll('.reg-remind-del').forEach(function(btn) {
@@ -881,6 +955,7 @@
         e.stopPropagation();
         var list = getReminders().filter(function(r) { return r.id !== btn.dataset.remindId; });
         saveReminders(list);
+        pushReminders(list);
         renderReminders();
       });
     });
@@ -902,6 +977,7 @@
       dayOfWeek: freqInput.value === 'weekly' ? new Date().getDay() : null
     });
     saveReminders(list);
+    pushReminders(list);
     textInput.value = '';
     timeInput.value = '';
     renderReminders();
@@ -912,7 +988,11 @@
   } else {
     renderSection();
   }
-  window.addEventListener('auth-ready', pullSharedLog);
+  window.addEventListener('auth-ready', function() {
+    pullSharedLog();
+    pullReminders();
+    pullChecks();
+  });
 
   // Expose for Resumen banners
   window.getLucaLastEntry = function() {
