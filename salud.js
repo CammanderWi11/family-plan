@@ -264,17 +264,27 @@
           btn.textContent = 'Subiendo...';
           btn.disabled = true;
           try {
+            console.log('[salud-upload] key:', key, 'file:', input.files[0].name);
+            console.log('[salud-upload] __uploadDocFile exists:', !!window.__uploadDocFile);
+            console.log('[salud-upload] window.sb exists:', !!window.sb);
             if (!window.__uploadDocFile) throw new Error('Upload not ready');
             var uploaded = await window.__uploadDocFile(input.files[0]);
+            console.log('[salud-upload] uploaded result:', uploaded);
             if (uploaded) {
               var _sb = window.sb;
-              await _sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
-              // Refresh attachments list then re-render
+              var insResult = await _sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+              console.log('[salud-upload] insert result:', insResult);
+              console.log('[salud-upload] __refreshAttachments exists:', !!window.__refreshAttachments);
               if (window.__refreshAttachments) await window.__refreshAttachments();
+              console.log('[salud-upload] __renderSaludAttachments exists:', !!window.__renderSaludAttachments);
               if (window.__renderSaludAttachments) window.__renderSaludAttachments();
+              // Check DOM for links
+              var links = document.querySelectorAll('.salud-attach-links[data-salud-key="' + key + '"]');
+              console.log('[salud-upload] link containers found:', links.length);
+              links.forEach(function(l) { console.log('[salud-upload] link container innerHTML:', l.innerHTML); });
             }
           } catch(err) {
-            console.error('Salud upload error:', err);
+            console.error('[salud-upload] ERROR:', err);
           }
           btn.textContent = 'Adjuntar archivo';
           btn.disabled = false;

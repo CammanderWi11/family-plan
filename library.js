@@ -350,14 +350,19 @@
 
   // Render attachment pills for salud items
   window.__renderSaludAttachments = function() {
+    console.log('[renderSaludAttach] called. attachments:', attachments.length, 'library:', library.length);
     // Render in .salud-attach-links containers (new style)
-    document.querySelectorAll('.salud-attach-links').forEach(host => {
+    var hosts = document.querySelectorAll('.salud-attach-links');
+    console.log('[renderSaludAttach] .salud-attach-links hosts found:', hosts.length);
+    hosts.forEach(host => {
       const key = host.dataset.saludKey;
       if (!key) return;
       host.innerHTML = '';
       const keyAttachments = attachments.filter(a => a.tramite_key === key);
+      if (keyAttachments.length) console.log('[renderSaludAttach] key:', key, 'matches:', keyAttachments.length);
       keyAttachments.forEach(a => {
         const doc = library.find(d => d.id === a.document_id);
+        console.log('[renderSaludAttach] attachment doc_id:', a.document_id, 'found:', !!doc);
         if (!doc) return;
         const link = document.createElement('a');
         link.className = 'salud-attach-link';
