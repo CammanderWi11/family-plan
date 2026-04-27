@@ -16,12 +16,14 @@
   };
 
   function toast(msg, kind) {
-    const host = document.getElementById('toast-host'); if (!host) return;
+    const host = document.getElementById('toast-host');
+    if (!host) return { remove: function(){} };
     const el = document.createElement('div');
     el.className = 'toast ' + (kind || 'info');
     el.innerHTML = '<span>' + msg + '</span>';
     host.appendChild(el);
     setTimeout(() => el.remove(), kind === 'error' ? 6000 : 2500);
+    return el;
   }
 
   async function signedUrl(path) {
