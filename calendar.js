@@ -104,10 +104,15 @@
     }
 
     // Render months
-    const monthsToShow = [
-      [2026,3],[2026,4],[2026,5],[2026,6],[2026,7],[2026,8],
-      [2026,9],[2026,10],[2026,11],[2027,0],[2027,1],[2027,2],[2027,3]
-    ];
+    var startYear = h.birthDate.getFullYear(), startMonth = h.birthDate.getMonth();
+    var monthsToShow = [];
+    for (var i = 0; i < 13; i++) {
+      var m = (startMonth + i) % 12;
+      var y = startYear + Math.floor((startMonth + i) / 12);
+      monthsToShow.push([y, m]);
+    }
+    container.__monthsToShow = monthsToShow;
+    var todayCmp = new Date(); todayCmp.setHours(0,0,0,0);
     for (const [year, month] of monthsToShow) {
       const monthDiv = document.createElement('div');
       monthDiv.className = 'glass cal-month';
@@ -150,7 +155,6 @@
         if (schoolDay) cell.classList.add('school');
         if (h.isBirthDay(date)) { cell.classList.add('baby'); cell.title = '¡Nace Luca!'; }
         if (h.isLastSchoolDay(date)) { cell.classList.add('last-school'); cell.title = 'Último día de cole'; }
-        const todayCmp = new Date(); todayCmp.setHours(0,0,0,0);
         if (date.getTime() === todayCmp.getTime()) { cell.classList.add('today'); cell.title = (cell.title ? cell.title + ' · ' : '') + 'Hoy'; }
         daysDiv.appendChild(cell);
       }
@@ -164,6 +168,8 @@
     }
     renderLeaveBlocks(cfg);
     renderVacationBlocks(cfg);
+    var todayCell = document.querySelector('.cal-day.today');
+    if (todayCell) todayCell.scrollIntoView({ block: 'center', behavior: 'instant' });
   }
 
   function fmtBlockDate(d) {
@@ -553,7 +559,6 @@
 
   // Apply event dots to already-rendered calendar
   var tooltip = null;
-  var calNames = ['Mum', 'Daddey', 'Family Matters'];
 
   function hideTooltip() {
     if (tooltip) { tooltip.remove(); tooltip = null; }
@@ -619,10 +624,7 @@
     var container = document.getElementById('yearCalendar');
     if (!container) return;
     var months = container.querySelectorAll('.cal-month');
-    var monthsToShow = [
-      [2026,3],[2026,4],[2026,5],[2026,6],[2026,7],[2026,8],
-      [2026,9],[2026,10],[2026,11],[2027,0],[2027,1],[2027,2],[2027,3]
-    ];
+    var monthsToShow = container.__monthsToShow || [];
     months.forEach(function(monthDiv, mi) {
       if (mi >= monthsToShow.length) return;
       var year = monthsToShow[mi][0], month = monthsToShow[mi][1];
