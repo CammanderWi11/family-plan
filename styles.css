@@ -1561,6 +1561,13 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   border-left: 3px solid var(--border);
   transition: border-color 0.3s, background 0.3s;
 }
+.reg-hero-active {
+  border-left-color: var(--amber) !important;
+  background: rgba(251,191,36,0.08) !important;
+}
+.reg-hero-active .reg-hero-elapsed {
+  color: var(--amber); font-size: 32px;
+}
 .reg-hero-alert {
   border-left-color: var(--red) !important;
   background: var(--red-soft) !important;

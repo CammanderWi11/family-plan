@@ -199,6 +199,11 @@
     return m + 'min';
   }
 
+  function fmtDurationLive(secs) {
+    var m = Math.floor(secs / 60), s = secs % 60;
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
   function fmtInterval(secs) {
     var h = Math.floor(secs / 3600);
     var m = Math.floor((secs % 3600) / 60);
@@ -232,6 +237,7 @@
       if (!active[key]) { clearInterval(id); return; }
       active[key].elapsed = Math.floor((Date.now() - new Date(active[key].startedAt).getTime()) / 1000);
       refreshBtn(key);
+      renderHero();
     }, 1000);
     active[key] = { startedAt: startedAt, elapsed: elapsed, intervalId: id };
     saveActiveTimers();
@@ -331,14 +337,31 @@
     renderAll();
   }
 
-  // ---- Hero: pr\u00f3ximo lado + tiempo ----
+  // ---- Hero: active feed or última toma ----
+  function getActiveBreast() {
+    if (active.breast_left) return { key: 'breast_left', side: 'left', label: 'Pecho Izquierdo', elapsed: active.breast_left.elapsed };
+    if (active.breast_right) return { key: 'breast_right', side: 'right', label: 'Pecho Derecho', elapsed: active.breast_right.elapsed };
+    return null;
+  }
+
   function renderHero() {
     var el = document.getElementById('reg-hero');
     if (!el) return;
+
+    // Check for active breast feeding
+    var activeFeed = getActiveBreast();
+    if (activeFeed) {
+      var sideClass = activeFeed.side === 'left' ? 'caregiver-badge caregiver-mum' : 'caregiver-badge caregiver-daddey';
+      el.className = 'glass reg-hero reg-hero-active';
+      el.innerHTML =
+        '<div class="reg-hero-label">TOMA ACTUAL</div>' +
+        '<div class="reg-hero-elapsed">' + fmtDurationLive(activeFeed.elapsed) + '</div>' +
+        '<div class="reg-hero-next-side"><span class="' + sideClass + '">' + activeFeed.label + '</span></div>';
+      return;
+    }
+
     var log = getLog();
-    // Last entry of any type (for elapsed time) — includes bottle
     var lastAny = log[0] || null;
-    // Last breast entry (for next side)
     var lastBreast = log.filter(function(e) { return e.type === 'breast'; })[0] || null;
 
     if (!lastAny) {
@@ -361,7 +384,6 @@
       nextSideHtml = '<div class="reg-hero-next-side">Pr\u00f3xima toma <span class="' + nextSideClass + '">' + nextSide + '</span></div>';
     }
 
-    // Show ml if last entry was a bottle
     var lastMlHtml = '';
     if (lastAny.type === 'bottle' && lastAny.ml) {
       lastMlHtml = '<div class="reg-hero-next-side">\ud83c\udf7c \u00daltimo biber\u00f3n: ' + lastAny.ml + 'ml</div>';
