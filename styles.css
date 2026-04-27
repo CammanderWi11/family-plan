@@ -1687,16 +1687,18 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   border-left: 3px solid var(--blue);
 }
 .reg-pecho-pct {
-  text-align: center; margin-top: 10px; padding-top: 8px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  margin-top: 8px; padding-top: 8px;
   border-top: 1px solid var(--border);
+}
+.reg-pecho-pct-lbl {
+  grid-column: 1 / -1; text-align: center;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.5px; margin-bottom: 2px;
 }
 .reg-pecho-pct-val {
   font-family: var(--font-mono); font-size: 16px; font-weight: 700;
-  color: var(--amber); margin-right: 8px;
-}
-.reg-pecho-pct-lbl {
-  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
-  letter-spacing: 0.5px;
+  color: var(--amber); text-align: center;
 }
 .timer-btn { position: relative; }
 .timer-badge {
