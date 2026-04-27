@@ -102,6 +102,7 @@
           html += '</div>';
           if (item.meta) html += '<div class="salud-item-meta">' + item.meta + '</div>';
           html += '<span class="lib-attached-host salud-attach-host" data-salud-key="salud-' + item.id + '"></span>';
+          html += '<div class="salud-attach-links salud-attach-links-row" data-salud-key="salud-' + item.id + '"></div>';
           html += '</div>';
           html += '<div class="salud-item-date">' + fmtDate(item.date) + '</div>';
           html += '<button class="salud-expand-btn" data-id="' + item.id + '" data-person="' + person.key + '">⋯</button>';
