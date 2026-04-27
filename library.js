@@ -247,21 +247,22 @@
   }
 
   async function uploadToLibrary(file, docType) {
-    if (!file) return;
+    if (!file) return null;
     var _sb = sb || window.sb;
-    if (!_sb) { toast('⚠ No conectado', 'error'); return null; }
+    if (!_sb) { toast('No conectado', 'error'); return null; }
     const id = crypto.randomUUID();
     const safeName = file.name.replace(/[^\w.\-]+/g, '_');
     const path = LIB_PREFIX + id + '/' + safeName;
-    const t = toast('Subiendo…', 'loading');
+    var t = toast('Subiendo…', 'loading');
+    if (!t) t = { remove: function(){} };
     const up = await _sb.storage.from(BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
-    if (up.error) { t.remove(); toast('⚠ ' + up.error.message, 'error'); return null; }
+    if (up.error) { t.remove(); toast('Error: ' + up.error.message, 'error'); return null; }
     const ins = await _sb.from('documents').insert({
       id, filename: file.name, storage_path: path, doc_type: docType || null
     }).select().single();
     t.remove();
-    if (ins.error) { toast('⚠ ' + ins.error.message, 'error'); return null; }
-    toast('✓ Subido', 'success');
+    if (ins.error) { toast('Error: ' + ins.error.message, 'error'); return null; }
+    toast('Subido', 'success');
     await fetchLibrary();
     return ins.data;
   }
