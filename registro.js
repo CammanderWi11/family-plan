@@ -321,7 +321,7 @@
     // Build startedAt from the time input + selected date
     var dateInput = document.getElementById('reg-manual-date');
     var parts = timeInput.value.split(':');
-    var d = dateInput && dateInput.value ? new Date(dateInput.value) : new Date();
+    var d = dateInput && dateInput.value ? new Date(dateInput.value + 'T00:00') : new Date();
     d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
     var entry = {
       id: Date.now() + '_manual_breast',
