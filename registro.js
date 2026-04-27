@@ -318,9 +318,10 @@
     if (!timeInput || !timeInput.value || !durInput || !sideInput) return;
     var durMins = parseInt(durInput.value, 10);
     if (!durMins || durMins <= 0) return;
-    // Build startedAt from the time input + today's date
+    // Build startedAt from the time input + selected date
+    var dateInput = document.getElementById('reg-manual-date');
     var parts = timeInput.value.split(':');
-    var d = new Date();
+    var d = dateInput && dateInput.value ? new Date(dateInput.value) : new Date();
     d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
     var entry = {
       id: Date.now() + '_manual_breast',
@@ -341,11 +342,13 @@
     if (!input) return;
     var ml = parseInt(input.value, 10);
     if (!ml || ml <= 0) return;
+    var dateInput = document.getElementById('reg-manual-date');
+    var d = dateInput && dateInput.value ? new Date(dateInput.value + 'T' + new Date().toTimeString().slice(0, 5)) : new Date();
     var entry = {
       id: Date.now() + '_bottle',
       type: 'bottle',
       side: null,
-      startedAt: new Date().toISOString(),
+      startedAt: d.toISOString(),
       durationSeconds: 0,
       ml: ml
     };
@@ -453,9 +456,14 @@
     var dayPct = breastPct(dayLog);
     var dayPctHtml = dayPct ? dayPct.left + '% / ' + dayPct.right + '%' : '\u2014';
 
-    // Breast L/R percentages — all time
-    var allPct = breastPct(allLog);
-    var allPctHtml = allPct ? allPct.left + '% / ' + allPct.right + '%' : '\u2014';
+    // Breast L/R percentages — last 7 days
+    var sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    var recentLog = allLog.filter(function(e) {
+      return new Date(e.startedAt) >= sevenDaysAgo;
+    });
+    var recentPct = breastPct(recentLog);
+    var recentPctHtml = recentPct ? recentPct.left + '% / ' + recentPct.right + '%' : '\u2014';
 
     var tomasHtml = String(breast.length);
 
@@ -463,7 +471,8 @@
     if (breast.length >= 2) {
       var intervals = [];
       for (var i = 1; i < breast.length; i++) {
-        intervals.push((new Date(breast[i].startedAt) - new Date(breast[i-1].startedAt)) / 1000);
+        var prevEnd = new Date(breast[i-1].startedAt).getTime() + (breast[i-1].durationSeconds || 0) * 1000;
+        intervals.push((new Date(breast[i].startedAt).getTime() - prevEnd) / 1000);
       }
       var avg = intervals.reduce(function(s, v) { return s + v; }, 0) / intervals.length;
       avgIntervalHtml = fmtInterval(Math.round(avg));
@@ -490,7 +499,7 @@
     }
 
     el.innerHTML =
-      '<div class="reg-stat"><span class="reg-stat-val">' + allPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (total)</span></div>' +
+      '<div class="reg-stat"><span class="reg-stat-val">' + recentPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (7d)</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + tomasHtml + '</span><span class="reg-stat-lbl">Tomas</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + avgIntervalHtml + '</span><span class="reg-stat-lbl">Media entre tomas</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + avgDurHtml + '</span><span class="reg-stat-lbl">Media/sesi\u00f3n</span></div>' +
@@ -557,7 +566,7 @@
             detailHtml +
           '</div>' +
           '<span class="reg-entry-time">' + timeRange + '</span>' +
-          (todayFlag ? '<button class="reg-del" data-id="' + entry.id + '" title="Borrar">\u00d7</button>' : '') +
+          '<button class="reg-del" data-id="' + entry.id + '" title="Borrar">\u00d7</button>' +
           '</div>';
       });
     }
@@ -650,6 +659,7 @@
     html += '<div class="glass data-card">';
     html += '<h3 class="reg-sec-title">\u270d Registro manual</h3>';
     html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    html += '<input type="date" id="reg-manual-date" class="reg-bottle-input" value="' + new Date().toISOString().slice(0, 10) + '">';
     html += '<div class="reg-bottle-row" style="flex-wrap:wrap;gap:6px;">';
     html += '<select id="reg-manual-type" class="reg-bottle-input" style="flex:0 0 auto;min-width:110px;padding-right:14px;">';
     html += '<option value="bottle">\ud83c\udf7c Biberón</option>';
@@ -673,7 +683,7 @@
     html += '</select>';
     html += '</div>';
     html += '</div>';
-    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save" style="width:100%;">Save</button>';
+    html += '<button class="btn-primary reg-bottle-btn" id="reg-manual-save" style="width:100%;">Guardar</button>';
     html += '</div>';
     html += '</div>';
 
@@ -754,6 +764,7 @@
       });
     }
 
+    pruneOldChecks();
     restoreActiveTimers();
     renderAll();
     startHeroInterval();
@@ -789,6 +800,19 @@
   function saveChecks(obj) { localStorage.setItem('fp-reg-fixed-checks', JSON.stringify(obj)); }
 
   function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+  function pruneOldChecks() {
+    var checks = getChecks();
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 7);
+    var cutoffStr = cutoff.toISOString().slice(0, 10);
+    var pruned = {};
+    Object.keys(checks).forEach(function(key) {
+      var dateStr = key.slice(0, 10);
+      if (dateStr >= cutoffStr) pruned[key] = checks[key];
+    });
+    saveChecks(pruned);
+  }
 
   function isReminderDueToday(r) {
     if (r.freq === 'daily') return true;
