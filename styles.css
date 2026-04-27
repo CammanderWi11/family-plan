@@ -1569,8 +1569,15 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   color: var(--amber); font-size: 32px;
 }
 .reg-hero-alert {
+  border-left-color: var(--amber) !important;
+  background: var(--amber-soft) !important;
+}
+.reg-hero-critical {
   border-left-color: var(--red) !important;
   background: var(--red-soft) !important;
+}
+.reg-hero-warn-critical {
+  font-weight: 700; font-size: 13px;
 }
 .reg-hero-label {
   font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
@@ -1674,8 +1681,25 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   animation: timer-pulse 1.5s ease-in-out infinite;
 }
 .timer-btn-last {
-  border-left: 3px solid var(--amber);
-  background: var(--amber-softer);
+  border-left: 3px solid var(--red);
+  background: var(--red-soft);
+}
+.timer-btn-next {
+  border-left: 3px solid var(--blue);
+  background: var(--blue-soft);
+}
+.timer-btn { position: relative; }
+.timer-badge {
+  position: absolute; top: 4px; right: 4px;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px;
+  line-height: 1;
+}
+.timer-badge-last {
+  background: var(--red); color: #fff;
+}
+.timer-badge-next {
+  background: var(--blue); color: #fff;
 }
 @keyframes timer-pulse {
   0%, 100% {
@@ -1918,6 +1942,13 @@ select.doc-tracker-input {
   transition: background 0.15s;
 }
 .salud-upload-opt:hover { background: var(--surface-hover); }
+.salud-attach-links {
+  margin-top: 6px; display: flex; flex-direction: column; gap: 4px;
+}
+.salud-attach-link {
+  font-size: 13px; color: var(--blue); text-decoration: underline;
+  word-break: break-all;
+}
 
 /* ---- Mission Control — Search, Watchlist, Upcoming ---- */
 

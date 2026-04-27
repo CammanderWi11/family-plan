@@ -126,7 +126,7 @@
           html += '<div style="flex:1;"><label>Fecha límite</label>';
           html += '<input type="date" class="doc-tracker-input salud-field" value="' + (item.followUpDue || '') + '" data-field="followUpDue" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;"></div>';
           html += '</div></div>';
-          html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">📎 Adjuntar documento</button></div>';
+          html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">Adjuntar archivo</button><div class="salud-attach-links" data-salud-key="salud-' + item.id + '"></div></div>';
           if (item.category === 'specialist') {
             html += '<div class="salud-detail-row"><button class="doc-tracker-btn doc-tracker-del salud-del" data-id="' + item.id + '" data-person="' + person.key + '">Eliminar</button></div>';
           }
@@ -250,62 +250,28 @@
       });
     });
 
-    // Attach document buttons — direct upload menu
+    // Attach document buttons — native file picker
     document.querySelectorAll('.salud-attach-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         var key = btn.dataset.saludKey;
-        // Remove existing menu if any
-        var old = document.getElementById('salud-upload-menu');
-        if (old) old.remove();
-        var menu = document.createElement('div');
-        menu.id = 'salud-upload-menu';
-        menu.className = 'salud-upload-menu';
-        menu.innerHTML =
-          '<button class="salud-upload-opt" data-mode="photo">📷 Hacer foto</button>' +
-          '<button class="salud-upload-opt" data-mode="scan">📄 Escanear documento</button>' +
-          '<button class="salud-upload-opt" data-mode="file">📁 Elegir archivo</button>';
-        btn.parentNode.appendChild(menu);
-
-        menu.querySelectorAll('.salud-upload-opt').forEach(function(opt) {
-          opt.addEventListener('click', function() {
-            var input = document.createElement('input');
-            input.type = 'file';
-            var mode = opt.dataset.mode;
-            if (mode === 'photo') {
-              input.accept = 'image/*';
-              input.setAttribute('capture', 'environment');
-            } else if (mode === 'scan') {
-              input.accept = 'application/pdf,image/*';
-              input.setAttribute('capture', 'environment');
-            } else {
-              input.accept = 'application/pdf,image/*';
-            }
-            input.onchange = async function() {
-              if (!input.files || !input.files[0]) return;
-              menu.remove();
-              btn.textContent = 'Subiendo...';
-              btn.disabled = true;
-              var uploaded = await window.__uploadDocFile(input.files[0]);
-              if (uploaded) {
-                var sb = window.sb;
-                await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
-                if (window.__renderSaludAttachments) window.__renderSaludAttachments();
-              }
-              btn.textContent = '📎 Adjuntar documento';
-              btn.disabled = false;
-            };
-            input.click();
-          });
-        });
-
-        // Dismiss menu on outside click
-        setTimeout(function() {
-          document.addEventListener('click', function dismiss() {
-            menu.remove();
-            document.removeEventListener('click', dismiss);
-          }, { once: true });
-        }, 0);
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/pdf,image/*';
+        input.onchange = async function() {
+          if (!input.files || !input.files[0]) return;
+          btn.textContent = 'Subiendo...';
+          btn.disabled = true;
+          var uploaded = await window.__uploadDocFile(input.files[0]);
+          if (uploaded) {
+            var sb = window.sb;
+            await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+            if (window.__renderSaludAttachments) window.__renderSaludAttachments();
+          }
+          btn.textContent = 'Adjuntar archivo';
+          btn.disabled = false;
+        };
+        input.click();
       });
     });
 

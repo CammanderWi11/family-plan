@@ -270,6 +270,7 @@
     var lastLog = null;
     var isLastUsed = false;
 
+    var isNextSide = false;
     if (!isActive) {
       var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
       lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
@@ -277,13 +278,29 @@
         var lastBreast = log.find(function(e) { return e.type === 'breast'; });
         isLastUsed = lastBreast && lastBreast.id === lastLog.id;
       }
+      // Determine next side for breast buttons
+      if (meta.type === 'breast') {
+        var allBreast = getLog().filter(function(e) { return e.type === 'breast'; });
+        var lastAnyBreast = allBreast[0] || null;
+        if (lastAnyBreast) {
+          isNextSide = lastAnyBreast.side !== meta.side;
+        }
+      }
     }
 
     btn.className = 'timer-btn'
       + (isActive ? ' timer-btn-active' : '')
-      + (isLastUsed ? ' timer-btn-last' : '');
+      + (isLastUsed ? ' timer-btn-last' : '')
+      + (isNextSide ? ' timer-btn-next' : '');
+
+    var badgeHtml = '';
+    if (!isActive && meta.type === 'breast') {
+      if (isLastUsed) badgeHtml = '<span class="timer-badge timer-badge-last">\u00faltimo</span>';
+      else if (isNextSide) badgeHtml = '<span class="timer-badge timer-badge-next">siguiente</span>';
+    }
 
     btn.innerHTML =
+      badgeHtml +
       '<span class="timer-icon">' + meta.icon + '</span>' +
       '<span class="timer-label">' + meta.label + '</span>' +
       (isActive
@@ -374,8 +391,9 @@
 
     var endTime = new Date(new Date(lastAny.startedAt).getTime() + (lastAny.durationSeconds || 0) * 1000);
     var secs = Math.floor((Date.now() - endTime.getTime()) / 1000);
-    var isAlert = secs > 3 * 3600;
-    el.className = 'glass reg-hero' + (isAlert ? ' reg-hero-alert' : '');
+    var isWarning = secs > 3 * 3600;
+    var isCritical = secs > 4 * 3600;
+    el.className = 'glass reg-hero' + (isCritical ? ' reg-hero-critical' : (isWarning ? ' reg-hero-alert' : ''));
 
     var nextSideHtml = '';
     if (lastBreast) {
@@ -389,12 +407,19 @@
       lastMlHtml = '<div class="reg-hero-next-side">\ud83c\udf7c \u00daltimo biber\u00f3n: ' + lastAny.ml + 'ml</div>';
     }
 
+    var warnHtml = '';
+    if (isCritical) {
+      warnHtml = '<div class="reg-hero-warn reg-hero-warn-critical">+4h \u00b7 Feed Luca Now!</div>';
+    } else if (isWarning) {
+      warnHtml = '<div class="reg-hero-warn">Han pasado +3h \u00b7 revisar</div>';
+    }
+
     el.innerHTML =
       '<div class="reg-hero-label">\u00daLTIMA TOMA</div>' +
-      '<div class="reg-hero-elapsed' + (isAlert ? ' reg-hero-elapsed-alert' : '') + '">' + fmtElapsed(secs) + '</div>' +
+      '<div class="reg-hero-elapsed' + (isWarning ? ' reg-hero-elapsed-alert' : '') + '">' + fmtElapsed(secs) + '</div>' +
       nextSideHtml +
       lastMlHtml +
-      (isAlert ? '<div class="reg-hero-warn">Han pasado +3h \u00b7 revisar</div>' : '');
+      warnHtml;
   }
 
   function startHeroInterval() {

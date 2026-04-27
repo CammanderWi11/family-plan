@@ -343,6 +343,24 @@
 
   // Render attachment pills for salud items
   window.__renderSaludAttachments = function() {
+    // Render in .salud-attach-links containers (new style)
+    document.querySelectorAll('.salud-attach-links').forEach(host => {
+      const key = host.dataset.saludKey;
+      if (!key) return;
+      host.innerHTML = '';
+      const keyAttachments = attachments.filter(a => a.tramite_key === key);
+      keyAttachments.forEach(a => {
+        const doc = library.find(d => d.id === a.document_id);
+        if (!doc) return;
+        const link = document.createElement('a');
+        link.className = 'salud-attach-link';
+        link.href = '#';
+        link.textContent = doc.filename;
+        link.onclick = (e) => { e.preventDefault(); const w = window.open('about:blank', '_blank'); signedUrl(doc.storage_path).then(u => { if (u && w) w.location.href = u; else if (w) w.close(); }); };
+        host.appendChild(link);
+      });
+    });
+    // Legacy pill hosts
     document.querySelectorAll('.salud-attach-host').forEach(host => {
       const key = host.dataset.saludKey;
       if (!key) return;
