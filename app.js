@@ -279,17 +279,20 @@ window.getTabForKey = function(key) {
     // Luca banner
     var lucaHtml = '';
     if (window.getLucaLastEntry) {
+      var activeFeed = window.getLucaActiveFeed ? window.getLucaActiveFeed() : null;
       var last = window.getLucaLastEntry();
-      if (last) {
+      if (activeFeed) {
+        var liveSide = activeFeed.side === 'left' ? 'Izquierdo' : 'Derecho';
+        lucaHtml = '<div class="resumen-banner resumen-banner-luca resumen-banner-live">' +
+          '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">\u00daltima toma</span>' +
+            '<span class="resumen-banner-text">' + (window.fmtLucaElapsed ? window.fmtLucaElapsed(0) : '0:00') + '</span>' +
+            '<span class="resumen-banner-text"><span class="resumen-badge-live">Live: ' + liveSide + '</span></span>' +
+          '</div>' +
+        '</div>';
+      } else if (last) {
         var elapsed = window.fmtLucaElapsed ? window.fmtLucaElapsed(last.elapsedSeconds) : '';
-        var detail = '';
-        if (last.type === 'breast') {
-          detail = 'Pecho ' + (last.side === 'left' ? 'Izq' : 'Der');
-        } else if (last.type === 'pump') {
-          detail = 'Sacaleche ' + (last.side === 'left' ? 'Izq' : 'Der');
-        } else if (last.type === 'bottle') {
-          detail = 'Biber\u00f3n' + (last.ml ? ' ' + last.ml + 'ml' : '');
-        }
         var nextSideHtml = '';
         if (last.nextSide) {
           var isRight = last.nextSide === 'Der';
@@ -302,7 +305,7 @@ window.getTabForKey = function(key) {
           '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">\u00daltima toma</span>' +
-            '<span class="resumen-banner-text">' + elapsed + ' \u00b7 ' + detail + '</span>' +
+            '<span class="resumen-banner-text">' + elapsed + '</span>' +
             nextSideHtml +
           '</div>' +
         '</div>';

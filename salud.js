@@ -127,7 +127,7 @@
           html += '<div style="flex:1;"><label>Fecha límite</label>';
           html += '<input type="date" class="doc-tracker-input salud-field" value="' + (item.followUpDue || '') + '" data-field="followUpDue" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;"></div>';
           html += '</div></div>';
-          html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">Adjuntar archivo</button><div class="salud-attach-links" data-salud-key="salud-' + item.id + '"></div></div>';
+          html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">Adjuntar archivo</button></div>';
           if (item.category === 'specialist') {
             html += '<div class="salud-detail-row"><button class="doc-tracker-btn doc-tracker-del salud-del" data-id="' + item.id + '" data-person="' + person.key + '">Eliminar</button></div>';
           }
@@ -264,27 +264,16 @@
           btn.textContent = 'Subiendo...';
           btn.disabled = true;
           try {
-            console.log('[salud-upload] key:', key, 'file:', input.files[0].name);
-            console.log('[salud-upload] __uploadDocFile exists:', !!window.__uploadDocFile);
-            console.log('[salud-upload] window.sb exists:', !!window.sb);
             if (!window.__uploadDocFile) throw new Error('Upload not ready');
             var uploaded = await window.__uploadDocFile(input.files[0]);
-            console.log('[salud-upload] uploaded result:', uploaded);
             if (uploaded) {
               var _sb = window.sb;
-              var insResult = await _sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
-              console.log('[salud-upload] insert result:', insResult);
-              console.log('[salud-upload] __refreshAttachments exists:', !!window.__refreshAttachments);
+              await _sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
               if (window.__refreshAttachments) await window.__refreshAttachments();
-              console.log('[salud-upload] __renderSaludAttachments exists:', !!window.__renderSaludAttachments);
               if (window.__renderSaludAttachments) window.__renderSaludAttachments();
-              // Check DOM for links
-              var links = document.querySelectorAll('.salud-attach-links[data-salud-key="' + key + '"]');
-              console.log('[salud-upload] link containers found:', links.length);
-              links.forEach(function(l) { console.log('[salud-upload] link container innerHTML:', l.innerHTML); });
             }
           } catch(err) {
-            console.error('[salud-upload] ERROR:', err);
+            console.error('Salud upload error:', err);
           }
           btn.textContent = 'Adjuntar archivo';
           btn.disabled = false;

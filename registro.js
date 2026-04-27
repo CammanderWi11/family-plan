@@ -304,7 +304,7 @@
       '<span class="timer-icon">' + meta.icon + '</span>' +
       '<span class="timer-label">' + meta.label + '</span>' +
       (isActive
-        ? '<span class="timer-elapsed">' + fmtDuration(elapsed) + '</span>'
+        ? '<span class="timer-elapsed">' + fmtDurationLive(elapsed) + '</span>'
         : (lastLog
             ? '<span class="timer-last">' + fmtDuration(lastLog.durationSeconds) + '</span>'
             : '<span class="timer-tap">Iniciar</span>'));
@@ -749,6 +749,11 @@
       elapsedSeconds: Math.floor((Date.now() - endTime.getTime()) / 1000),
       nextSide: lastBreast ? (lastBreast.side === 'left' ? 'Der' : 'Izq') : null
     };
+  };
+  window.getLucaActiveFeed = function() {
+    var af = getActiveBreast();
+    if (!af) return null;
+    return { side: af.side, label: af.label, elapsed: af.elapsed };
   };
   window.fmtLucaElapsed = fmtElapsed;
 })();

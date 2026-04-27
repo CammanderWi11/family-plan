@@ -1804,6 +1804,15 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
   border-color: var(--amber-dark) !important;
   background: rgba(251,191,36,0.04);
 }
+.resumen-banner-live {
+  border-color: #22c55e !important;
+  background: rgba(34,197,94,0.06);
+}
+.resumen-badge-live {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  background: #22c55e; color: #fff; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.3px;
+}
 .resumen-banner-icon {
   font-size: 20px; flex-shrink: 0;
 }
