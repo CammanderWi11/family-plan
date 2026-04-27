@@ -680,6 +680,27 @@
     // 4. Última toma hero
     html += '<div class="glass reg-hero" id="reg-hero"></div>';
 
+    // 4.5 Recordatorios fijos
+    html += '<div class="glass data-card">';
+    html += '<h3 class="reg-sec-title">\ud83d\udccb Recordatorios</h3>';
+    html += '<div id="reg-reminders"></div>';
+    html += '</div>';
+
+    // 4.6 Mis recordatorios (custom to-dos)
+    html += '<div class="glass data-card">';
+    html += '<h3 class="reg-sec-title">\u2705 Mis recordatorios</h3>';
+    html += '<div id="reg-custom-reminders"></div>';
+    html += '<div class="reg-reminder-add">';
+    html += '<input type="text" id="reg-reminder-text" class="reg-bottle-input" placeholder="Nuevo recordatorio...">';
+    html += '<select id="reg-reminder-freq" class="reg-bottle-input" style="width:auto;">';
+    html += '<option value="daily">Diario</option>';
+    html += '<option value="weekly">Semanal</option>';
+    html += '</select>';
+    html += '<input type="time" id="reg-reminder-time" class="reg-bottle-input" style="width:auto;">';
+    html += '<button class="btn-primary" id="reg-reminder-add-btn" style="white-space:nowrap;">A\u00f1adir</button>';
+    html += '</div>';
+    html += '</div>';
+
     // 5. Daily log
     html += '<div class="glass data-card"><div id="registro-log"></div></div>';
 
@@ -722,9 +743,138 @@
       });
     }
 
+    // Render fixed reminders
+    renderFixedReminders();
+    // Render custom reminders
+    renderCustomReminders();
+    // Wire add reminder button
+    var addReminderBtn = document.getElementById('reg-reminder-add-btn');
+    if (addReminderBtn) {
+      addReminderBtn.addEventListener('click', addCustomReminder);
+    }
+
     restoreActiveTimers();
     renderAll();
     startHeroInterval();
+  }
+
+  // ---- Fixed reminders ----
+  var FIXED_REMINDERS = [
+    { group: 'Medicaci\u00f3n diaria', items: [
+      { id: 'vitD', text: 'Vitamina D: 2 gotas al d\u00eda' },
+      { id: 'entero', text: 'Enterosilicona (c\u00f3licos/eructos): 1 cucharadita cada 8\u201324h' }
+    ]},
+    { group: 'Sue\u00f1o y postura', items: [
+      { id: 'bocaAbajo', text: 'Boca abajo 1 min varias veces al d\u00eda (fortalecer cuello)' }
+    ]},
+    { group: 'Cuidado diario', items: [
+      { id: 'bano', text: 'Ba\u00f1o diario, antes de la \u00faltima toma' },
+      { id: 'unas', text: 'Cortarle las u\u00f1as 1 vez/semana' },
+      { id: 'pomada', text: 'Si enrojecimiento genital: pomada Green Cornress 2\u20133 veces/d\u00eda' },
+      { id: 'luz', text: '1 min junto a la ventana varias veces al d\u00eda (luz)' }
+    ]}
+  ];
+
+  function getFixedChecks() {
+    try { return JSON.parse(localStorage.getItem('fp-reg-fixed-checks') || '{}'); } catch(e) { return {}; }
+  }
+  function saveFixedChecks(obj) { localStorage.setItem('fp-reg-fixed-checks', JSON.stringify(obj)); }
+
+  function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+  function renderFixedReminders() {
+    var el = document.getElementById('reg-reminders');
+    if (!el) return;
+    var checks = getFixedChecks();
+    var today = todayKey();
+    var html = '';
+    FIXED_REMINDERS.forEach(function(group) {
+      html += '<div class="reg-remind-group">' + group.group + '</div>';
+      group.items.forEach(function(item) {
+        var key = today + '_' + item.id;
+        var checked = checks[key] ? ' checked' : '';
+        html += '<label class="reg-remind-item"><input type="checkbox" data-remind-key="' + key + '"' + checked + '><span>' + item.text + '</span></label>';
+      });
+    });
+    el.innerHTML = html;
+    el.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var checks = getFixedChecks();
+        if (cb.checked) checks[cb.dataset.remindKey] = true;
+        else delete checks[cb.dataset.remindKey];
+        saveFixedChecks(checks);
+      });
+    });
+  }
+
+  // ---- Custom reminders (to-dos) ----
+  function getCustomReminders() {
+    try { return JSON.parse(localStorage.getItem('fp-reg-custom-reminders') || '[]'); } catch(e) { return []; }
+  }
+  function saveCustomReminders(list) { localStorage.setItem('fp-reg-custom-reminders', JSON.stringify(list)); }
+
+  function isReminderDueToday(r) {
+    var today = new Date();
+    if (r.freq === 'daily') return true;
+    if (r.freq === 'weekly') return today.getDay() === (r.dayOfWeek || 0);
+    return true;
+  }
+
+  function renderCustomReminders() {
+    var el = document.getElementById('reg-custom-reminders');
+    if (!el) return;
+    var reminders = getCustomReminders();
+    var today = todayKey();
+    var checks = getFixedChecks();
+    var html = '';
+    var due = reminders.filter(isReminderDueToday);
+    if (!due.length) {
+      html = '<div class="reg-remind-empty">Sin recordatorios</div>';
+    }
+    due.forEach(function(r) {
+      var key = today + '_custom_' + r.id;
+      var checked = checks[key] ? ' checked' : '';
+      var timeLabel = r.time ? '<span class="reg-remind-time">' + r.time + '</span>' : '';
+      var freqLabel = '<span class="reg-remind-freq">' + (r.freq === 'daily' ? 'Diario' : 'Semanal') + '</span>';
+      html += '<label class="reg-remind-item"><input type="checkbox" data-remind-key="' + key + '"' + checked + '><span>' + r.text + '</span>' + timeLabel + freqLabel +
+        '<button class="reg-remind-del" data-remind-id="' + r.id + '">\u00d7</button></label>';
+    });
+    el.innerHTML = html;
+    el.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var checks = getFixedChecks();
+        if (cb.checked) checks[cb.dataset.remindKey] = true;
+        else delete checks[cb.dataset.remindKey];
+        saveFixedChecks(checks);
+      });
+    });
+    el.querySelectorAll('.reg-remind-del').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var reminders = getCustomReminders().filter(function(r) { return r.id !== btn.dataset.remindId; });
+        saveCustomReminders(reminders);
+        renderCustomReminders();
+      });
+    });
+  }
+
+  function addCustomReminder() {
+    var textInput = document.getElementById('reg-reminder-text');
+    var freqInput = document.getElementById('reg-reminder-freq');
+    var timeInput = document.getElementById('reg-reminder-time');
+    if (!textInput || !textInput.value.trim()) return;
+    var reminders = getCustomReminders();
+    reminders.push({
+      id: String(Date.now()),
+      text: textInput.value.trim(),
+      freq: freqInput.value,
+      time: timeInput.value || null,
+      dayOfWeek: freqInput.value === 'weekly' ? new Date().getDay() : null
+    });
+    saveCustomReminders(reminders);
+    textInput.value = '';
+    timeInput.value = '';
+    renderCustomReminders();
   }
 
   if (document.readyState === 'loading') {
