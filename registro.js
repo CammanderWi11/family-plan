@@ -484,7 +484,8 @@
     var pctEl = document.getElementById('reg-pecho-pct');
     if (pctEl) {
       pctEl.innerHTML = dayPct
-        ? '<span class="reg-pecho-pct-val">' + dayPct.left + '%</span><span class="reg-pecho-pct-val">' + dayPct.right + '%</span>'
+        ? '<span class="reg-pecho-pct-cell"><span class="reg-pecho-pct-chip reg-pecho-pct-chip-left"></span><span class="reg-pecho-pct-val">' + dayPct.left + '%</span></span>' +
+          '<span class="reg-pecho-pct-cell"><span class="reg-pecho-pct-chip reg-pecho-pct-chip-right"></span><span class="reg-pecho-pct-val">' + dayPct.right + '%</span></span>'
         : '';
     }
 
