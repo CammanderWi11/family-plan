@@ -262,11 +262,16 @@
           if (!input.files || !input.files[0]) return;
           btn.textContent = 'Subiendo...';
           btn.disabled = true;
-          var uploaded = await window.__uploadDocFile(input.files[0]);
-          if (uploaded) {
-            var sb = window.sb;
-            await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
-            if (window.__renderSaludAttachments) window.__renderSaludAttachments();
+          try {
+            if (!window.__uploadDocFile) throw new Error('Upload not ready');
+            var uploaded = await window.__uploadDocFile(input.files[0]);
+            if (uploaded) {
+              var sb = window.sb;
+              await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+              if (window.__renderSaludAttachments) window.__renderSaludAttachments();
+            }
+          } catch(err) {
+            console.error('Salud upload error:', err);
           }
           btn.textContent = 'Adjuntar archivo';
           btn.disabled = false;

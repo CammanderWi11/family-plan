@@ -242,13 +242,15 @@
 
   async function uploadToLibrary(file, docType) {
     if (!file) return;
+    var _sb = sb || window.sb;
+    if (!_sb) { toast('⚠ No conectado', 'error'); return null; }
     const id = crypto.randomUUID();
     const safeName = file.name.replace(/[^\w.\-]+/g, '_');
     const path = LIB_PREFIX + id + '/' + safeName;
     const t = toast('Subiendo…', 'loading');
-    const up = await sb.storage.from(BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
+    const up = await _sb.storage.from(BUCKET).upload(path, file, { upsert: false, contentType: file.type || undefined });
     if (up.error) { t.remove(); toast('⚠ ' + up.error.message, 'error'); return null; }
-    const ins = await sb.from('documents').insert({
+    const ins = await _sb.from('documents').insert({
       id, filename: file.name, storage_path: path, doc_type: docType || null
     }).select().single();
     t.remove();
