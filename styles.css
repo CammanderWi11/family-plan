@@ -1904,6 +1904,20 @@ select.doc-tracker-input {
   display: flex; flex-direction: column; gap: 8px;
   padding: 12px 0; margin-top: 8px;
 }
+.salud-upload-menu {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-top: 8px; padding: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.salud-upload-opt {
+  display: block; width: 100%; text-align: left;
+  padding: 10px 14px; border: none; border-radius: 8px;
+  background: transparent; color: var(--text); font-size: 14px;
+  font-family: var(--font-sans); cursor: pointer;
+  transition: background 0.15s;
+}
+.salud-upload-opt:hover { background: var(--surface-hover); }
 
 /* ---- Mission Control — Search, Watchlist, Upcoming ---- */
 

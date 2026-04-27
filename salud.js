@@ -250,11 +250,62 @@
       });
     });
 
-    // Attach document buttons — use library picker
+    // Attach document buttons — direct upload menu
     document.querySelectorAll('.salud-attach-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
         var key = btn.dataset.saludKey;
-        if (window.__openPickerForKey) window.__openPickerForKey(key, btn.textContent.replace('📎 ', ''));
+        // Remove existing menu if any
+        var old = document.getElementById('salud-upload-menu');
+        if (old) old.remove();
+        var menu = document.createElement('div');
+        menu.id = 'salud-upload-menu';
+        menu.className = 'salud-upload-menu';
+        menu.innerHTML =
+          '<button class="salud-upload-opt" data-mode="photo">📷 Hacer foto</button>' +
+          '<button class="salud-upload-opt" data-mode="scan">📄 Escanear documento</button>' +
+          '<button class="salud-upload-opt" data-mode="file">📁 Elegir archivo</button>';
+        btn.parentNode.appendChild(menu);
+
+        menu.querySelectorAll('.salud-upload-opt').forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            var mode = opt.dataset.mode;
+            if (mode === 'photo') {
+              input.accept = 'image/*';
+              input.setAttribute('capture', 'environment');
+            } else if (mode === 'scan') {
+              input.accept = 'application/pdf,image/*';
+              input.setAttribute('capture', 'environment');
+            } else {
+              input.accept = 'application/pdf,image/*';
+            }
+            input.onchange = async function() {
+              if (!input.files || !input.files[0]) return;
+              menu.remove();
+              btn.textContent = 'Subiendo...';
+              btn.disabled = true;
+              var uploaded = await window.__uploadDocFile(input.files[0]);
+              if (uploaded) {
+                var sb = window.sb;
+                await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+                if (window.__renderSaludAttachments) window.__renderSaludAttachments();
+              }
+              btn.textContent = '📎 Adjuntar documento';
+              btn.disabled = false;
+            };
+            input.click();
+          });
+        });
+
+        // Dismiss menu on outside click
+        setTimeout(function() {
+          document.addEventListener('click', function dismiss() {
+            menu.remove();
+            document.removeEventListener('click', dismiss);
+          }, { once: true });
+        }, 0);
       });
     });
 
