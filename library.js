@@ -163,6 +163,8 @@
       const key = cb.dataset.group + '-' + cb.dataset.idx;
       renderAttachedPills(key, row);
     });
+    // Also refresh salud attachment pills
+    if (window.__renderSaludAttachments) window.__renderSaludAttachments();
   }
   function renderAttachedPills(key, row) {
     if (!row) {
@@ -327,6 +329,36 @@
         }
       });
     }
+  };
+
+  // Expose generic picker for salud and other modules
+  window.__openPickerForKey = function(key, label) {
+    currentPickerTramite = key;
+    const modal = document.getElementById('lib-picker-modal');
+    const nameEl = document.getElementById('lib-picker-tramite-name');
+    nameEl.textContent = label || key;
+    renderPickerList();
+    modal.classList.add('open');
+  };
+
+  // Render attachment pills for salud items
+  window.__renderSaludAttachments = function() {
+    document.querySelectorAll('.salud-attach-host').forEach(host => {
+      const key = host.dataset.saludKey;
+      if (!key) return;
+      host.innerHTML = '';
+      const keyAttachments = attachments.filter(a => a.tramite_key === key);
+      keyAttachments.forEach(a => {
+        const doc = library.find(d => d.id === a.document_id);
+        if (!doc) return;
+        const pill = document.createElement('a');
+        pill.className = 'lib-pill';
+        pill.href = '#';
+        pill.innerHTML = '<span>📎</span><span>' + escapeHtml(doc.filename) + '</span>';
+        pill.onclick = (e) => { e.preventDefault(); const w = window.open('about:blank', '_blank'); signedUrl(doc.storage_path).then(u => { if (u && w) w.location.href = u; else if (w) w.close(); }); };
+        host.appendChild(pill);
+      });
+    });
   };
 
   if (window.__authReady) init();

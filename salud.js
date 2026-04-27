@@ -101,6 +101,7 @@
           if (item.ageLabel) html += ' <span class="salud-age-badge">' + item.ageLabel + '</span>';
           html += '</div>';
           if (item.meta) html += '<div class="salud-item-meta">' + item.meta + '</div>';
+          html += '<span class="lib-attached-host salud-attach-host" data-salud-key="salud-' + item.id + '"></span>';
           html += '</div>';
           html += '<div class="salud-item-date">' + fmtDate(item.date) + '</div>';
           html += '<button class="salud-expand-btn" data-id="' + item.id + '" data-person="' + person.key + '">⋯</button>';
@@ -125,6 +126,7 @@
           html += '<div style="flex:1;"><label>Fecha límite</label>';
           html += '<input type="date" class="doc-tracker-input salud-field" value="' + (item.followUpDue || '') + '" data-field="followUpDue" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;"></div>';
           html += '</div></div>';
+          html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">📎 Adjuntar documento</button></div>';
           if (item.category === 'specialist') {
             html += '<div class="salud-detail-row"><button class="doc-tracker-btn doc-tracker-del salud-del" data-id="' + item.id + '" data-person="' + person.key + '">Eliminar</button></div>';
           }
@@ -247,6 +249,17 @@
         });
       });
     });
+
+    // Attach document buttons — use library picker
+    document.querySelectorAll('.salud-attach-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var key = btn.dataset.saludKey;
+        if (window.__openPickerForKey) window.__openPickerForKey(key, btn.textContent.replace('📎 ', ''));
+      });
+    });
+
+    // Render attached pills for salud items
+    if (window.__renderSaludAttachments) window.__renderSaludAttachments();
   }
 
   function init() { render(); }
