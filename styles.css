@@ -1682,11 +1682,21 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 }
 .timer-btn-last {
   border-left: 3px solid var(--red);
-  background: var(--red-soft);
 }
 .timer-btn-next {
   border-left: 3px solid var(--blue);
-  background: var(--blue-soft);
+}
+.reg-pecho-pct {
+  text-align: center; margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.reg-pecho-pct-val {
+  font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+  color: var(--amber); margin-right: 8px;
+}
+.reg-pecho-pct-lbl {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.5px;
 }
 .timer-btn { position: relative; }
 .timer-badge {

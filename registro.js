@@ -480,8 +480,15 @@
       .reduce(function(s, e) { return s + e.ml; }, 0);
     var bottleHtml = bottleMl > 0 ? bottleMl + 'ml' : '\u2014';
 
+    // Render Izq/Der (hoy) inside the pecho section
+    var pctEl = document.getElementById('reg-pecho-pct');
+    if (pctEl) {
+      pctEl.innerHTML = dayPct
+        ? '<span class="reg-pecho-pct-val">' + dayPct.left + '% / ' + dayPct.right + '%</span><span class="reg-pecho-pct-lbl">Izq / Der (hoy)</span>'
+        : '';
+    }
+
     el.innerHTML =
-      '<div class="reg-stat"><span class="reg-stat-val">' + dayPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (hoy)</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + allPctHtml + '</span><span class="reg-stat-lbl">Izq / Der (total)</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + tomasHtml + '</span><span class="reg-stat-lbl">Tomas</span></div>' +
       '<div class="reg-stat"><span class="reg-stat-val">' + avgIntervalHtml + '</span><span class="reg-stat-lbl">Media entre tomas</span></div>' +
@@ -626,6 +633,7 @@
     html += '<button class="timer-btn" id="reg-btn-breast_left"></button>';
     html += '<button class="timer-btn" id="reg-btn-breast_right"></button>';
     html += '</div>';
+    html += '<div class="reg-pecho-pct" id="reg-pecho-pct"></div>';
     html += '</div>';
 
     // 2. Sacaleche
