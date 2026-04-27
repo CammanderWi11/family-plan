@@ -267,8 +267,10 @@
             if (!window.__uploadDocFile) throw new Error('Upload not ready');
             var uploaded = await window.__uploadDocFile(input.files[0]);
             if (uploaded) {
-              var sb = window.sb;
-              await sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+              var _sb = window.sb;
+              await _sb.from('tramite_attachments').insert({ tramite_key: key, document_id: uploaded.id });
+              // Refresh attachments list then re-render
+              if (window.__refreshAttachments) await window.__refreshAttachments();
               if (window.__renderSaludAttachments) window.__renderSaludAttachments();
             }
           } catch(err) {

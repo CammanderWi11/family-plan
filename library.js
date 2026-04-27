@@ -31,14 +31,18 @@
   }
 
   async function fetchLibrary() {
-    const { data, error } = await sb.from('documents').select('*').order('uploaded_at', { ascending: false });
+    var _sb = sb || window.sb;
+    if (!_sb) return;
+    const { data, error } = await _sb.from('documents').select('*').order('uploaded_at', { ascending: false });
     if (error) { toast('⚠ No se pudo leer la biblioteca: ' + error.message, 'error'); return; }
     library = data || [];
     renderLibrary();
     renderAttachedPillsAll();
   }
   async function fetchAttachments() {
-    const { data, error } = await sb.from('tramite_attachments').select('*');
+    var _sb = sb || window.sb;
+    if (!_sb) return;
+    const { data, error } = await _sb.from('tramite_attachments').select('*');
     if (error) { toast('⚠ No se pudieron leer los adjuntos: ' + error.message, 'error'); return; }
     attachments = data || [];
     renderAttachedPillsAll();
@@ -306,7 +310,8 @@
     subscribeLibRealtime();
   }
 
-  // Expose for doc-tracker.js
+  // Expose for salud.js / doc-tracker.js
+  window.__refreshAttachments = fetchAttachments;
   window.__uploadDocFile = async function(file) {
     return await uploadToLibrary(file, 'tracked_doc');
   };
