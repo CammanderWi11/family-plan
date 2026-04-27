@@ -1752,6 +1752,14 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 }
 
 /* Reminders */
+.reg-remind-header {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.reg-remind-header .reg-sec-title { margin-bottom: 0; }
+.reg-remind-edit-btn {
+  background: none; border: none; font-size: 14px; cursor: pointer;
+  color: var(--text-muted); padding: 4px 8px;
+}
 .reg-remind-group {
   font-family: var(--font-mono); font-size: 10px; font-weight: 700;
   color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase;
