@@ -173,12 +173,14 @@
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
 
-  // Also populate on config sync (realtime updates)
+  // Also populate on config sync (realtime updates) — but only when settings tab is not focused
   window.addEventListener('auth-ready', () => {
-    // Re-populate if config changes from realtime
-    const origSync = window.__calendarConfig;
+    var lastSync = window.__calendarConfig;
     setInterval(() => {
-      if (window.__calendarConfig !== origSync) {
+      if (window.__calendarConfig !== lastSync) {
+        lastSync = window.__calendarConfig;
+        // Don't overwrite form while user is editing (settings tab active and an input is focused)
+        if (document.body.dataset.tab === 'ajustes' && document.activeElement && document.activeElement.tagName === 'INPUT') return;
         populateForm(getConfig());
       }
     }, 5000);

@@ -169,15 +169,11 @@
     renderLeaveBlocks(cfg);
     renderVacationBlocks(cfg);
     var todayCell = document.querySelector('.cal-day.today');
-    if (todayCell) todayCell.scrollIntoView({ block: 'center', behavior: 'instant' });
+    if (todayCell && document.body.dataset.tab === 'calendario') todayCell.scrollIntoView({ block: 'center', behavior: 'instant' });
   }
 
   function fmtBlockDate(d) {
-    var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    var day = d.getDate();
-    var mon = months[d.getMonth()];
-    var yr = d.getFullYear();
-    return day + ' ' + mon + (yr !== 2026 ? " '" + String(yr).slice(2) : '');
+    return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(2);
   }
 
   function renderLeaveBlocks(cfg) {
