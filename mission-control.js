@@ -310,12 +310,12 @@
     input.addEventListener('input', function() {
       clearTimeout(debounceTimer);
       var q = input.value.trim().toLowerCase();
-      clear.style.display = q ? '' : 'none';
+      if (clear) clear.style.display = q ? '' : 'none';
       if (!q) { dropdown.style.display = 'none'; return; }
       debounceTimer = setTimeout(function() { doSearch(q, dropdown); }, 200);
     });
 
-    clear.addEventListener('click', function() {
+    if (clear) clear.addEventListener('click', function() {
       input.value = '';
       clear.style.display = 'none';
       dropdown.style.display = 'none';

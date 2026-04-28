@@ -1,11 +1,5 @@
 // ========== SETTINGS UI ==========
 (function() {
-  function fmtDate(d) {
-    if (!d) return '';
-    if (typeof d === 'string') return d;
-    return d.toISOString().split('T')[0];
-  }
-
   function getConfig() {
     return window.getCalendarConfig ? window.getCalendarConfig() : window.__defaultCalendarConfig;
   }
@@ -55,10 +49,10 @@
       shiftRef: document.getElementById('cfg-shift-ref').value,
       shiftCycle: parseInt(document.getElementById('cfg-cycle').value) || 9,
       shiftDaysOff: parseInt(document.getElementById('cfg-days-off').value) || 3,
-      birthDate: '2026-04-17',
-      lastSchoolDay: '2026-06-19',
-      mandatory: { start: '2026-04-17', end: '2026-05-28' },
-      school: { start: '2026-06-22', end: '2026-07-31' },
+      birthDate: getConfig().birthDate,
+      lastSchoolDay: getConfig().lastSchoolDay,
+      mandatory: getConfig().mandatory,
+      school: getConfig().school,
       flexibleBlocks: readBlockRows(document.getElementById('cfg-flexible-list')),
       annualLeave: readBlockRows(document.getElementById('cfg-annual-list')),
       trips: readBlockRows(document.getElementById('cfg-trips-list')),

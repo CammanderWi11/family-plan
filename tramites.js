@@ -1110,6 +1110,7 @@
       if (remote) {
         state = remote;
         syncBirthActualToWindow();
+        if (typeof syncCalendarConfig === 'function') syncCalendarConfig();
         saveLocal();
       } else if (stateRowId === null) {
         toast('⚠ Falta la fila inicial en app_state', 'error');

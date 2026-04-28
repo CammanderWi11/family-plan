@@ -5,10 +5,6 @@
     passport: '🛂', dni: '🪪', health_card: '🏥',
     insurance: '📋', school: '🎒', other: '📄'
   };
-  var TYPE_LABELS = {
-    passport: 'Pasaporte', dni: 'DNI', health_card: 'Tarjeta sanitaria',
-    insurance: 'Seguro', school: 'Escolar/Admin', other: 'Otro'
-  };
   var PERSON_LABELS = { dad: 'Dad', mum: 'Mum', leo: 'Leo', luca: 'Luca' };
   var PERSON_ORDER = ['dad', 'mum', 'leo', 'luca'];
 

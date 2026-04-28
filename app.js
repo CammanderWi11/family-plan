@@ -230,9 +230,6 @@ window.getTabForKey = function(key) {
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
 
-  // Fallback: load from localStorage immediately
-  load();
-
   el.addEventListener('input', function() {
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(save, 800);
@@ -287,7 +284,7 @@ window.getTabForKey = function(key) {
           '<span class="resumen-banner-icon">\ud83c\udf7c</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">\u00daltima toma</span>' +
-            '<span class="resumen-banner-text">' + (window.fmtLucaElapsed ? window.fmtLucaElapsed(0) : '0:00') + '</span>' +
+            '<span class="resumen-banner-text">' + (window.fmtLucaElapsed ? window.fmtLucaElapsed(activeFeed.elapsed) : '0:00') + '</span>' +
             '<span class="resumen-banner-text"><span class="resumen-badge-live">Live: ' + liveSide + '</span></span>' +
           '</div>' +
         '</div>';
