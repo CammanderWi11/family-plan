@@ -173,16 +173,13 @@
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
 
-  // Also populate on config sync (realtime updates) — but only when settings tab is not focused
-  window.addEventListener('auth-ready', () => {
-    var lastSync = window.__calendarConfig;
-    setInterval(() => {
-      if (window.__calendarConfig !== lastSync) {
-        lastSync = window.__calendarConfig;
-        // Don't overwrite form while user is editing (settings tab active and an input is focused)
-        if (document.body.dataset.tab === 'ajustes' && document.activeElement && document.activeElement.tagName === 'INPUT') return;
+  // Re-populate form when user navigates to the settings tab (picks up any realtime changes)
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      if (m.attributeName === 'data-tab' && document.body.dataset.tab === 'ajustes') {
         populateForm(getConfig());
       }
-    }, 5000);
-  }, { once: true });
+    });
+  });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['data-tab'] });
 })();
