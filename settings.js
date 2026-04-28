@@ -173,13 +173,6 @@
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
 
-  // Re-populate form when user navigates to the settings tab (picks up any realtime changes)
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(m) {
-      if (m.attributeName === 'data-tab' && document.body.dataset.tab === 'ajustes') {
-        populateForm(getConfig());
-      }
-    });
-  });
-  observer.observe(document.body, { attributes: true, attributeFilter: ['data-tab'] });
+  // No auto-repopulation — form is populated once in init().
+  // Remote config changes are picked up on next page load.
 })();
