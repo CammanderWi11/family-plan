@@ -511,7 +511,7 @@
     }
     badge.className = 'deadline-badge ' + fmt.cls;
     badge.textContent = fmt.text;
-    badge.title = 'Deadline: ' + window.fmtLongDate(dl.date) + ' · ' + dl.label;
+    badge.title = 'Plazo: ' + window.fmtLongDate(dl.date) + ' · ' + dl.label;
   }
 
   function navigateToItem(box) {

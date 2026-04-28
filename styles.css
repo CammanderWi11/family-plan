@@ -1923,7 +1923,10 @@ select.rutina-edit-input { -webkit-appearance: none; appearance: none; }
 .doc-tracker-input {
   background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
   padding: 8px 12px; color: var(--text); font-size: 13px; font-family: var(--font-sans);
-  outline: none; -webkit-appearance: none; appearance: none;
+  outline: none;
+}
+input[type="date"].doc-tracker-input {
+  -webkit-appearance: auto; appearance: auto;
 }
 select.doc-tracker-input {
   -webkit-appearance: menulist; appearance: menulist;
