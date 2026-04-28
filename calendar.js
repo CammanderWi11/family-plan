@@ -268,9 +268,7 @@
 
   // ========== LEAVE COUNTDOWN ==========
   function fmtShort(d) {
-    var s = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
-    if (d.getFullYear() !== new Date().getFullYear()) s += '/' + d.getFullYear();
-    return s;
+    return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(2);
   }
 
   window.updateLeaveCountdown = function(cfg) {

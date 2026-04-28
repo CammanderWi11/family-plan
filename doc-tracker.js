@@ -30,7 +30,7 @@
   function fmtDate(dateStr) {
     if (!dateStr) return '—';
     var parts = dateStr.split('-');
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+    return parts[2] + '/' + parts[1] + '/' + parts[0].slice(2);
   }
 
   function getExpandedState() {

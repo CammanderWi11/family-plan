@@ -59,7 +59,7 @@
   function fmtDate(d) {
     if (!d) return 'Sin cita';
     var p = d.split('-');
-    return p[2] + '/' + p[1] + '/' + p[0];
+    return p[2] + '/' + p[1] + '/' + p[0].slice(2);
   }
 
   function getExpandedState() {

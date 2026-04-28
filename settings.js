@@ -125,7 +125,7 @@
     const fmtShort = function(s) {
       if (!s) return '?';
       const d = typeof s === 'string' ? parseD(s) : s;
-      return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+      return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(2);
     };
 
     // Count flexible weeks

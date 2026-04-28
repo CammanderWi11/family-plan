@@ -174,7 +174,7 @@ window.formatDeadlineBadge = function(daysUntil) {
 };
 
 window.fmtLongDate = function(d) {
-  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(2);
 };
 
 // Dependency helpers — used by dashboard action queue
