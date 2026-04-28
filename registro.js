@@ -607,7 +607,10 @@
         span.replaceWith(input);
         input.focus();
         input.select();
+        var saved = false;
         function save() {
+          if (saved) return;
+          saved = true;
           var newMins = parseInt(input.value, 10);
           if (isNaN(newMins) || newMins < 0) newMins = curMins;
           editDuration(entryId, newMins * 60);
