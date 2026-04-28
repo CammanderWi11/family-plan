@@ -144,8 +144,8 @@ window.GROUPS = {
 };
 
 window.OWNER_CHIPS = {
-  dad:    { label: 'Dad', emoji: '👨', cls: 'chip-dad' },
-  mum:    { label: 'Mum', emoji: '👩', cls: 'chip-mum' },
+  dad:    { label: 'Papá', emoji: '👨', cls: 'chip-dad' },
+  mum:    { label: 'Mamá', emoji: '👩', cls: 'chip-mum' },
   alfred: { label: 'Alfred', emoji: '🎩', cls: 'chip-alfred' }
 };
 

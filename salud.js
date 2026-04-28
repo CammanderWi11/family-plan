@@ -4,8 +4,8 @@
   var PERSONS = [
     { key: 'luca', label: 'Luca', emoji: '👶', born: '2026-04-17' },
     { key: 'leo',  label: 'Leo',  emoji: '🧒', born: '2023-10-26' },
-    { key: 'mum',  label: 'Mum',  emoji: '👩', born: '1984-02-09' },
-    { key: 'daddey', label: 'Daddey', emoji: '👨', born: '1982-05-24' }
+    { key: 'mum',  label: 'Mamá',  emoji: '👩', born: '1984-02-09' },
+    { key: 'daddey', label: 'Papá', emoji: '👨', born: '1982-05-24' }
   ];
 
   var CAT_LABELS = { revision: 'Revisiones', vaccine: 'Vacunas', specialist: 'Especialistas' };
@@ -148,8 +148,8 @@
           html += '<div style="flex:1;"><label>Responsable</label>';
           html += '<select class="doc-tracker-input salud-field" data-field="followUpOwner" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;">';
           html += '<option value=""' + (!item.followUpOwner ? ' selected' : '') + '>Sin asignar</option>';
-          html += '<option value="dad"' + (item.followUpOwner === 'dad' ? ' selected' : '') + '>Dad</option>';
-          html += '<option value="mum"' + (item.followUpOwner === 'mum' ? ' selected' : '') + '>Mum</option>';
+          html += '<option value="dad"' + (item.followUpOwner === 'dad' ? ' selected' : '') + '>Papá</option>';
+          html += '<option value="mum"' + (item.followUpOwner === 'mum' ? ' selected' : '') + '>Mamá</option>';
           html += '<option value="alfred"' + (item.followUpOwner === 'alfred' ? ' selected' : '') + '>Alfred</option>';
           html += '</select></div>';
           html += '<div style="flex:1;"><label>Fecha límite</label>';

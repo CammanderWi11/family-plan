@@ -15,7 +15,7 @@ if ('serviceWorker' in navigator) {
 
   // Page titles for header updates
   var pageTitles = {
-    resumen: 'Mission Control',
+    resumen: 'Panel',
     calendario: 'Calendario',
     tramites: 'Trámites',
     salud: 'Citas Médicas',
@@ -136,10 +136,11 @@ if ('serviceWorker' in navigator) {
   try { saved = localStorage.getItem('fp-theme'); } catch(e) {}
   applyTheme(saved || systemTheme());
 
-  // Always follow system theme changes (clears any manual override)
+  // Follow system theme changes only if no manual preference is set
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
-    try { localStorage.removeItem('fp-theme'); } catch(e) {}
-    applyTheme(systemTheme());
+    var saved = null;
+    try { saved = localStorage.getItem('fp-theme'); } catch(e) {}
+    if (!saved) applyTheme(systemTheme());
   });
 
   // Bind clicks

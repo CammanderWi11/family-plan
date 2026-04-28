@@ -5,7 +5,7 @@
     passport: '🛂', dni: '🪪', health_card: '🏥',
     insurance: '📋', school: '🎒', other: '📄'
   };
-  var PERSON_LABELS = { dad: 'Dad', mum: 'Mum', leo: 'Leo', luca: 'Luca' };
+  var PERSON_LABELS = { dad: 'Papá', mum: 'Mamá', leo: 'Leo', luca: 'Luca' };
   var PERSON_ORDER = ['dad', 'mum', 'leo', 'luca'];
 
   function getDocs() {

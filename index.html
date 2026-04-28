@@ -94,7 +94,7 @@ window.sb.auth.getSession().then(({ data }) => {
   <div class="sidebar-nav">
     <a href="#resumen" class="nav-item active" data-tab="resumen">
       <span class="nav-icon">&#9632;</span>
-      <span class="nav-label">Mission Control</span>
+      <span class="nav-label">Panel</span>
     </a>
     <a href="#registro" class="nav-item" data-tab="registro">
       <span class="nav-icon">&#9679;</span>
@@ -169,7 +169,7 @@ window.sb.auth.getSession().then(({ data }) => {
 
   <!-- ========== HEADER ========== -->
   <div class="header">
-    <h1>Mission Control <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
+    <h1>Panel <span class="page-sys" id="page-sys">SYS.ACTIVE</span></h1>
     <div class="sub" id="header-clock"></div>
     <button class="mobile-settings-btn" id="mobile-settings-btn" title="Ajustes">&#9881;</button>
   </div>
@@ -206,6 +206,16 @@ window.sb.auth.getSession().then(({ data }) => {
       </div>
     </div>
     <div id="mc-upcoming"></div>
+  </section>
+
+  <!-- ========== REGISTRO DE LUCA ========== -->
+  <section id="registro" class="tab-section">
+    <div class="section-title">Registro de Luca</div>
+  </section>
+
+  <!-- ========== RUTINA DE LEO ========== -->
+  <section id="rutina" class="tab-section">
+    <div class="section-title">Rutina de Leo</div>
   </section>
 
   <!-- ========== CALENDARIO ========== -->
@@ -253,18 +263,28 @@ window.sb.auth.getSession().then(({ data }) => {
 
   </section>
 
+  <!-- ========== SALUD ========== -->
+  <section id="salud" class="tab-section">
+    <div class="section-title">Salud familiar</div>
+    <div class="glass data-card" id="salud-notes-card">
+      <h3 class="reg-sec-title">&#9998; Notas Medicas</h3>
+      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
+    </div>
+    <div id="salud-host"></div>
+  </section>
+
   <!-- ========== TRAMITES ========== -->
   <section id="tramites" class="tab-section">
     <div class="section-title">Trámites</div>
     <div class="tramites-search">
       <select id="tramites-owner-filter" class="reg-bottle-input" style="flex:0 0 auto;min-width:80px;font-size:12px;">
         <option value="all">Todos</option>
-        <option value="dad">👨 Dad</option>
-        <option value="mum">👩 Mum</option>
+        <option value="dad">👨 Papá</option>
+        <option value="mum">👩 Mamá</option>
         <option value="alfred">🎩 Alfred</option>
       </select>
       <input type="search" id="tramites-search-input" placeholder="Buscar trámite..." autocomplete="off">
-      <button class="tramites-search-clear" id="tramites-search-clear" title="Clear" style="display:none;">&times;</button>
+      <button class="tramites-search-clear" id="tramites-search-clear" title="Borrar" style="display:none;">&times;</button>
     </div>
 
     <div id="js-groups-host-salud"></div>
@@ -351,26 +371,6 @@ window.sb.auth.getSession().then(({ data }) => {
     <div id="doc-tracker-host"></div>
   </section>
 
-  <!-- ========== RUTINA DE LEO ========== -->
-  <section id="rutina" class="tab-section">
-    <div class="section-title">Rutina de Leo</div>
-  </section>
-
-  <!-- ========== REGISTRO DE LUCA ========== -->
-  <section id="registro" class="tab-section">
-    <div class="section-title">Registro de Luca</div>
-  </section>
-
-  <!-- ========== SALUD ========== -->
-  <section id="salud" class="tab-section">
-    <div class="section-title">Salud familiar</div>
-    <div class="glass data-card" id="salud-notes-card">
-      <h3 class="reg-sec-title">&#9998; Notas Medicas</h3>
-      <textarea id="salud-notes" class="salud-notes-input" placeholder="Preguntas, observaciones, s&iacute;ntomas..."></textarea>
-    </div>
-    <div id="salud-host"></div>
-  </section>
-
   <!-- ========== SETTINGS (AJUSTES) ========== -->
   <section id="ajustes" class="tab-section">
     <div class="section-title">Ajustes</div>
@@ -428,15 +428,15 @@ window.sb.auth.getSession().then(({ data }) => {
     <div class="glass data-card">
       <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Pega la URL p&uacute;blica de un calendario compartido de iCloud. En iCloud.com &rarr; Calendario &rarr; Compartir &rarr; Calendario p&uacute;blico &rarr; copiar enlace.</p>
       <div class="settings-row">
-        <label><span class="ics-dot ics-dot-0" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Mum</label>
+        <label><span class="ics-dot ics-dot-0" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Mamá</label>
         <input type="url" id="cfg-ics-1" placeholder="https://p##-caldav.icloud.com/...">
       </div>
       <div class="settings-row">
-        <label><span class="ics-dot ics-dot-1" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Daddey</label>
+        <label><span class="ics-dot ics-dot-1" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Papá</label>
         <input type="url" id="cfg-ics-2" placeholder="https://p##-caldav.icloud.com/...">
       </div>
       <div class="settings-row">
-        <label><span class="ics-dot ics-dot-2" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Family Matters</label>
+        <label><span class="ics-dot ics-dot-2" style="display:inline-block;vertical-align:middle;margin-right:4px;"></span> Familia</label>
         <input type="url" id="cfg-ics-3" placeholder="https://p##-caldav.icloud.com/...">
       </div>
       <button class="btn btn-secondary" id="cfg-ics-save" style="margin-top: 8px;">Cargar calendarios</button>
