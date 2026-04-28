@@ -1,37 +1,5 @@
 // ========== SETTINGS UI ==========
 (function() {
-  // === DEBUG: visible diagnostic panel ===
-  var _dbgLog = [];
-  function dbg(msg) {
-    _dbgLog.push(new Date().toLocaleTimeString() + ' ' + msg);
-    if (_dbgLog.length > 20) _dbgLog.shift();
-    var el = document.getElementById('settings-debug');
-    if (el) el.textContent = _dbgLog.join('\n');
-    console.log('[settings-dbg]', msg);
-  }
-  // Create debug panel in settings section
-  setTimeout(function() {
-    var sec = document.getElementById('ajustes');
-    if (!sec) return;
-    var panel = document.createElement('pre');
-    panel.id = 'settings-debug';
-    panel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.9);color:#0f0;font-size:11px;padding:8px;max-height:30vh;overflow:auto;pointer-events:none;';
-    document.body.appendChild(panel);
-    dbg('settings.js v72 loaded');
-
-    // Watch for ANY mutation on cfg-flexible-list
-    var flexEl = document.getElementById('cfg-flexible-list');
-    if (flexEl) {
-      new MutationObserver(function(muts) {
-        muts.forEach(function(m) {
-          dbg('FLEX-LIST MUTATED: type=' + m.type + ' added=' + m.addedNodes.length + ' removed=' + m.removedNodes.length);
-          dbg('  stack: ' + new Error().stack.split('\n').slice(1,4).join(' | '));
-        });
-      }).observe(flexEl, { childList: true, subtree: true, characterData: true });
-    }
-  }, 500);
-  // === END DEBUG ===
-
   function getConfig() {
     return window.getCalendarConfig ? window.getCalendarConfig() : window.__defaultCalendarConfig;
   }
@@ -46,13 +14,6 @@
       '<input type="date" value="' + (data.end || '') + '">' +
       '<button type="button" class="btn-remove" title="Eliminar">×</button>';
     row.querySelector('.btn-remove').onclick = () => row.remove();
-    // DEBUG: track input events on text field
-    var textInput = row.querySelector('input[type="text"]');
-    if (textInput) {
-      textInput.addEventListener('input', function() { dbg('TEXT INPUT: val="' + this.value + '"'); });
-      textInput.addEventListener('blur', function() { dbg('TEXT BLUR: val="' + this.value + '"'); });
-      textInput.addEventListener('focus', function() { dbg('TEXT FOCUS: val="' + this.value + '"'); });
-    }
     container.appendChild(row);
   }
 
@@ -64,7 +25,6 @@
   }
 
   function populateForm(cfg) {
-    dbg('populateForm CALLED — stack: ' + new Error().stack.split('\n').slice(1,3).join(' | '));
     document.getElementById('cfg-shift-ref').value = cfg.shiftRef || '';
     document.getElementById('cfg-cycle').value = cfg.shiftCycle || 9;
     document.getElementById('cfg-days-off').value = cfg.shiftDaysOff || 3;
@@ -100,7 +60,6 @@
   }
 
   function init() {
-    dbg('init() CALLED');
     populateForm(getConfig());
 
     // Add block buttons
@@ -211,11 +170,8 @@
   }
 
   // Initialize when auth is ready
-  if (window.__authReady) { dbg('__authReady=true, calling init sync'); init(); }
-  else {
-    dbg('__authReady=false, waiting for auth-ready event');
-    window.addEventListener('auth-ready', function() { dbg('auth-ready EVENT fired'); init(); }, { once: true });
-  }
+  if (window.__authReady) init();
+  else window.addEventListener('auth-ready', init, { once: true });
 
   // No auto-repopulation — form is populated once in init().
   // Remote config changes are picked up on next page load.
