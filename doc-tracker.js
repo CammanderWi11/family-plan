@@ -33,6 +33,22 @@
     return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
 
+  function getExpandedState() {
+    var state = {};
+    document.querySelectorAll('[id^="doc-detail-"]').forEach(function(el) {
+      var key = el.id.replace('doc-detail-', '');
+      state[key] = el.style.display !== 'none';
+    });
+    return state;
+  }
+
+  function restoreExpandedState(state) {
+    Object.keys(state).forEach(function(key) {
+      var detail = document.getElementById('doc-detail-' + key);
+      if (detail && state[key]) detail.style.display = '';
+    });
+  }
+
   function render() {
     var host = document.getElementById('doc-tracker-host');
     if (!host) return;
@@ -153,7 +169,7 @@
           if (docs[i].id === id) { docs[i][field] = input.value; break; }
         }
         saveDocs(docs);
-        render();
+        var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
       });
     });
 
@@ -164,7 +180,7 @@
         btn.addEventListener('click', function() {
           if (!confirm('¿Eliminar este documento?')) return;
           saveDocs(getDocs().filter(function(d) { return d.id !== id; }));
-          render();
+          var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
         });
       }
       if (action === 'view') {
@@ -191,7 +207,7 @@
               }
               saveDocs(docs);
             }
-            render();
+            var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
           };
           fileInput.click();
         });
@@ -224,7 +240,7 @@
         });
         saveDocs(docs);
         sel.selectedIndex = 0;
-        render();
+        var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
         // Auto-expand the new entry's detail panel so user can upload
         setTimeout(function() {
           var detail = document.getElementById('doc-detail-' + newId);

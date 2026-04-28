@@ -62,6 +62,34 @@
     return p[2] + '/' + p[1] + '/' + p[0];
   }
 
+  function getExpandedState() {
+    var state = { persons: {}, details: {} };
+    document.querySelectorAll('[id^="salud-body-"]').forEach(function(el) {
+      var key = el.id.replace('salud-body-', '');
+      state.persons[key] = el.style.display !== 'none';
+    });
+    document.querySelectorAll('[id^="salud-detail-"]').forEach(function(el) {
+      var key = el.id.replace('salud-detail-', '');
+      state.details[key] = el.style.display !== 'none';
+    });
+    return state;
+  }
+
+  function restoreExpandedState(state) {
+    Object.keys(state.persons).forEach(function(key) {
+      var body = document.getElementById('salud-body-' + key);
+      var toggle = document.getElementById('salud-toggle-' + key);
+      if (body && state.persons[key]) {
+        body.style.display = '';
+        if (toggle) toggle.textContent = '▾';
+      }
+    });
+    Object.keys(state.details).forEach(function(key) {
+      var detail = document.getElementById('salud-detail-' + key);
+      if (detail && state.details[key]) detail.style.display = '';
+    });
+  }
+
   function render() {
     var host = document.getElementById('salud-host');
     if (!host) return;
@@ -175,7 +203,7 @@
       cb.addEventListener('change', function() {
         var data = getData();
         var item = findItem(data, cb.dataset.person, cb.dataset.id);
-        if (item) { item.done = cb.checked; saveData(data); render(); }
+        if (item) { item.done = cb.checked; saveData(data); var expanded = getExpandedState(); render(); restoreExpandedState(expanded); }
       });
     });
 
@@ -192,7 +220,7 @@
         var data = getData();
         var item = findItem(data, input.dataset.person, input.dataset.id);
         if (item) { item[input.dataset.field] = input.value; saveData(data); }
-        if (input.dataset.field === 'date') render();
+        if (input.dataset.field === 'date') { var expanded = getExpandedState(); render(); restoreExpandedState(expanded); }
       });
     });
 
@@ -202,7 +230,7 @@
         var data = getData();
         data[btn.dataset.person] = (data[btn.dataset.person] || []).filter(function(it) { return it.id !== btn.dataset.id; });
         saveData(data);
-        render();
+        var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
       });
     });
 
@@ -242,7 +270,7 @@
             followUpDue: null
           });
           saveData(data);
-          render();
+          var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
         });
 
         document.getElementById('saf-cancel-' + personKey).addEventListener('click', function() {
