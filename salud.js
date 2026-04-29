@@ -281,7 +281,8 @@
             prepNotes: '',
             followUpNotes: '',
             followUpOwner: null,
-            followUpDue: null
+            followUpDue: null,
+            followUpDone: false
           });
           saveData(data);
           var expanded = getExpandedState(); render(); restoreExpandedState(expanded);
