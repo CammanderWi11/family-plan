@@ -106,11 +106,94 @@
     });
   }
 
+  function collectOpenFollowUps(data) {
+    var PERSON_MAP = { luca: '👶', leo: '🧒', mum: '👩', daddey: '👨' };
+    var OWNER_LABEL = { papi: 'Papi', mami: 'Mami', alfred: 'Alfred' };
+    var open = [];
+    var done = [];
+    ['luca','leo','mum','daddey'].forEach(function(personKey) {
+      (data[personKey] || []).forEach(function(item) {
+        if (!item.followUpNotes && !item.followUpOwner && !item.followUpDue) return;
+        var entry = {
+          id: item.id,
+          person: personKey,
+          emoji: PERSON_MAP[personKey] || '',
+          name: item.name,
+          ownerLabel: item.followUpOwner ? (OWNER_LABEL[item.followUpOwner] || item.followUpOwner) : null,
+          due: item.followUpDue || null,
+          done: !!item.followUpDone
+        };
+        if (entry.done) done.push(entry);
+        else open.push(entry);
+      });
+    });
+    // Sort open: overdue first, then by due date, then undated
+    var now = new Date(); now.setHours(0,0,0,0);
+    open.sort(function(a, b) {
+      var aTs = a.due ? new Date(a.due).getTime() : Infinity;
+      var bTs = b.due ? new Date(b.due).getTime() : Infinity;
+      return aTs - bTs;
+    });
+    return { open: open, done: done };
+  }
+
   function render() {
     var host = document.getElementById('salud-host');
     if (!host) return;
     var data = getData();
     var html = '';
+
+    var fuData = collectOpenFollowUps(data);
+    if (fuData.open.length || fuData.done.length) {
+      var nowTs = new Date(); nowTs.setHours(0,0,0,0); nowTs = nowTs.getTime();
+      html += '<div class="glass data-card salud-followup-watchlist" id="salud-fu-watchlist">';
+      html += '<h2 class="salud-person-title" data-section="fu-watchlist">';
+      html += '<span class="salud-person-toggle" id="salud-toggle-fu-watchlist">▸</span> ';
+      html += '📋 Seguimientos pendientes';
+      if (fuData.open.length) html += ' <span class="salud-fu-count">' + fuData.open.length + '</span>';
+      html += '</h2>';
+      html += '<div class="salud-person-body" id="salud-body-fu-watchlist" style="display:none;">';
+
+      if (fuData.open.length) {
+        fuData.open.forEach(function(entry) {
+          var dueTs = entry.due ? new Date(entry.due).setHours(0,0,0,0) : null;
+          var isOverdue = dueTs !== null && dueTs < nowTs;
+          var dueTxt = entry.due ? (function() {
+            var p = entry.due.split('-'); return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+          })() : 'sin fecha';
+          html += '<div class="salud-fu-row" data-fu-id="' + entry.id + '" data-fu-person="' + entry.person + '">';
+          html += '<label class="salud-fu-check"><input type="checkbox" class="salud-followup-done-cb" data-id="' + entry.id + '" data-person="' + entry.person + '"></label>';
+          html += '<span class="salud-fu-emoji">' + entry.emoji + '</span>';
+          html += '<span class="salud-fu-name">' + entry.name + '</span>';
+          if (entry.ownerLabel) html += '<span class="salud-fu-owner">' + entry.ownerLabel + '</span>';
+          html += '<span class="salud-fu-due' + (isOverdue ? ' salud-fu-overdue' : '') + '">' + dueTxt + '</span>';
+          html += '</div>';
+        });
+      } else {
+        html += '<div class="salud-empty">Sin seguimientos pendientes</div>';
+      }
+
+      if (fuData.done.length) {
+        html += '<div class="salud-fu-done-toggle" id="salud-fu-done-toggle">▸ Completados (' + fuData.done.length + ')</div>';
+        html += '<div id="salud-fu-done-list" style="display:none;">';
+        fuData.done.forEach(function(entry) {
+          var dueTxt = entry.due ? (function() {
+            var p = entry.due.split('-'); return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+          })() : 'sin fecha';
+          html += '<div class="salud-fu-row salud-fu-row-done" data-fu-id="' + entry.id + '" data-fu-person="' + entry.person + '">';
+          html += '<label class="salud-fu-check"><input type="checkbox" class="salud-followup-done-cb" data-id="' + entry.id + '" data-person="' + entry.person + '" checked></label>';
+          html += '<span class="salud-fu-emoji">' + entry.emoji + '</span>';
+          html += '<span class="salud-fu-name salud-fu-strikethrough">' + entry.name + '</span>';
+          if (entry.ownerLabel) html += '<span class="salud-fu-owner">' + entry.ownerLabel + '</span>';
+          html += '<span class="salud-fu-due">' + dueTxt + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+      html += '</div>';
+    }
 
     PERSONS.forEach(function(person) {
       var items = data[person.key] || [];
@@ -346,6 +429,31 @@
         input.click();
       });
     });
+
+    var fuTitle = document.querySelector('.salud-followup-watchlist .salud-person-title');
+    if (fuTitle) {
+      fuTitle.addEventListener('click', function() {
+        var body = document.getElementById('salud-body-fu-watchlist');
+        var toggle = document.getElementById('salud-toggle-fu-watchlist');
+        if (body) {
+          var hidden = body.style.display === 'none';
+          body.style.display = hidden ? '' : 'none';
+          if (toggle) toggle.textContent = hidden ? '▾' : '▸';
+        }
+      });
+    }
+
+    var fuDoneToggle = document.getElementById('salud-fu-done-toggle');
+    if (fuDoneToggle) {
+      fuDoneToggle.addEventListener('click', function() {
+        var list = document.getElementById('salud-fu-done-list');
+        if (list) {
+          var hidden = list.style.display === 'none';
+          list.style.display = hidden ? '' : 'none';
+          fuDoneToggle.textContent = (hidden ? '▾' : '▸') + ' Completados (' + document.querySelectorAll('#salud-fu-done-list .salud-fu-row').length + ')';
+        }
+      });
+    }
 
     // Render attached pills for salud items
     if (window.__renderSaludAttachments) window.__renderSaludAttachments();
