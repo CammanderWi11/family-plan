@@ -54,6 +54,7 @@
           date: item.date, done: item.done,
           prepNotes: item.prepNotes || '', followUpNotes: item.followUpNotes || '',
           followUpOwner: item.followUpOwner, followUpDue: item.followUpDue,
+          followUpDone: !!item.followUpDone,
           source: 'medical'
         });
       });
@@ -145,27 +146,28 @@
       }
     });
 
+    var openFollowUps = [];
     collectMedicalItems().forEach(function(m) {
       if (m.done) return;
-      if (m.followUpDue) {
-        var fuDiff = daysDiff(now, parseDate(m.followUpDue));
-        if (fuDiff < 0) {
-          alerts.push({ priority: 3, cls: 'wl-red', icon: '🩺', label: m.name + ' — seguimiento', sub: Math.abs(fuDiff) + 'd vencido', tab: 'salud', key: m.id });
-        } else if (fuDiff <= 7) {
-          alerts.push({ priority: 5, cls: 'wl-amber', icon: '🩺', label: m.name + ' — seguimiento', sub: 'en ' + fuDiff + 'd', tab: 'salud', key: m.id });
-        }
-      }
+      // Appointment alerts (unchanged)
       if (m.date) {
         var apptDiff = daysDiff(now, parseDate(m.date));
         if (apptDiff >= 0 && apptDiff <= 7) {
           alerts.push({ priority: 6, cls: 'wl-blue', icon: '🩺', label: m.name, sub: apptDiff === 0 ? 'Hoy' : 'en ' + apptDiff + 'd', tab: 'salud', key: m.id });
         }
       }
+      // Collect open follow-ups (has any follow-up content and not done)
+      if (!m.followUpDone && (m.followUpNotes || m.followUpOwner || m.followUpDue)) {
+        var dueTs = m.followUpDue ? parseDate(m.followUpDue).getTime() : Infinity;
+        openFollowUps.push({ id: m.id, name: m.name, owner: m.followUpOwner, due: m.followUpDue, dueTs: dueTs, tab: 'salud' });
+      }
     });
+    // Sort open follow-ups: overdue first, then soonest, then undated
+    openFollowUps.sort(function(a, b) { return a.dueTs - b.dueTs; });
 
     alerts.sort(function(a, b) { return a.priority - b.priority; });
 
-    if (!alerts.length) { host.style.display = 'none'; return; }
+    if (!alerts.length && !openFollowUps.length) { host.style.display = 'none'; return; }
 
     var html = '<div class="mc-watchlist-card">';
     html += '<div class="mc-watchlist-title">⚠ Atención</div>';
@@ -177,6 +179,25 @@
       html += '</div>';
     });
     html += '</div>';
+    if (openFollowUps.length) {
+      var nowTs = now.getTime();
+      var OWNER_LABEL = { papi: 'Papi', mami: 'Mami', alfred: 'Alfred' };
+      html += '<div class="mc-watchlist-card mc-fu-card">';
+      html += '<div class="mc-watchlist-title">🩺 Seguimientos médicos <span class="mc-fu-badge">' + openFollowUps.length + '</span></div>';
+      var preview = openFollowUps.slice(0, 3);
+      preview.forEach(function(fu) {
+        var isOverdue = fu.due && parseDate(fu.due).getTime() < nowTs;
+        var dueTxt = fu.due ? (function() {
+          var p = fu.due.split('-'); return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+        })() : 'sin fecha';
+        html += '<div class="mc-wl-item' + (isOverdue ? ' wl-red' : ' wl-amber') + '" data-tab="salud" data-key="' + fu.id + '">';
+        html += '<span class="mc-wl-label">' + fu.name + '</span>';
+        if (fu.owner && OWNER_LABEL[fu.owner]) html += '<span class="mc-wl-sub">' + OWNER_LABEL[fu.owner] + '</span>';
+        html += '<span class="mc-wl-sub' + (isOverdue ? ' mc-fu-overdue' : '') + '">' + dueTxt + '</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
     host.innerHTML = html;
     host.style.display = '';
 
