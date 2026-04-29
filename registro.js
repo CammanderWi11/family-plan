@@ -106,11 +106,31 @@
     window.sb.from(SHARED_TABLE).delete().eq('entry_id', entryId).then(function() {});
   }
 
-  // Update entry duration in shared Supabase table
+  // Update entry duration in shared Supabase table (delete + re-insert to avoid RLS UPDATE issues)
   function updateEntryDuration(entryId, durationSeconds) {
     if (!window.sb || !window.__authReady) return;
-    window.sb.from(SHARED_TABLE).update({ duration_seconds: durationSeconds })
-      .eq('entry_id', entryId).then(function() {});
+    window.sb.auth.getSession().then(function(res) {
+      var session = res.data && res.data.session;
+      if (!session) return;
+      // Find the full entry locally so we can re-insert with all fields
+      var log = getLog();
+      var entry = null;
+      for (var i = 0; i < log.length; i++) {
+        if (log[i].id === entryId) { entry = log[i]; break; }
+      }
+      if (!entry) return;
+      window.sb.from(SHARED_TABLE).delete().eq('entry_id', entryId).then(function() {
+        window.sb.from(SHARED_TABLE).insert({
+          entry_id: entry.id,
+          type: entry.type,
+          side: entry.side || null,
+          started_at: entry.startedAt,
+          duration_seconds: durationSeconds,
+          ml: entry.ml || null,
+          created_by: session.user.id
+        }).then(function() {});
+      });
+    });
   }
 
   // Pull all entries from shared table, replace local cache
@@ -554,7 +574,7 @@
           var sideLbl = entry.side === 'left' ? 'Izq' : 'Der';
           typeLbl += ' ' + sideLbl;
           var mins = Math.round(entry.durationSeconds / 60);
-          detailHtml = '<span class="reg-entry-dur reg-entry-dur-edit" data-id="' + entry.id + '" data-secs="' + entry.durationSeconds + '" title="Editar duración">' + fmtDuration(entry.durationSeconds) + '</span>';
+          detailHtml = '<span class="reg-entry-dur reg-entry-dur-edit" data-id="' + entry.id + '" data-secs="' + entry.durationSeconds + '" title="Editar duración">' + fmtDuration(entry.durationSeconds) + ' <span class="reg-edit-hint">✎</span></span>';
         }
         var endDate = new Date(new Date(entry.startedAt).getTime() + entry.durationSeconds * 1000);
         var timeRange = fmtTime(entry.startedAt) + '\u2013' + fmtTime(endDate.toISOString());
