@@ -127,8 +127,7 @@
         else open.push(entry);
       });
     });
-    // Sort open: overdue first, then by due date, then undated
-    var now = new Date(); now.setHours(0,0,0,0);
+    // Sort open: overdue first (smallest timestamps), then upcoming, then undated (Infinity)
     open.sort(function(a, b) {
       var aTs = a.due ? new Date(a.due).getTime() : Infinity;
       var bTs = b.due ? new Date(b.due).getTime() : Infinity;
@@ -294,6 +293,7 @@
     document.querySelectorAll('.salud-person-title').forEach(function(title) {
       title.addEventListener('click', function() {
         var key = title.dataset.person;
+        if (!key) return; // watchlist title has no data-person; handled by its own listener
         var body = document.getElementById('salud-body-' + key);
         var toggle = document.getElementById('salud-toggle-' + key);
         if (body) {
