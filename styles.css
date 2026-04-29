@@ -2124,3 +2124,90 @@ select.doc-tracker-input {
   font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
   text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; display: block;
 }
+
+/* ========== SALUD — FOLLOW-UP WATCHLIST ========== */
+.salud-fu-count {
+  display: inline-block;
+  background: var(--amber, #f59e0b);
+  color: #000;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.salud-fu-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.9rem;
+}
+
+.salud-fu-row:last-child { border-bottom: none; }
+
+.salud-fu-check { flex-shrink: 0; }
+
+.salud-fu-emoji { flex-shrink: 0; font-size: 1rem; }
+
+.salud-fu-name { flex: 1; min-width: 0; }
+
+.salud-fu-strikethrough {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.salud-fu-owner {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.salud-fu-due {
+  font-size: 0.78rem;
+  opacity: 0.6;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.salud-fu-overdue {
+  color: var(--red, #ef4444);
+  opacity: 1;
+  font-weight: 600;
+}
+
+.salud-fu-done-toggle {
+  font-size: 0.82rem;
+  opacity: 0.55;
+  cursor: pointer;
+  padding: 8px 0 4px;
+  user-select: none;
+}
+
+.salud-fu-done-toggle:hover { opacity: 0.8; }
+
+.salud-fu-row-done { opacity: 0.6; }
+
+/* ========== MISSION CONTROL — FOLLOW-UP CARD ========== */
+.mc-fu-badge {
+  display: inline-block;
+  background: var(--amber, #f59e0b);
+  color: #000;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.mc-fu-overdue {
+  color: var(--red, #ef4444) !important;
+  font-weight: 600;
+}
