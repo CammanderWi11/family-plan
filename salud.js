@@ -55,14 +55,16 @@
       return data;
     }
     // Backfill new fields on existing saved data
+    var needsSave = false;
     ['luca','leo','mum','daddey'].forEach(function(person) {
       (data[person] || []).forEach(function(item) {
-        if (item.followUpDone === undefined) item.followUpDone = false;
-        // Migrate owner keys: dad→papi, mum→mami
-        if (item.followUpOwner === 'dad') item.followUpOwner = 'papi';
-        if (item.followUpOwner === 'mum') item.followUpOwner = 'mami';
+        if (item.followUpDone === undefined) { item.followUpDone = false; needsSave = true; }
+        // Migrate owner keys: dad→papi, mum→mami (note: 'mum' here is the legacy owner value, not the person key)
+        if (item.followUpOwner === 'dad') { item.followUpOwner = 'papi'; needsSave = true; }
+        if (item.followUpOwner === 'mum') { item.followUpOwner = 'mami'; needsSave = true; }
       });
     });
+    if (needsSave) saveData(data);
     return data;
   }
 
