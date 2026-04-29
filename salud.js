@@ -164,13 +164,19 @@
           html += '<div style="flex:1;"><label>Responsable</label>';
           html += '<select class="doc-tracker-input salud-field" data-field="followUpOwner" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;">';
           html += '<option value=""' + (!item.followUpOwner ? ' selected' : '') + '>Sin asignar</option>';
-          html += '<option value="dad"' + (item.followUpOwner === 'dad' ? ' selected' : '') + '>Papá</option>';
-          html += '<option value="mum"' + (item.followUpOwner === 'mum' ? ' selected' : '') + '>Mamá</option>';
+          html += '<option value="papi"' + (item.followUpOwner === 'papi' ? ' selected' : '') + '>Papi</option>';
+          html += '<option value="mami"' + (item.followUpOwner === 'mami' ? ' selected' : '') + '>Mami</option>';
           html += '<option value="alfred"' + (item.followUpOwner === 'alfred' ? ' selected' : '') + '>Alfred</option>';
           html += '</select></div>';
           html += '<div style="flex:1;"><label>Fecha límite</label>';
           html += '<input type="date" class="doc-tracker-input salud-field" value="' + (item.followUpDue || '') + '" data-field="followUpDue" data-id="' + item.id + '" data-person="' + person.key + '" style="width:100%;"></div>';
           html += '</div></div>';
+          html += '<div class="salud-detail-row salud-followup-done-row">';
+          html += '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;">';
+          html += '<input type="checkbox" class="salud-followup-done-cb"' + (item.followUpDone ? ' checked' : '') + ' data-id="' + item.id + '" data-person="' + person.key + '">';
+          html += '<span>Seguimiento completado</span>';
+          html += '</label>';
+          html += '</div>';
           html += '<div class="salud-detail-row"><button class="btn-primary salud-attach-btn" data-salud-key="salud-' + item.id + '">Adjuntar archivo</button></div>';
           if (item.category === 'specialist') {
             html += '<div class="salud-detail-row"><button class="doc-tracker-btn doc-tracker-del salud-del" data-id="' + item.id + '" data-person="' + person.key + '">Eliminar</button></div>';
