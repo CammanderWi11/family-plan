@@ -13,42 +13,56 @@
 
   var DEFAULTS = {
     luca: [
-      { id: 'luca_rev_1m',  category: 'revision', name: 'Revisión del niño sano (1 mes)', meta: 'Pediatra asignado · Primera visita del Programa de Salud Infantil', ageLabel: '1 mes', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_2m',  category: 'revision', name: 'Revisión del niño sano (2 meses)', meta: 'Pediatra asignado', ageLabel: '2 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_4m',  category: 'revision', name: 'Revisión del niño sano (4 meses)', meta: 'Pediatra asignado', ageLabel: '4 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_6m',  category: 'revision', name: 'Revisión del niño sano (6 meses)', meta: 'Pediatra asignado', ageLabel: '6 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_9m',  category: 'revision', name: 'Revisión del niño sano (9 meses)', meta: 'Pediatra asignado', ageLabel: '9 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_12m', category: 'revision', name: 'Revisión del niño sano (12 meses)', meta: 'Pediatra asignado', ageLabel: '12 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_rev_15m', category: 'revision', name: 'Revisión del niño sano (15 meses)', meta: 'Pediatra asignado', ageLabel: '15 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_vac_2m',  category: 'vaccine', name: 'Vacunas 2 meses', meta: 'Hexavalente + Meningococo B + Neumococo + Rotavirus', ageLabel: '2 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_vac_4m',  category: 'vaccine', name: 'Vacunas 4 meses', meta: 'Hexavalente + Meningococo B + Neumococo + Rotavirus', ageLabel: '4 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_vac_11m', category: 'vaccine', name: 'Vacunas 11 meses', meta: 'Hexavalente + Meningococo C', ageLabel: '11 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_vac_12m', category: 'vaccine', name: 'Vacunas 12 meses', meta: 'Triple vírica + Meningococo B + Varicela + Neumococo', ageLabel: '12 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'luca_vac_15m', category: 'vaccine', name: 'Vacuna 15 meses', meta: 'Hepatitis A', ageLabel: '15 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null }
+      { id: 'luca_rev_1m',  category: 'revision', name: 'Revisión del niño sano (1 mes)', meta: 'Pediatra asignado · Primera visita del Programa de Salud Infantil', ageLabel: '1 mes', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_2m',  category: 'revision', name: 'Revisión del niño sano (2 meses)', meta: 'Pediatra asignado', ageLabel: '2 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_4m',  category: 'revision', name: 'Revisión del niño sano (4 meses)', meta: 'Pediatra asignado', ageLabel: '4 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_6m',  category: 'revision', name: 'Revisión del niño sano (6 meses)', meta: 'Pediatra asignado', ageLabel: '6 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_9m',  category: 'revision', name: 'Revisión del niño sano (9 meses)', meta: 'Pediatra asignado', ageLabel: '9 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_12m', category: 'revision', name: 'Revisión del niño sano (12 meses)', meta: 'Pediatra asignado', ageLabel: '12 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_rev_15m', category: 'revision', name: 'Revisión del niño sano (15 meses)', meta: 'Pediatra asignado', ageLabel: '15 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_vac_2m',  category: 'vaccine', name: 'Vacunas 2 meses', meta: 'Hexavalente + Meningococo B + Neumococo + Rotavirus', ageLabel: '2 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_vac_4m',  category: 'vaccine', name: 'Vacunas 4 meses', meta: 'Hexavalente + Meningococo B + Neumococo + Rotavirus', ageLabel: '4 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_vac_11m', category: 'vaccine', name: 'Vacunas 11 meses', meta: 'Hexavalente + Meningococo C', ageLabel: '11 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_vac_12m', category: 'vaccine', name: 'Vacunas 12 meses', meta: 'Triple vírica + Meningococo B + Varicela + Neumococo', ageLabel: '12 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'luca_vac_15m', category: 'vaccine', name: 'Vacuna 15 meses', meta: 'Hepatitis A', ageLabel: '15 meses', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false }
     ],
     leo: [
-      { id: 'leo_rev_3a',  category: 'revision', name: 'Revisión del niño sano (3 años)', meta: 'Pediatra asignado · Oct 2026', ageLabel: '3 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'leo_rev_4a',  category: 'revision', name: 'Revisión del niño sano (4 años)', meta: 'Pediatra asignado · Oct 2027', ageLabel: '4 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'leo_vac_3a',  category: 'vaccine', name: 'DTPa (3 años)', meta: 'Si pendiente · Centro de salud asignado', ageLabel: '3 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'leo_vac_6a',  category: 'vaccine', name: 'Vacunas 6 años', meta: 'DTPa + Triple vírica (2ª dosis) + Varicela (2ª dosis)', ageLabel: '6 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null }
+      { id: 'leo_rev_3a',  category: 'revision', name: 'Revisión del niño sano (3 años)', meta: 'Pediatra asignado · Oct 2026', ageLabel: '3 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'leo_rev_4a',  category: 'revision', name: 'Revisión del niño sano (4 años)', meta: 'Pediatra asignado · Oct 2027', ageLabel: '4 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'leo_vac_3a',  category: 'vaccine', name: 'DTPa (3 años)', meta: 'Si pendiente · Centro de salud asignado', ageLabel: '3 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'leo_vac_6a',  category: 'vaccine', name: 'Vacunas 6 años', meta: 'DTPa + Triple vírica (2ª dosis) + Varicela (2ª dosis)', ageLabel: '6 años', date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false }
     ],
     mum: [
-      { id: 'mum_rev_pp',  category: 'revision', name: 'Revisión postparto 6 semanas', meta: 'Ginecología', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'mum_rev_gyn', category: 'revision', name: 'Revisión ginecológica anual', meta: 'Ginecología', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'mum_vac_td',  category: 'vaccine', name: 'Td — Tétanos-difteria', meta: 'Cada 10 años · Verificar última dosis', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null }
+      { id: 'mum_rev_pp',  category: 'revision', name: 'Revisión postparto 6 semanas', meta: 'Ginecología', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'mum_rev_gyn', category: 'revision', name: 'Revisión ginecológica anual', meta: 'Ginecología', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'mum_vac_td',  category: 'vaccine', name: 'Td — Tétanos-difteria', meta: 'Cada 10 años · Verificar última dosis', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false }
     ],
     daddey: [
-      { id: 'dad_rev_emp', category: 'revision', name: 'Reconocimiento médico empresa', meta: 'Binter · Anual', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'dad_rev_gen', category: 'revision', name: 'Revisión general', meta: 'Médico de familia', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null },
-      { id: 'dad_vac_td',  category: 'vaccine', name: 'Td — Tétanos-difteria', meta: 'Cada 10 años · Verificar última dosis', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null }
+      { id: 'dad_rev_emp', category: 'revision', name: 'Reconocimiento médico empresa', meta: 'Binter · Anual', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'dad_rev_gen', category: 'revision', name: 'Revisión general', meta: 'Médico de familia', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false },
+      { id: 'dad_vac_td',  category: 'vaccine', name: 'Td — Tétanos-difteria', meta: 'Cada 10 años · Verificar última dosis', ageLabel: null, date: null, done: false, prepNotes: '', followUpNotes: '', followUpOwner: null, followUpDue: null, followUpDone: false }
     ]
   };
 
   function getData() {
     var saved = window.__getMedical ? window.__getMedical() : null;
-    if (saved && (saved.luca || saved.leo || saved.mum || saved.daddey)) return saved;
-    var data = JSON.parse(JSON.stringify(DEFAULTS));
-    saveData(data);
+    var data;
+    if (saved && (saved.luca || saved.leo || saved.mum || saved.daddey)) {
+      data = saved;
+    } else {
+      data = JSON.parse(JSON.stringify(DEFAULTS));
+      saveData(data);
+      return data;
+    }
+    // Backfill new fields on existing saved data
+    ['luca','leo','mum','daddey'].forEach(function(person) {
+      (data[person] || []).forEach(function(item) {
+        if (item.followUpDone === undefined) item.followUpDone = false;
+        // Migrate owner keys: dad→papi, mum→mami
+        if (item.followUpOwner === 'dad') item.followUpOwner = 'papi';
+        if (item.followUpOwner === 'mum') item.followUpOwner = 'mami';
+      });
+    });
     return data;
   }
 
