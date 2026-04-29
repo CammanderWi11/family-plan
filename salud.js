@@ -229,6 +229,20 @@
       });
     });
 
+    document.querySelectorAll('.salud-followup-done-cb').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var data = getData();
+        var item = findItem(data, cb.dataset.person, cb.dataset.id);
+        if (item) {
+          item.followUpDone = cb.checked;
+          saveData(data);
+          var expanded = getExpandedState();
+          render();
+          restoreExpandedState(expanded);
+        }
+      });
+    });
+
     document.querySelectorAll('.salud-expand-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var detail = document.getElementById('salud-detail-' + btn.dataset.id);
