@@ -2208,6 +2208,6 @@ select.doc-tracker-input {
 }
 
 .mc-fu-overdue {
-  color: var(--red, #ef4444) !important;
+  color: var(--red, #ef4444);
   font-weight: 600;
 }

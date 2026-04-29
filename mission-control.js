@@ -184,18 +184,20 @@
       var OWNER_LABEL = { papi: 'Papi', mami: 'Mami', alfred: 'Alfred' };
       html += '<div class="mc-watchlist-card mc-fu-card">';
       html += '<div class="mc-watchlist-title">🩺 Seguimientos médicos <span class="mc-fu-badge">' + openFollowUps.length + '</span></div>';
-      var preview = openFollowUps.slice(0, 3);
-      preview.forEach(function(fu) {
+      openFollowUps.slice(0, 3).forEach(function(fu) {
         var isOverdue = fu.due && parseDate(fu.due).getTime() < nowTs;
         var dueTxt = fu.due ? (function() {
           var p = fu.due.split('-'); return p[2] + '/' + p[1] + '/' + p[0].slice(2);
         })() : 'sin fecha';
         html += '<div class="mc-wl-item' + (isOverdue ? ' wl-red' : ' wl-amber') + '" data-tab="salud" data-key="' + fu.id + '">';
         html += '<span class="mc-wl-label">' + fu.name + '</span>';
-        if (fu.owner && OWNER_LABEL[fu.owner]) html += '<span class="mc-wl-sub">' + OWNER_LABEL[fu.owner] + '</span>';
+        if (fu.owner) html += '<span class="mc-wl-sub">' + (OWNER_LABEL[fu.owner] || fu.owner) + '</span>';
         html += '<span class="mc-wl-sub' + (isOverdue ? ' mc-fu-overdue' : '') + '">' + dueTxt + '</span>';
         html += '</div>';
       });
+      if (openFollowUps.length > 3) {
+        html += '<div class="mc-wl-item" style="opacity:0.55;font-size:0.82rem;" data-tab="salud" data-key="">y ' + (openFollowUps.length - 3) + ' más →</div>';
+      }
       html += '</div>';
     }
     host.innerHTML = html;
