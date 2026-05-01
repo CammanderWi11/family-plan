@@ -714,6 +714,5 @@
   };
   window.getLeoCurrentStep = window.getRutinaCurrentStep;
   window.getGoldenSleepBlock = getGoldenSleepBlock;
-  window.RUTINA_WHO_LABELS = window.RUTINA_DATA ? window.RUTINA_DATA.whoLabels : {};
 
 })();
