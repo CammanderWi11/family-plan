@@ -7,8 +7,7 @@
     luca: 'Luca',
     mum: 'Mum',
     dad: 'Daddey',
-    grandma: 'Granma-Tere',
-    anchor: 'Ancla fija'
+    grandma: 'Granma-Tere'
   };
 
   var WHO_OPTIONS = ['leo', 'luca', 'mum', 'dad', 'grandma'];
@@ -427,6 +426,7 @@
         emoji: '🌟',
         timeRange: '21:30–6:30',
         startH: 21, startM: 30, endH: 6, endM: 30,
+        golden: true,
         steps: [
           {
             time: '21:30', endTime: '6:30',
@@ -930,6 +930,7 @@
         emoji: '🌟',
         timeRange: '21:30–6:30',
         startH: 21, startM: 30, endH: 6, endM: 30,
+        golden: true,
         steps: [
           {
             time: '21:30', endTime: '6:30',
