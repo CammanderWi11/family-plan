@@ -3,6 +3,7 @@
 
   var LOCAL_KEY = 'fp-rutina';
   var SHARED_TABLE = 'shared_rutina';
+  var renderTimer = null;
 
   var state = {
     scenario: null,       // current scenario object
@@ -223,7 +224,10 @@
     var lastBlock = blocks.length ? blocks[blocks.length - 1] : null;
     var lastEnd = lastBlock ? lastBlock.endH * 60 + lastBlock.endM : 0;
     var isSleeping;
-    if (lastEnd < firstStart) {
+    if (firstStart === lastEnd) {
+      // Schedule is 24h continuous — no sleeping period
+      isSleeping = false;
+    } else if (lastEnd < firstStart) {
       isSleeping = now >= lastEnd && now < firstStart;
     } else {
       isSleeping = now >= lastEnd || now < firstStart;
@@ -429,7 +433,8 @@
     bindEvents();
 
     if (!state.editMode) {
-      setTimeout(render, 60000);
+      if (renderTimer) clearTimeout(renderTimer);
+      renderTimer = setTimeout(render, 60000);
     }
   }
 
@@ -687,6 +692,7 @@
     detectScenario();
     render();
     scheduleNotifications();
+    window.RUTINA_WHO_LABELS = window.RUTINA_DATA ? window.RUTINA_DATA.whoLabels : {};
   }
 
   if (document.readyState === 'loading') {
