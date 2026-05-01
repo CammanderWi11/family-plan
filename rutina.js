@@ -1,93 +1,26 @@
-// ========== RUTINA DE LEO ==========
+// ========== RUTINA — SCENARIO ENGINE & TIMELINE ==========
 (function() {
 
-  var LOCAL_KEY = 'fp-leo-routine';
-  var SHARED_TABLE = 'shared_leo_routine';
+  var LOCAL_KEY = 'fp-rutina';
+  var SHARED_TABLE = 'shared_rutina';
 
-  var DEFAULT_BLOCKS = [
-    {
-      id: 'manana',
-      title: 'Ma\u00f1ana',
-      emoji: '\u2600\ufe0f',
-      timeRange: '7:30\u201312:30',
-      startH: 7, startM: 30,
-      endH: 12, endM: 30,
-      steps: [
-        { time: '7:30', endTime: '8:00',   who: 'granma', name: 'Despertar',             desc: 'Duerme con \u00e9l \u00b7 5 min de mimos en la cama' },
-        { time: '8:00', endTime: '8:30',   who: 'granma', name: 'Desayuno',              desc: 'Sentado \u00b7 sin pantallas \u00b7 opciones fijas' },
-        { time: '8:30', endTime: '10:00',  who: 'granma', name: 'Juego tranquilo en casa', desc: '' },
-        { time: '10:00', endTime: '12:00', who: 'daddey', name: 'Parque / playa \ud83c\udfd6',  desc: 'Clave para la siesta \u00b7 Snack fruta 11:00' },
-        { time: '11:30', endTime: '12:30', who: 'mum',    name: 'Prepara la comida',     desc: '' }
-      ]
-    },
-    {
-      id: 'mediodia',
-      title: 'Mediod\u00eda \u00b7 Siesta',
-      emoji: '\ud83c\udf7d',
-      timeRange: '12:30\u201316:15',
-      startH: 12, startM: 30,
-      endH: 16, endM: 15,
-      steps: [
-        { time: '12:30', endTime: '13:00', who: 'daddey', name: 'Da de comer a Leo',    desc: '' },
-        { time: '13:00', endTime: '13:15', who: 'daddey', name: 'Transici\u00f3n tranquila', desc: '' },
-        { time: '13:15', endTime: '13:30', who: 'daddey', name: 'Ritual siesta',         desc: 'Pa\u00f1al \u2192 cuento \u2192 luz baja \u2192 cama' },
-        { time: '13:30', endTime: '15:30', who: 'ancla',  name: 'Siesta \ud83d\udca4',           desc: 'm\u00e1x. 2h \u00b7 si pasa de 2h, despertarlo' },
-        { time: '15:45', endTime: '16:15', who: 'ancla',  name: 'Merienda \ud83c\udf4e',         desc: 'Fruta + l\u00e1cteo o bocadillo' }
-      ]
-    },
-    {
-      id: 'tarde',
-      title: 'Tarde',
-      subtitle: 'BLOQUE DE ORO',
-      emoji: '\ud83c\udf33',
-      timeRange: '16:15\u201319:30',
-      startH: 16, startM: 15,
-      endH: 19, endM: 30,
-      steps: [
-        { time: '16:15', endTime: '18:30', who: 'granma', name: 'Tarde con Granma-Tere', desc: 'Parque, manualidades, juego libre' },
-        { time: '18:30', endTime: '19:00', who: 'granma', name: 'Vuelta a casa',          desc: '' },
-        { time: '18:30', endTime: '19:30', who: 'daddey', name: 'Prepara la cena',        desc: '' },
-        { time: '19:00', endTime: '19:30', who: 'mum',    name: '\ud83d\udc97 15 min \u201csolo Mum y t\u00fa\u201d', desc: 'Sin beb\u00e9, sin m\u00f3vil \u00b7 ant\u00eddoto celos' }
-      ]
-    },
-    {
-      id: 'noche',
-      title: 'Noche',
-      subtitle: 'MUM SIEMPRE',
-      emoji: '\ud83c\udf19',
-      timeRange: '19:30\u201320:30',
-      startH: 19, startM: 30,
-      endH: 20, endM: 30,
-      steps: [
-        { time: '19:30', endTime: '20:00', who: 'mum', name: 'Cena en familia',   desc: 'Daddey con el beb\u00e9 cerca' },
-        { time: '20:00', endTime: '20:20', who: 'mum', name: 'Ba\u00f1o \ud83d\udec1',         desc: 'Daddey ayuda a sacarlo si duele' },
-        { time: '20:20', endTime: '20:30', who: 'mum', name: 'Ritual cama',       desc: 'Pijama \u2192 cuentos \u2192 canci\u00f3n' },
-        { time: '20:30', endTime: '21:00', who: 'mum', name: 'A dormir \ud83d\udca4',       desc: '' }
-      ]
-    }
-  ];
+  var state = {
+    scenario: null,       // current scenario object
+    scenarioId: null,     // e.g. 'weekday_both'
+    grandmaToggle: false, // persisted
+    personFilter: null,   // null = todos, or 'leo','luca','mum','dad','grandma'
+    editMode: false,
+    editingStep: null,
+    overrides: {}         // user edits keyed by scenarioId
+  };
 
-  var DEFAULT_CLAVES = [
-    'Anclas fijas, medio flexible. Despertar, comida, siesta, cena y cama siempre a la misma hora.',
-    '15 min solo Mum y Leo antes de cenar. Sin beb\u00e9, sin m\u00f3vil. Ant\u00eddoto celos.',
-    'Si se rompe un d\u00eda, no lo recuper\u00e9is. Volved a la siguiente ancla y seguid.'
-  ];
-
-  var WHO_LABELS = { daddey: 'Daddey', mum: 'Mum', granma: 'Granma-Tere', ancla: 'Ancla fija' };
-  var WHO_OPTIONS = ['daddey', 'mum', 'granma', 'ancla'];
-
-  var BLOCKS = [];
-  var CLAVES = [];
-  var editMode = false;
-  var editingStep = null; // { b, s } indices of step being edited
-
-  // ---- Local cache ----
+  // ---- Persistence ----
   function loadLocal() {
     try {
       var saved = JSON.parse(localStorage.getItem(LOCAL_KEY));
-      if (saved && saved.blocks && saved.blocks.length) {
-        BLOCKS = saved.blocks;
-        CLAVES = saved.claves || DEFAULT_CLAVES;
+      if (saved) {
+        state.grandmaToggle = !!saved.grandmaToggle;
+        state.overrides = saved.overrides || {};
         return true;
       }
     } catch(e) {}
@@ -95,17 +28,23 @@
   }
 
   function saveLocal() {
-    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ blocks: BLOCKS, claves: CLAVES })); } catch(e) {}
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify({
+        grandmaToggle: state.grandmaToggle,
+        overrides: state.overrides
+      }));
+    } catch(e) {}
   }
 
   // ---- Supabase sync ----
   function pullFromSupabase() {
     if (!window.sb || !window.__authReady) return;
     window.sb.from(SHARED_TABLE).select('*').limit(1).maybeSingle().then(function(res) {
-      if (res.data && res.data.blocks && res.data.blocks.length) {
-        BLOCKS = res.data.blocks;
-        CLAVES = res.data.claves || DEFAULT_CLAVES;
+      if (res.data) {
+        if (typeof res.data.grandma_toggle === 'boolean') state.grandmaToggle = res.data.grandma_toggle;
+        if (res.data.overrides) state.overrides = res.data.overrides;
         saveLocal();
+        detectScenario();
         render();
       }
     });
@@ -117,8 +56,8 @@
       var session = res.data && res.data.session;
       if (!session) return;
       var payload = {
-        blocks: BLOCKS,
-        claves: CLAVES,
+        grandma_toggle: state.grandmaToggle,
+        overrides: state.overrides,
         updated_at: new Date().toISOString(),
         updated_by: session.user.id
       };
@@ -132,18 +71,91 @@
     });
   }
 
-  // ---- Helpers ----
-  function recalcBlock(block) {
-    if (!block.steps.length) return;
-    var firstStep = block.steps[0];
-    var lastStep = block.steps[block.steps.length - 1];
-    var sp = firstStep.time.split(':');
-    block.startH = parseInt(sp[0]); block.startM = parseInt(sp[1]);
-    var ep = lastStep.endTime.split(':');
-    block.endH = parseInt(ep[0]); block.endM = parseInt(ep[1]);
-    block.timeRange = firstStep.time + '\u2013' + lastStep.endTime;
+  // ---- Scenario detection ----
+  function isDadHome() {
+    var cfg = window.__calendarConfig || window.__defaultCalendarConfig;
+    if (!cfg) return true; // default to home
+    var helpers = window.__calendarHelpers;
+    if (!helpers || !helpers.buildHelpers) return true;
+    var h = helpers.buildHelpers(cfg);
+    var today = new Date(); today.setHours(0,0,0,0);
+    // Dad is home if: on shift days off, OR on any type of leave (mandatory, parental, annual)
+    return h.isShiftOff(today) || h.getType(today) !== null;
   }
 
+  function isWeekend() {
+    var dow = new Date().getDay();
+    return dow === 0 || dow === 6;
+  }
+
+  function detectScenario() {
+    var data = window.RUTINA_DATA;
+    if (!data || !data.scenarios) return;
+
+    var dayType = isWeekend() ? 'weekend' : 'weekday';
+    var whoHome;
+
+    if (state.grandmaToggle) {
+      whoHome = 'grandma';
+    } else if (isDadHome()) {
+      whoHome = 'both';
+    } else {
+      whoHome = 'solo';
+    }
+
+    var id = dayType + '_' + whoHome;
+    state.scenarioId = id;
+    state.scenario = data.scenarios[id] || null;
+
+    // If Dad is home AND grandma is toggled, merge Dad's activities into the grandma scenario
+    if (state.grandmaToggle && isDadHome() && state.scenario) {
+      var bothScenario = data.scenarios[dayType + '_both'];
+      if (bothScenario) {
+        state.scenario = mergeDadIntoGrandma(state.scenario, bothScenario);
+      }
+    }
+  }
+
+  function mergeDadIntoGrandma(grandmaScenario, bothScenario) {
+    var merged = JSON.parse(JSON.stringify(grandmaScenario));
+    merged.roles = merged.roles.slice();
+    if (merged.roles.indexOf('dad') === -1) merged.roles.push('dad');
+    merged.label = merged.label.replace('Granma-Tere', 'Granma-Tere + Daddey');
+
+    // Build a time-indexed map from the both scenario
+    var dadByTime = {};
+    for (var b = 0; b < bothScenario.blocks.length; b++) {
+      for (var s = 0; s < bothScenario.blocks[b].steps.length; s++) {
+        var step = bothScenario.blocks[b].steps[s];
+        for (var a = 0; a < step.activities.length; a++) {
+          if (step.activities[a].who === 'dad') {
+            dadByTime[step.time + '-' + step.endTime] = step.activities[a];
+          }
+        }
+      }
+    }
+
+    // Merge into grandma scenario steps
+    for (var bb = 0; bb < merged.blocks.length; bb++) {
+      for (var ss = 0; ss < merged.blocks[bb].steps.length; ss++) {
+        var mstep = merged.blocks[bb].steps[ss];
+        var key = mstep.time + '-' + mstep.endTime;
+        if (dadByTime[key]) {
+          var hasDad = false;
+          for (var aa = 0; aa < mstep.activities.length; aa++) {
+            if (mstep.activities[aa].who === 'dad') { hasDad = true; break; }
+          }
+          if (!hasDad) {
+            mstep.activities.push(JSON.parse(JSON.stringify(dadByTime[key])));
+          }
+        }
+      }
+    }
+
+    return merged;
+  }
+
+  // ---- Time helpers ----
   function toMinutes(t) {
     var p = t.split(':');
     return parseInt(p[0]) * 60 + parseInt(p[1]);
@@ -155,124 +167,194 @@
   }
 
   function findCurrent() {
+    if (!state.scenario) return { currentBlockIdx: -1, currentStep: null, nextStep: null, isSleeping: false };
+    var blocks = state.scenario.blocks;
     var now = nowMinutes();
     var currentBlockIdx = -1;
-    var currentStepRef = null;
-    var nextStepRef = null;
+    var currentStep = null;
+    var nextStep = null;
 
-    for (var b = 0; b < BLOCKS.length; b++) {
-      var bl = BLOCKS[b];
-      if (now >= bl.startH * 60 + bl.startM && now < bl.endH * 60 + bl.endM) {
-        currentBlockIdx = b;
-        break;
+    for (var b = 0; b < blocks.length; b++) {
+      var bl = blocks[b];
+      var bStart = bl.startH * 60 + bl.startM;
+      var bEnd = bl.endH * 60 + bl.endM;
+      if (bEnd < bStart) {
+        if (now >= bStart || now < bEnd) { currentBlockIdx = b; break; }
+      } else {
+        if (now >= bStart && now < bEnd) { currentBlockIdx = b; break; }
       }
     }
 
     var found = false;
-    outer:
-    for (var b = 0; b < BLOCKS.length; b++) {
-      for (var s = 0; s < BLOCKS[b].steps.length; s++) {
-        var step = BLOCKS[b].steps[s];
+    for (var b2 = 0; b2 < blocks.length && !found; b2++) {
+      for (var s = 0; s < blocks[b2].steps.length; s++) {
+        var step = blocks[b2].steps[s];
         var start = toMinutes(step.time);
         var end = toMinutes(step.endTime);
-        if (now >= start && now < end) {
-          currentStepRef = { b: b, s: s, step: step };
-          for (var nb = b, ns = s + 1; nb < BLOCKS.length; nb++, ns = 0) {
-            for (; ns < BLOCKS[nb].steps.length; ns++) {
-              nextStepRef = { b: nb, s: ns, step: BLOCKS[nb].steps[ns] };
-              break outer;
+        var inStep;
+        if (end < start) {
+          inStep = now >= start || now < end;
+        } else {
+          inStep = now >= start && now < end;
+        }
+        if (inStep) {
+          currentStep = { b: b2, s: s, step: step };
+          // Find next
+          for (var nb = b2, ns = s + 1; nb < blocks.length; nb++, ns = 0) {
+            for (; ns < blocks[nb].steps.length; ns++) {
+              nextStep = { b: nb, s: ns, step: blocks[nb].steps[ns] };
+              found = true;
+              break;
             }
+            if (found) break;
           }
           found = true;
-          break outer;
+          break;
         }
-        if (!found && !currentStepRef && now < start && !nextStepRef) {
-          nextStepRef = { b: b, s: s, step: step };
+        if (!currentStep && !nextStep) {
+          if (now < start) {
+            nextStep = { b: b2, s: s, step: step };
+          }
         }
       }
     }
 
-    return { currentBlockIdx: currentBlockIdx, currentStep: currentStepRef, nextStep: nextStepRef };
+    var firstStart = blocks.length ? blocks[0].startH * 60 + blocks[0].startM : 0;
+    var lastBlock = blocks.length ? blocks[blocks.length - 1] : null;
+    var lastEnd = lastBlock ? lastBlock.endH * 60 + lastBlock.endM : 0;
+    var isSleeping;
+    if (lastEnd < firstStart) {
+      isSleeping = now >= lastEnd && now < firstStart;
+    } else {
+      isSleeping = now >= lastEnd || now < firstStart;
+    }
+
+    return { currentBlockIdx: currentBlockIdx, currentStep: currentStep, nextStep: nextStep, isSleeping: isSleeping };
   }
 
+  // ---- Luca live data ----
+  function getLucaStatus() {
+    var activeFeed = window.getLucaActiveFeed ? window.getLucaActiveFeed() : null;
+    var lastEntry = window.getLucaLastEntry ? window.getLucaLastEntry() : null;
+    if (activeFeed) {
+      return { status: 'feeding', elapsed: window.fmtLucaElapsed ? window.fmtLucaElapsed(activeFeed.elapsed) : '0:00', side: activeFeed.side };
+    }
+    if (lastEntry) {
+      var hrs = lastEntry.elapsedSeconds / 3600;
+      var urgency = hrs >= 4 ? 'overdue' : hrs >= 3 ? 'soon' : 'ok';
+      return { status: 'waiting', elapsed: window.fmtLucaElapsed ? window.fmtLucaElapsed(lastEntry.elapsedSeconds) : '', urgency: urgency, nextSide: lastEntry.nextSide };
+    }
+    return { status: 'none' };
+  }
+
+  // ---- Badge helper ----
   function badgeHtml(who, small) {
-    return '<span class="caregiver-badge caregiver-' + who + (small ? ' badge-sm' : '') + '">' + (WHO_LABELS[who] || who) + '</span>';
-  }
-
-  // ---- Edit form for a step ----
-  function renderEditForm(b, s) {
-    var step = BLOCKS[b].steps[s];
-    var whoOpts = WHO_OPTIONS.map(function(w) {
-      return '<option value="' + w + '"' + (step.who === w ? ' selected' : '') + '>' + WHO_LABELS[w] + '</option>';
-    }).join('');
-    return '<div class="rutina-edit-form" data-b="' + b + '" data-s="' + s + '">' +
-      '<div class="rutina-edit-row">' +
-        '<label>Inicio</label><input type="time" class="rutina-edit-input" value="' + step.time + '" data-field="time">' +
-        '<label>Fin</label><input type="time" class="rutina-edit-input" value="' + step.endTime + '" data-field="endTime">' +
-      '</div>' +
-      '<div class="rutina-edit-row">' +
-        '<label>Qui\u00e9n</label><select class="rutina-edit-input" data-field="who">' + whoOpts + '</select>' +
-      '</div>' +
-      '<div class="rutina-edit-row">' +
-        '<label>Actividad</label><input type="text" class="rutina-edit-input" value="' + (step.name || '') + '" data-field="name">' +
-      '</div>' +
-      '<div class="rutina-edit-row">' +
-        '<label>Notas</label><input type="text" class="rutina-edit-input" value="' + (step.desc || '') + '" data-field="desc" placeholder="Opcional">' +
-      '</div>' +
-      '<div class="rutina-edit-actions">' +
-        '<button class="btn-primary rutina-edit-save">Guardar</button>' +
-        '<button class="btn-secondary rutina-edit-cancel">Cancelar</button>' +
-      '</div>' +
-    '</div>';
+    var data = window.RUTINA_DATA;
+    var label = (data && data.whoLabels && data.whoLabels[who]) || who;
+    return '<span class="caregiver-badge caregiver-' + who + (small ? ' badge-sm' : '') + '">' + label + '</span>';
   }
 
   // ---- Render ----
   function render() {
     var section = document.getElementById('rutina');
     if (!section) return;
+    if (!state.scenario) {
+      section.innerHTML = '<div class="glass" style="padding:24px;text-align:center;color:var(--text-muted)">Cargando datos de rutina...</div>';
+      return;
+    }
 
     var cur = findCurrent();
     var html = '';
 
-    // ---- Edit mode toggle ----
+    // ---- Toolbar ----
     html += '<div class="rutina-toolbar">';
-    html += '<button class="rutina-edit-toggle' + (editMode ? ' rutina-edit-toggle-active' : '') + '" id="rutina-edit-toggle">';
-    html += editMode ? '\u2713 Listo' : '\u270f\ufe0f Editar';
+    html += '<div class="rutina-toolbar-top">';
+    html += '<label class="rutina-grandma-toggle">';
+    html += '<span class="rutina-grandma-label">Granma-Tere hoy?</span>';
+    html += '<input type="checkbox" id="rutina-grandma-check"' + (state.grandmaToggle ? ' checked' : '') + '>';
+    html += '<span class="rutina-toggle-slider"></span>';
+    html += '</label>';
+    html += '<span class="rutina-scenario-label">' + state.scenario.label + '</span>';
+    if (state.scenario.subtitle) html += '<span class="rutina-scenario-sub">' + state.scenario.subtitle + '</span>';
+    html += '</div>';
+
+    // Person filter pills
+    html += '<div class="rutina-person-filter">';
+    var filterAll = state.personFilter === null;
+    html += '<button class="rutina-filter-pill' + (filterAll ? ' rutina-filter-active' : '') + '" data-filter="">Todos</button>';
+    var roles = state.scenario.roles;
+    for (var r = 0; r < roles.length; r++) {
+      var isActive = state.personFilter === roles[r];
+      html += '<button class="rutina-filter-pill caregiver-' + roles[r] + (isActive ? ' rutina-filter-active' : '') + '" data-filter="' + roles[r] + '">';
+      html += (window.RUTINA_DATA.whoLabels[roles[r]] || roles[r]);
+      html += '</button>';
+    }
+    html += '</div>';
+
+    // Edit toggle
+    html += '<button class="rutina-edit-toggle' + (state.editMode ? ' rutina-edit-toggle-active' : '') + '" id="rutina-edit-toggle">';
+    html += state.editMode ? '\u2713 Listo' : '\u270f\ufe0f Editar';
     html += '</button>';
     html += '</div>';
 
-    // ---- Hero ----
-    if (!editMode) {
+    // Notification permission card
+    if ('Notification' in window && Notification.permission === 'default') {
+      var dismissed = false;
+      try { dismissed = localStorage.getItem('fp-notif-dismissed') === '1'; } catch(e) {}
+      if (!dismissed) {
+        html += '<div class="rutina-notif-card glass">';
+        html += '<p>\u00bfActivar recordatorios importantes?</p>';
+        html += '<p style="font-size:11px;color:var(--text-muted)">Bloque de Oro, siesta, tomas de Luca, tiempo con Leo</p>';
+        html += '<button class="rutina-notif-btn" id="rutina-notif-accept">Activar</button>';
+        html += '<button class="rutina-notif-dismiss" id="rutina-notif-dismiss">No, gracias</button>';
+        html += '</div>';
+      }
+    }
+
+    // ---- Hero card ----
+    if (!state.editMode) {
       html += '<div class="glass rutina-hero">';
       html += '<div class="rutina-hero-label">AHORA MISMO</div>';
       if (cur.currentStep) {
         var cs = cur.currentStep.step;
         html += '<div class="rutina-hero-time">' + cs.time + '\u2013' + cs.endTime + '</div>';
-        html += '<div class="rutina-hero-who">' + badgeHtml(cs.who, false) + '</div>';
-        html += '<div class="rutina-hero-name">' + cs.name + '</div>';
-        if (cs.desc) html += '<div class="rutina-hero-desc">' + cs.desc + '</div>';
-      } else {
-        var nowM = nowMinutes();
-        var firstStart = BLOCKS.length ? BLOCKS[0].startH * 60 + BLOCKS[0].startM : 0;
-        var lastEnd = BLOCKS.length ? BLOCKS[BLOCKS.length - 1].endH * 60 + BLOCKS[BLOCKS.length - 1].endM : 0;
-        if (nowM >= lastEnd || nowM < firstStart) {
-          html += '<div class="rutina-hero-name rutina-hero-off">Durmiendo \ud83d\ude34</div>';
-        } else {
-          html += '<div class="rutina-hero-name rutina-hero-off">Fuera de horario</div>';
+        var heroActivities = filterActivities(cs.activities);
+        for (var ha = 0; ha < heroActivities.length; ha++) {
+          var act = heroActivities[ha];
+          html += '<div class="rutina-hero-activity">';
+          html += badgeHtml(act.who, false);
+          html += '<span class="rutina-hero-name">' + act.name + '</span>';
+          if (act.desc) html += '<span class="rutina-hero-desc">' + act.desc + '</span>';
+          html += '</div>';
         }
+        if (!state.personFilter || state.personFilter === 'luca') {
+          var lucaStatus = getLucaStatus();
+          if (lucaStatus.status === 'feeding') {
+            html += '<div class="rutina-luca-live"><span class="resumen-badge-live">Live: ' + (lucaStatus.side === 'left' ? 'Izquierdo' : 'Derecho') + '</span> ' + lucaStatus.elapsed + '</div>';
+          } else if (lucaStatus.status === 'waiting') {
+            html += '<div class="rutina-luca-status rutina-luca-' + lucaStatus.urgency + '">\ud83c\udf7c \u00daltima toma hace ' + lucaStatus.elapsed + '</div>';
+          }
+        }
+      } else {
+        html += '<div class="rutina-hero-name rutina-hero-off">' + (cur.isSleeping ? 'Durmiendo \ud83d\ude34' : 'Fuera de horario') + '</div>';
       }
       if (cur.nextStep) {
         var ns = cur.nextStep.step;
-        html += '<div class="rutina-hero-next">Siguiente \u00b7 <strong>' + ns.time + '</strong> \u00b7 ' + ns.name + ' ' + badgeHtml(ns.who, true) + '</div>';
+        var nextActs = filterActivities(ns.activities);
+        var nextLabel = nextActs.length ? nextActs[0].name : '';
+        html += '<div class="rutina-hero-next">Siguiente \u00b7 <strong>' + ns.time + '</strong> \u00b7 ' + nextLabel + '</div>';
       }
       html += '</div>';
     }
 
     // ---- Blocks ----
-    for (var b = 0; b < BLOCKS.length; b++) {
-      var block = BLOCKS[b];
-      var isActive = b === cur.currentBlockIdx;
-      html += '<div class="glass rutina-block' + (isActive && !editMode ? ' rutina-block-active' : '') + '">';
+    var blocks = state.scenario.blocks;
+    for (var b = 0; b < blocks.length; b++) {
+      var block = blocks[b];
+      var isActiveBlock = b === cur.currentBlockIdx;
+      var isGolden = !!block.golden;
+
+      html += '<div class="glass rutina-block' + (isActiveBlock && !state.editMode ? ' rutina-block-active' : '') + (isGolden ? ' rutina-block-golden' : '') + '">';
       html += '<div class="rutina-block-header">';
       html += '<div class="rutina-block-title">' + block.emoji + ' ' + block.title;
       if (block.subtitle) html += ' <span class="rutina-block-sub">' + block.subtitle + '</span>';
@@ -280,93 +362,331 @@
       html += '<div class="rutina-block-time">' + block.timeRange + '</div>';
       html += '</div>';
       html += '<div class="rutina-steps">';
+
       for (var s = 0; s < block.steps.length; s++) {
         var step = block.steps[s];
-        var isCurrentStep = !editMode && cur.currentStep && cur.currentStep.b === b && cur.currentStep.s === s;
-        var isEditing = editMode && editingStep && editingStep.b === b && editingStep.s === s;
+        var isCurrentStep = !state.editMode && cur.currentStep && cur.currentStep.b === b && cur.currentStep.s === s;
+        var isGoldenStep = !!step.golden;
+        var activities = filterActivities(step.activities);
+        if (activities.length === 0) continue;
 
-        if (isEditing) {
-          html += renderEditForm(b, s);
-        } else {
-          html += '<div class="rutina-step' + (isCurrentStep ? ' rutina-step-active' : '') + (editMode ? ' rutina-step-editable' : '') + '"';
-          if (editMode) html += ' data-edit-b="' + b + '" data-edit-s="' + s + '"';
-          html += '>';
-          html += '<div class="rutina-step-time">' + step.time + '</div>';
-          html += badgeHtml(step.who, false);
-          html += '<div class="rutina-step-body">';
-          html += '<div class="rutina-step-name">' + step.name + '</div>';
-          if (step.desc) html += '<div class="rutina-step-desc">' + step.desc + '</div>';
+        html += '<div class="rutina-step' + (isCurrentStep ? ' rutina-step-active' : '') + (isGoldenStep ? ' rutina-step-golden' : '') + (state.editMode ? ' rutina-step-editable' : '') + '"';
+        if (state.editMode) html += ' data-edit-b="' + b + '" data-edit-s="' + s + '"';
+        html += '>';
+        html += '<div class="rutina-step-time">' + step.time + '<span class="rutina-step-end">' + step.endTime + '</span></div>';
+        html += '<div class="rutina-step-activities">';
+
+        for (var a = 0; a < activities.length; a++) {
+          var sact = activities[a];
+          html += '<div class="rutina-activity">';
+          html += badgeHtml(sact.who, true);
+          html += '<div class="rutina-activity-body">';
+          html += '<span class="rutina-activity-name">' + sact.name + '</span>';
+          if (sact.desc) html += '<span class="rutina-activity-desc">' + sact.desc + '</span>';
+          if (sact.who === 'luca') {
+            var ls = getLucaStatus();
+            if (ls.status === 'feeding') {
+              html += '<span class="rutina-luca-live badge-sm"><span class="resumen-badge-live">Live</span> ' + ls.elapsed + '</span>';
+            } else if (ls.status === 'waiting') {
+              html += '<span class="rutina-luca-status rutina-luca-' + ls.urgency + '">\u00daltima toma: ' + ls.elapsed + '</span>';
+            }
+          }
           html += '</div></div>';
         }
+
+        html += '</div></div>';
       }
-      html += '</div></div>';
+
+      html += '</div>';
+
+      if (!state.editMode) {
+        var guidanceHtml = renderGuidanceCards(block);
+        if (guidanceHtml) html += guidanceHtml;
+
+        if (isActiveBlock && window.getSelfcareReminders) {
+          var reminders = window.getSelfcareReminders();
+          for (var ri = 0; ri < reminders.length; ri++) {
+            var rem = reminders[ri];
+            html += '<div class="rutina-guidance glass rutina-selfcare-reminder">';
+            html += '<div class="rutina-guidance-header">';
+            html += '<span class="rutina-guidance-icon">' + rem.icon + '</span>';
+            html += '<span class="rutina-guidance-title">Autocuidado</span>';
+            html += '</div>';
+            html += '<div class="rutina-guidance-content">' + rem.text + '</div>';
+            html += '</div>';
+          }
+        }
+      }
+
+      html += '</div>';
     }
 
-    // ---- Las 3 Claves ----
-    html += '<div class="glass rutina-claves">';
-    html += '<div class="rutina-claves-title">\ud83d\udd11 Las 3 claves</div>';
-    html += '<ol class="rutina-claves-list">';
-    for (var i = 0; i < CLAVES.length; i++) {
-      html += '<li>' + CLAVES[i] + '</li>';
+    if (!state.editMode) {
+      html += renderRedFlags();
     }
-    html += '</ol></div>';
 
     section.innerHTML = html;
+    bindEvents();
 
-    // ---- Bind events ----
-    // Edit mode toggle
-    document.getElementById('rutina-edit-toggle').addEventListener('click', function() {
-      editMode = !editMode;
-      editingStep = null;
-      render();
-    });
-
-    // Click step to edit (in edit mode)
-    if (editMode) {
-      section.querySelectorAll('.rutina-step-editable').forEach(function(el) {
-        el.addEventListener('click', function() {
-          editingStep = { b: parseInt(el.dataset.editB), s: parseInt(el.dataset.editS) };
-          render();
-        });
-      });
-
-      // Save/cancel form
-      var form = section.querySelector('.rutina-edit-form');
-      if (form) {
-        form.querySelector('.rutina-edit-save').addEventListener('click', function() {
-          var bi = parseInt(form.dataset.b);
-          var si = parseInt(form.dataset.s);
-          var step = BLOCKS[bi].steps[si];
-          form.querySelectorAll('.rutina-edit-input').forEach(function(input) {
-            var field = input.dataset.field;
-            step[field] = input.value;
-          });
-          recalcBlock(BLOCKS[bi]);
-          editingStep = null;
-          saveLocal();
-          pushToSupabase();
-          render();
-        });
-        form.querySelector('.rutina-edit-cancel').addEventListener('click', function() {
-          editingStep = null;
-          render();
-        });
-      }
-    }
-
-    // Re-render every minute to keep "now" accurate (only when not editing)
-    if (!editMode) {
-      setTimeout(render, 60 * 1000);
+    if (!state.editMode) {
+      setTimeout(render, 60000);
     }
   }
 
-  function init() {
-    // Load from local cache first, then pull from Supabase
-    if (!loadLocal()) {
-      BLOCKS = JSON.parse(JSON.stringify(DEFAULT_BLOCKS));
-      CLAVES = DEFAULT_CLAVES.slice();
+  function filterActivities(activities) {
+    if (!state.personFilter) return activities;
+    return activities.filter(function(a) { return a.who === state.personFilter; });
+  }
+
+  function renderGuidanceCards(block) {
+    var data = window.RUTINA_DATA;
+    if (!data || !data.guidance) return '';
+    var now = nowMinutes();
+    var html = '';
+
+    for (var i = 0; i < data.guidance.length; i++) {
+      var g = data.guidance[i];
+      var gStart = toMinutes(g.timeStart);
+      var gEnd = toMinutes(g.timeEnd);
+      if (now < gStart || now >= gEnd) continue;
+
+      var bStart = block.startH * 60 + block.startM;
+      var bEnd = block.endH * 60 + block.endM;
+      if (bEnd < bStart) {
+        if (!(gStart >= bStart || gStart < bEnd)) continue;
+      } else {
+        if (gStart < bStart || gStart >= bEnd) continue;
+      }
+
+      if (g.scenarios.indexOf('all') === -1 && g.scenarios.indexOf(state.scenarioId) === -1) continue;
+
+      html += '<div class="rutina-guidance glass">';
+      html += '<div class="rutina-guidance-header">';
+      html += '<span class="rutina-guidance-icon">' + g.icon + '</span>';
+      html += '<span class="rutina-guidance-title">' + g.title + '</span>';
+      html += '</div>';
+      html += '<div class="rutina-guidance-content">' + g.content + '</div>';
+      html += '</div>';
     }
+
+    return html;
+  }
+
+  function renderRedFlags() {
+    var data = window.RUTINA_DATA;
+    if (!data || !data.redFlags) return '';
+    var flags = data.redFlags;
+    var html = '<div class="glass rutina-redflags">';
+    html += '<details>';
+    html += '<summary class="rutina-redflags-title">\ud83d\udea8 Se\u00f1ales de alarma \u2014 cu\u00e1ndo pedir ayuda</summary>';
+    html += '<div class="rutina-redflags-body">';
+
+    var categories = ['mum', 'newborn', 'toddler', 'family'];
+    for (var c = 0; c < categories.length; c++) {
+      var cat = flags[categories[c]];
+      if (!cat) continue;
+      html += '<div class="rutina-redflag-cat' + (cat.urgent ? ' rutina-redflag-urgent' : '') + '">';
+      html += '<h4>' + cat.title + '</h4><ul>';
+      for (var ii = 0; ii < cat.items.length; ii++) {
+        html += '<li>' + cat.items[ii] + '</li>';
+      }
+      html += '</ul></div>';
+    }
+
+    html += '</div></details></div>';
+    return html;
+  }
+
+  function bindEvents() {
+    var section = document.getElementById('rutina');
+    if (!section) return;
+
+    var grandmaCheck = document.getElementById('rutina-grandma-check');
+    if (grandmaCheck) {
+      grandmaCheck.addEventListener('change', function() {
+        state.grandmaToggle = this.checked;
+        saveLocal();
+        pushToSupabase();
+        detectScenario();
+        render();
+      });
+    }
+
+    section.querySelectorAll('.rutina-filter-pill').forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        var filter = this.dataset.filter;
+        state.personFilter = filter || null;
+        render();
+      });
+    });
+
+    var editBtn = document.getElementById('rutina-edit-toggle');
+    if (editBtn) {
+      editBtn.addEventListener('click', function() {
+        state.editMode = !state.editMode;
+        state.editingStep = null;
+        render();
+      });
+    }
+
+    if (state.editMode) {
+      section.querySelectorAll('.rutina-step-editable').forEach(function(el) {
+        el.addEventListener('click', function() {
+          state.editingStep = { b: parseInt(el.dataset.editB), s: parseInt(el.dataset.editS) };
+          render();
+        });
+      });
+    }
+
+    var notifAccept = document.getElementById('rutina-notif-accept');
+    if (notifAccept) {
+      notifAccept.addEventListener('click', function() {
+        Notification.requestPermission().then(function(perm) {
+          if (perm === 'granted') scheduleNotifications();
+          render();
+        });
+      });
+    }
+    var notifDismiss = document.getElementById('rutina-notif-dismiss');
+    if (notifDismiss) {
+      notifDismiss.addEventListener('click', function() {
+        try { localStorage.setItem('fp-notif-dismissed', '1'); } catch(e) {}
+        render();
+      });
+    }
+  }
+
+  // ---- Push notifications ----
+  var notifTimers = [];
+
+  function clearNotifTimers() {
+    for (var i = 0; i < notifTimers.length; i++) clearTimeout(notifTimers[i]);
+    notifTimers = [];
+  }
+
+  function getNotifSettings() {
+    try {
+      return JSON.parse(localStorage.getItem('fp-notif-settings')) || {
+        golden: true, nap: true, feed: true, specialTime: true
+      };
+    } catch(e) { return { golden: true, nap: true, feed: true, specialTime: true }; }
+  }
+
+  function scheduleNotifications() {
+    clearNotifTimers();
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var settings = getNotifSettings();
+    var now = Date.now();
+
+    if (settings.golden) {
+      var golden = getGoldenSleepBlock();
+      if (golden) {
+        var today = new Date();
+        var gH = parseInt(golden.timeStart.split(':')[0]);
+        var gM = parseInt(golden.timeStart.split(':')[1]);
+        var goldenTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), gH, gM);
+        var alertTime = goldenTime.getTime() - 15 * 60000;
+        if (alertTime > now) {
+          notifTimers.push(setTimeout(function() {
+            showNotification('\ud83c\udf19 Hora de dormir', 'Tu bloque de oro empieza en 15 min');
+          }, alertTime - now));
+        }
+      }
+    }
+
+    if (settings.nap && !isWeekend()) {
+      var napTime = new Date();
+      napTime.setHours(9, 0, 0, 0);
+      if (napTime.getTime() > now) {
+        notifTimers.push(setTimeout(function() {
+          showNotification('\ud83d\ude34 Ventana de siesta abierta', 'Descansa ahora');
+        }, napTime.getTime() - now));
+      }
+    }
+
+    if (settings.feed) {
+      scheduleFeedAlert();
+    }
+
+    if (settings.specialTime && state.scenario) {
+      for (var b = 0; b < state.scenario.blocks.length; b++) {
+        for (var s = 0; s < state.scenario.blocks[b].steps.length; s++) {
+          var step = state.scenario.blocks[b].steps[s];
+          for (var a = 0; a < step.activities.length; a++) {
+            if (step.activities[a].name && step.activities[a].name.indexOf('15 min') !== -1 && step.activities[a].name.indexOf('Leo') !== -1) {
+              var stH = parseInt(step.time.split(':')[0]);
+              var stM = parseInt(step.time.split(':')[1]);
+              var stTime = new Date();
+              stTime.setHours(stH, stM, 0, 0);
+              if (stTime.getTime() > now) {
+                (function(t) {
+                  notifTimers.push(setTimeout(function() {
+                    showNotification('\ud83d\udc9c 15 min solo con Leo', 'Sin beb\u00e9, sin m\u00f3vil');
+                  }, t - now));
+                })(stTime.getTime());
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function scheduleFeedAlert() {
+    var lastEntry = window.getLucaLastEntry ? window.getLucaLastEntry() : null;
+    if (!lastEntry) return;
+    var fourHoursMs = 4 * 3600 * 1000;
+    var msUntilAlert = fourHoursMs - (lastEntry.elapsedSeconds * 1000);
+    if (msUntilAlert > 0) {
+      notifTimers.push(setTimeout(function() {
+        showNotification('\ud83c\udf7c Luca: 4h sin comer', 'Hora de alimentar');
+      }, msUntilAlert));
+    }
+  }
+
+  function showNotification(title, body) {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'show-notification', title: title, body: body });
+    } else if ('Notification' in window) {
+      new Notification(title, { body: body, icon: 'icon-192.png' });
+    }
+  }
+
+  // ---- Golden Sleep Block export ----
+  function getGoldenSleepBlock() {
+    if (!state.scenario) return null;
+    var blocks = state.scenario.blocks;
+    for (var b = 0; b < blocks.length; b++) {
+      if (!blocks[b].golden) continue;
+      for (var s = 0; s < blocks[b].steps.length; s++) {
+        if (blocks[b].steps[s].golden) {
+          var step = blocks[b].steps[s];
+          var coveredBy = null;
+          for (var a = 0; a < step.activities.length; a++) {
+            if (step.activities[a].who !== 'mum' && step.activities[a].who !== 'luca') {
+              coveredBy = step.activities[a].who;
+              break;
+            }
+          }
+          return {
+            timeStart: step.time,
+            timeEnd: step.endTime,
+            coveredBy: coveredBy,
+            scenario: state.scenarioId
+          };
+        }
+      }
+    }
+    return null;
+  }
+
+  // ---- Init ----
+  function init() {
+    loadLocal();
+    detectScenario();
     render();
+    scheduleNotifications();
   }
 
   if (document.readyState === 'loading') {
@@ -378,15 +698,16 @@
     pullFromSupabase();
   });
 
-  // Expose for Resumen banners
-  window.getLeoCurrentStep = function() {
-    if (!BLOCKS.length) return null;
+  // ---- Exposed globals ----
+  window.getRutinaCurrentStep = function() {
+    if (!state.scenario) return null;
     var result = findCurrent();
-    var nowM = nowMinutes();
-    var firstStart = BLOCKS[0].startH * 60 + BLOCKS[0].startM;
-    var lastEnd = BLOCKS[BLOCKS.length - 1].endH * 60 + BLOCKS[BLOCKS.length - 1].endM;
-    result.isSleeping = (nowM >= lastEnd || nowM < firstStart);
+    result.scenario = state.scenarioId;
+    result.scenarioLabel = state.scenario ? state.scenario.label : '';
     return result;
   };
-  window.LEO_WHO_LABELS = WHO_LABELS;
+  window.getLeoCurrentStep = window.getRutinaCurrentStep;
+  window.getGoldenSleepBlock = getGoldenSleepBlock;
+  window.RUTINA_WHO_LABELS = window.RUTINA_DATA ? window.RUTINA_DATA.whoLabels : {};
+
 })();
