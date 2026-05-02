@@ -274,7 +274,7 @@
     html += '<div class="rutina-toolbar">';
     html += '<div class="rutina-toolbar-top">';
     html += '<label class="rutina-grandma-toggle">';
-    html += '<span class="rutina-grandma-label">Granma-Tere hoy?</span>';
+    html += '<span class="rutina-grandma-label">Granma-Tere</span>';
     html += '<input type="checkbox" id="rutina-grandma-check"' + (state.grandmaToggle ? ' checked' : '') + '>';
     html += '<span class="rutina-toggle-slider"></span>';
     html += '</label>';
@@ -380,8 +380,20 @@
         html += '<div class="rutina-step-time">' + step.time + '<span class="rutina-step-end">' + step.endTime + '</span></div>';
         html += '<div class="rutina-step-activities">';
 
-        for (var a = 0; a < activities.length; a++) {
-          var sact = activities[a];
+        // Split adults vs kids for sub-branch rendering
+        var adultActs = [], kidActs = [];
+        for (var ai = 0; ai < activities.length; ai++) {
+          if (activities[ai].who === 'leo' || activities[ai].who === 'luca') {
+            kidActs.push(activities[ai]);
+          } else {
+            adultActs.push(activities[ai]);
+          }
+        }
+        var showSub = adultActs.length > 0 && kidActs.length > 0;
+        var mainActs = showSub ? adultActs : activities;
+
+        for (var ai2 = 0; ai2 < mainActs.length; ai2++) {
+          var sact = mainActs[ai2];
           html += '<div class="rutina-activity">';
           html += badgeHtml(sact.who, true);
           html += '<div class="rutina-activity-body">';
@@ -396,6 +408,28 @@
             }
           }
           html += '</div></div>';
+        }
+
+        if (showSub) {
+          html += '<div class="rutina-sub-activities">';
+          for (var ki = 0; ki < kidActs.length; ki++) {
+            var kact = kidActs[ki];
+            html += '<div class="rutina-activity rutina-activity-child">';
+            html += badgeHtml(kact.who, true);
+            html += '<div class="rutina-activity-body">';
+            html += '<span class="rutina-activity-name">' + kact.name + '</span>';
+            if (kact.desc) html += '<span class="rutina-activity-desc">' + kact.desc + '</span>';
+            if (kact.who === 'luca') {
+              var lsk = getLucaStatus();
+              if (lsk.status === 'feeding') {
+                html += '<span class="rutina-luca-live badge-sm"><span class="resumen-badge-live">Live</span> ' + lsk.elapsed + '</span>';
+              } else if (lsk.status === 'waiting') {
+                html += '<span class="rutina-luca-status rutina-luca-' + lsk.urgency + '">\u00daltima toma: ' + lsk.elapsed + '</span>';
+              }
+            }
+            html += '</div></div>';
+          }
+          html += '</div>';
         }
 
         html += '</div></div>';

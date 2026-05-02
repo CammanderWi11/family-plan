@@ -1493,7 +1493,7 @@ button, .timer-btn, .mobile-tab, .reg-bottle-btn, .reg-nav-btn, .reg-del {
 
 /* Edit mode */
 .rutina-toolbar {
-  display: flex; justify-content: flex-end; margin-bottom: 12px;
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
 }
 .rutina-edit-toggle {
   background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
@@ -2217,8 +2217,8 @@ select.doc-tracker-input {
   display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
 }
 .rutina-grandma-toggle {
-  display: flex; align-items: center; gap: 8px; cursor: pointer;
-  font-size: 13px; color: var(--text-secondary);
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  font-size: 12px; color: var(--text-secondary); align-self: flex-start;
 }
 .rutina-grandma-toggle input { display: none; }
 .rutina-toggle-slider {
@@ -2257,6 +2257,12 @@ select.doc-tracker-input {
   background: var(--amber) !important; color: #000 !important;
   border-color: var(--amber) !important; font-weight: 600;
 }
+/* Caregiver colors on inactive filter pills (need double-class to beat .rutina-filter-pill) */
+.rutina-filter-pill.caregiver-mum     { background: rgba(251,113,133,0.15); color: #fb7185; border-color: rgba(251,113,133,0.3); }
+.rutina-filter-pill.caregiver-dad     { background: rgba(251,191,36,0.15);  color: #fbbf24; border-color: rgba(251,191,36,0.3);  }
+.rutina-filter-pill.caregiver-leo     { background: rgba(74,222,128,0.15);  color: #4ade80; border-color: rgba(74,222,128,0.3);  }
+.rutina-filter-pill.caregiver-luca    { background: rgba(96,165,250,0.15);  color: #60a5fa; border-color: rgba(96,165,250,0.3);  }
+.rutina-filter-pill.caregiver-grandma { background: rgba(192,132,252,0.15); color: #c084fc; border-color: rgba(192,132,252,0.3); }
 
 /* ---- Multi-activity step layout ---- */
 .rutina-step-activities {
@@ -2268,6 +2274,12 @@ select.doc-tracker-input {
 .rutina-activity-body { flex: 1; min-width: 0; }
 .rutina-activity-name { font-size: 13px; font-weight: 500; color: var(--text); }
 .rutina-activity-desc { font-size: 11px; color: var(--text-secondary); margin-left: 4px; }
+.rutina-sub-activities {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-top: 5px; margin-left: 20px;
+  padding-left: 10px; border-left: 2px solid var(--glass-border);
+}
+.rutina-activity-child { opacity: 0.85; }
 .rutina-step-end {
   display: block; font-size: 10px; color: var(--text-muted); margin-top: 2px;
 }
