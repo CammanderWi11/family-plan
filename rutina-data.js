@@ -128,11 +128,12 @@
           },
           {
             time: '15:00', endTime: '16:30',
+            golden: true,
             activities: [
               { who: 'leo', name: 'Juego al aire libre', desc: 'Pati, jardín, ≥ 60 min activo' },
               { who: 'luca', name: 'Cluster feed / porteo / siesta en brazos', desc: '' },
-              { who: 'mum', name: '💜 15 min tiempo especial con Leo', desc: 'Sin bebé, sin móvil, Dad sostiene a Luca' },
-              { who: 'dad', name: 'Juega con Leo fuera', desc: '' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo' },
+              { who: 'dad', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           },
           {
@@ -355,10 +356,11 @@
           },
           {
             time: '16:00', endTime: '17:00',
+            golden: true,
             activities: [
               { who: 'leo', name: 'Actividades tranquilas: plastilina, libros, dibujar', desc: '' },
               { who: 'luca', name: 'Cluster feed / porteo', desc: '' },
-              { who: 'mum', name: '💜 15 min Tiempo Especial con Leo', desc: 'Bebé en hamaca/porteo, cronómetro, juego dirigido por Leo' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · bebé en hamaca · sigue el juego de Leo' }
             ]
           }
         ]
@@ -536,11 +538,12 @@
           },
           {
             time: '15:00', endTime: '17:00',
+            golden: true,
             activities: [
-              { who: 'leo', name: 'Juego exterior + interior con Granma', desc: '' },
+              { who: 'leo', name: 'Juego exterior + interior', desc: '' },
               { who: 'luca', name: 'Cluster feed con Mum', desc: '' },
-              { who: 'mum', name: '💜 15 min con Leo mientras Granma sostiene bebé', desc: 'Luego pecho en sofá' },
-              { who: 'grandma', name: 'Juego activo con Leo', desc: '' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · Granma sostiene a Luca · sigue el juego de Leo' },
+              { who: 'grandma', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           }
         ]
@@ -699,11 +702,12 @@
         steps: [
           {
             time: '14:30', endTime: '16:00',
+            golden: true,
             activities: [
-              { who: 'leo', name: 'Despierta, snack, más juego exterior / biblioteca / amigos', desc: '' },
+              { who: 'leo', name: 'Despierta, snack, juego exterior / biblioteca / amigos', desc: '' },
               { who: 'luca', name: 'Porteo; ventana despierto', desc: '' },
-              { who: 'mum', name: '💜 15 min tiempo especial con Leo (opcional)', desc: '' },
-              { who: 'dad', name: 'Juego activo con Leo', desc: '' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo' },
+              { who: 'dad', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           },
           {
@@ -892,10 +896,11 @@
         steps: [
           {
             time: '17:30', endTime: '18:30',
+            golden: true,
             activities: [
               { who: 'leo', name: 'Baño (skip si agotada); pijamas', desc: '' },
               { who: 'luca', name: 'Porteo', desc: '' },
-              { who: 'mum', name: 'Últimos 15 min con Leo: cuentos en pijama', desc: '' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Cuentos en pijama · sin móvil · sigue el juego / historia de Leo' }
             ]
           },
           {
@@ -1012,11 +1017,12 @@
         steps: [
           {
             time: '14:30', endTime: '17:00',
+            golden: true,
             activities: [
               { who: 'leo', name: 'Juego activo; proyecto con Granma (cocinar, jardín)', desc: '' },
               { who: 'luca', name: 'Porteo con Mum; ventana despierto', desc: '' },
-              { who: 'mum', name: '💜 15 min con Leo en algún momento; luego descanso', desc: '' },
-              { who: 'grandma', name: '1:1 con Leo', desc: '' }
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · Granma sostiene a Luca · sigue el juego de Leo' },
+              { who: 'grandma', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           }
         ]
@@ -1169,6 +1175,15 @@
       timeEnd: '19:00',
       scenarios: ['weekday_solo', 'weekend_solo'],
       icon: '📦'
+    },
+    {
+      id: 'connection-rule',
+      title: '💜 Regla de Conexión — 15 min cada adulto',
+      content: 'La protección más eficaz contra la regresión por hermano nuevo. Cada adulto presente da a Leo 10–15 min de juego dirigido por él: sin móvil, sin bebé, sin agenda adulta. El adulto sigue y obedece — Leo manda. Evidencia sólida en psicología del apego y estudios de hermanos (Dunn & Kendrick, 1982; Kramer, 2010). No es opcional.',
+      timeStart: '14:00',
+      timeEnd: '19:00',
+      scenarios: ['all'],
+      icon: '💜'
     }
   ];
 
