@@ -144,6 +144,13 @@
           }
         } else {
           delete currentChecks[itemId];
+          // If this is a weekly item, also clear the week marker so it can be re-checked
+          var allItemsU = getItems();
+          for (var u = 0; u < allItemsU.length; u++) {
+            if (allItemsU[u].id === itemId && allItemsU[u].frequency === 'weekly') {
+              delete currentChecks['_epds_week'];
+            }
+          }
         }
         saveChecks(currentChecks);
         pushToSupabase(currentChecks);
