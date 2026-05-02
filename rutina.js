@@ -380,7 +380,7 @@
         html += '<div class="rutina-step-time">' + step.time + '<span class="rutina-step-end">' + step.endTime + '</span></div>';
         html += '<div class="rutina-step-activities">';
 
-        // Split adults vs kids for sub-branch rendering
+        // Separate adults and kids
         var adultActs = [], kidActs = [];
         for (var ai = 0; ai < activities.length; ai++) {
           if (activities[ai].who === 'leo' || activities[ai].who === 'luca') {
@@ -389,48 +389,86 @@
             adultActs.push(activities[ai]);
           }
         }
-        var showSub = adultActs.length > 0 && kidActs.length > 0;
-        var mainActs = showSub ? adultActs : activities;
 
-        for (var ai2 = 0; ai2 < mainActs.length; ai2++) {
-          var sact = mainActs[ai2];
-          html += '<div class="rutina-activity">';
-          html += badgeHtml(sact.who, true);
-          html += '<div class="rutina-activity-body">';
-          html += '<span class="rutina-activity-name">' + sact.name + '</span>';
-          if (sact.desc) html += '<span class="rutina-activity-desc">' + sact.desc + '</span>';
-          if (sact.who === 'luca') {
-            var ls = getLucaStatus();
-            if (ls.status === 'feeding') {
-              html += '<span class="rutina-luca-live badge-sm"><span class="resumen-badge-live">Live</span> ' + ls.elapsed + '</span>';
-            } else if (ls.status === 'waiting') {
-              html += '<span class="rutina-luca-status rutina-luca-' + ls.urgency + '">\u00daltima toma: ' + ls.elapsed + '</span>';
+        // Infer which adult each kid belongs to
+        var ADULT_LABELS = { mum: ['mum','mamá','mama'], dad: ['dad','daddey','papá','papa'], grandma: ['granma','grandma','abuela','tere'] };
+        var BF_PATTERNS = ['pecho','lactancia','cluster','toma','feed','porteo','biberón','biberon'];
+        var childrenOf = {}, unparented = [];
+
+        for (var ki = 0; ki < kidActs.length; ki++) {
+          var kact = kidActs[ki];
+          var kidText = (kact.name + ' ' + (kact.desc || '')).toLowerCase();
+          var par = null;
+
+          // 1. Adult's activity text mentions this kid's who value ('leo' / 'luca')
+          for (var x = 0; x < adultActs.length && !par; x++) {
+            if ((adultActs[x].name + ' ' + (adultActs[x].desc || '')).toLowerCase().indexOf(kact.who) !== -1)
+              par = adultActs[x].who;
+          }
+          // 2. Kid's activity text mentions an adult by label
+          for (var x = 0; x < adultActs.length && !par; x++) {
+            var lbls = ADULT_LABELS[adultActs[x].who] || [adultActs[x].who];
+            for (var li = 0; li < lbls.length && !par; li++) {
+              if (kidText.indexOf(lbls[li]) !== -1) par = adultActs[x].who;
             }
           }
-          html += '</div></div>';
-        }
-
-        if (showSub) {
-          html += '<div class="rutina-sub-activities">';
-          for (var ki = 0; ki < kidActs.length; ki++) {
-            var kact = kidActs[ki];
-            html += '<div class="rutina-activity rutina-activity-child">';
-            html += badgeHtml(kact.who, true);
-            html += '<div class="rutina-activity-body">';
-            html += '<span class="rutina-activity-name">' + kact.name + '</span>';
-            if (kact.desc) html += '<span class="rutina-activity-desc">' + kact.desc + '</span>';
-            if (kact.who === 'luca') {
-              var lsk = getLucaStatus();
-              if (lsk.status === 'feeding') {
-                html += '<span class="rutina-luca-live badge-sm"><span class="resumen-badge-live">Live</span> ' + lsk.elapsed + '</span>';
-              } else if (lsk.status === 'waiting') {
-                html += '<span class="rutina-luca-status rutina-luca-' + lsk.urgency + '">\u00daltima toma: ' + lsk.elapsed + '</span>';
+          // 3. Luca + breastfeeding context → check kid text then adult text
+          if (!par && kact.who === 'luca') {
+            for (var pi = 0; pi < BF_PATTERNS.length && !par; pi++) {
+              if (kidText.indexOf(BF_PATTERNS[pi]) !== -1) {
+                for (var x = 0; x < adultActs.length; x++) {
+                  if (adultActs[x].who === 'mum') { par = 'mum'; break; }
+                }
               }
             }
-            html += '</div></div>';
+            for (var x = 0; x < adultActs.length && !par; x++) {
+              var an = adultActs[x].name.toLowerCase();
+              for (var pi = 0; pi < BF_PATTERNS.length && !par; pi++) {
+                if (an.indexOf(BF_PATTERNS[pi]) !== -1) par = adultActs[x].who;
+              }
+            }
           }
-          html += '</div>';
+
+          if (par) {
+            if (!childrenOf[par]) childrenOf[par] = [];
+            childrenOf[par].push(kact);
+          } else {
+            unparented.push(kact);
+          }
         }
+
+        // Render helper
+        var renderAct = function(act, isChild) {
+          var h = '<div class="rutina-activity' + (isChild ? ' rutina-activity-child' : '') + '">';
+          h += badgeHtml(act.who, true);
+          h += '<div class="rutina-activity-body">';
+          h += '<span class="rutina-activity-name">' + act.name + '</span>';
+          if (act.desc) h += '<span class="rutina-activity-desc">' + act.desc + '</span>';
+          if (act.who === 'luca') {
+            var ls = getLucaStatus();
+            if (ls.status === 'feeding') {
+              h += '<span class="rutina-luca-live badge-sm"><span class="resumen-badge-live">Live</span> ' + ls.elapsed + '</span>';
+            } else if (ls.status === 'waiting') {
+              h += '<span class="rutina-luca-status rutina-luca-' + ls.urgency + '">\u00daltima toma: ' + ls.elapsed + '</span>';
+            }
+          }
+          h += '</div></div>';
+          return h;
+        };
+
+        // Adults with their kids nested beneath
+        var toRender = adultActs.length > 0 ? adultActs : activities;
+        for (var ai2 = 0; ai2 < toRender.length; ai2++) {
+          html += renderAct(toRender[ai2], false);
+          var kids = childrenOf[toRender[ai2].who] || [];
+          if (kids.length > 0) {
+            html += '<div class="rutina-sub-activities">';
+            for (var ci = 0; ci < kids.length; ci++) html += renderAct(kids[ci], true);
+            html += '</div>';
+          }
+        }
+        // Unparented kids last, flat
+        for (var ui = 0; ui < unparented.length; ui++) html += renderAct(unparented[ui], false);
 
         html += '</div></div>';
       }
