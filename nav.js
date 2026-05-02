@@ -19,7 +19,7 @@ if ('serviceWorker' in navigator) {
     calendario: 'Calendario',
     tramites: 'Trámites',
     salud: 'Citas Médicas',
-    rutina: 'Rutina de Leo',
+    rutina: 'Rutina',
     registro: 'Registro de Luca',
     ajustes: 'Ajustes'
   };
@@ -29,7 +29,7 @@ if ('serviceWorker' in navigator) {
     calendario: 'ANNUAL_VIEW',
     tramites: 'TASK_TRACKER',
     salud: 'MEDICAL_LOG',
-    rutina: 'ROUTINE.2Y',
+    rutina: 'ROUTINE.FAM',
     registro: 'FEED.LOG',
     ajustes: 'CONFIG'
   };
