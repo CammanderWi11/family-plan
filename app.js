@@ -392,6 +392,7 @@ window.getTabForKey = function(key) {
       selfcareBanner.addEventListener('click', function() {
         var nav = document.querySelector('[data-tab="rutina"]');
         if (nav) nav.click();
+        if (window.expandSelfcare) window.expandSelfcare();
       });
     }
   }

@@ -193,6 +193,14 @@
     return { checked: checkedCount, total: total };
   };
 
+  // ---- Exposed: expand and scroll to card ----
+  window.expandSelfcare = function() {
+    expanded = true;
+    renderCard();
+    var el = document.getElementById('rutina-selfcare');
+    if (el) setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+  };
+
   // ---- Init ----
   function init() {
     renderCard();
