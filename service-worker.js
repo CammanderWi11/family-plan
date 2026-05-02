@@ -1,4 +1,4 @@
-const VERSION = 'v77-family-plan';
+const VERSION = 'v78-family-plan';
 const SHELL_CACHE = 'family-plan-shell-' + VERSION;
 const DATA_CACHE = 'family-plan-data-' + VERSION;
 const PHOTO_CACHE = 'family-plan-photos-' + VERSION;
@@ -17,7 +17,9 @@ const SHELL = [
   './settings.js',
   './nav.js',
   './registro.js',
+  './rutina-data.js',
   './rutina.js',
+  './rutina-selfcare.js',
   './salud.js',
   './mission-control.js'
 ];
@@ -100,6 +102,18 @@ self.addEventListener('fetch', e => {
       })
     );
     return;
+  }
+});
+
+// Local notification dispatch (from rutina.js scheduler)
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'show-notification') {
+    self.registration.showNotification(e.data.title, {
+      body: e.data.body,
+      icon: 'icon-192.png',
+      badge: 'icon-192.png',
+      tag: e.data.tag || 'rutina-reminder'
+    });
   }
 });
 

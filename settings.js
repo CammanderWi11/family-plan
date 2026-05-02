@@ -169,9 +169,62 @@
     }
   }
 
+  // ---- Notification toggles ----
+  var NOTIF_KEY = 'fp-notif-settings';
+  var NOTIF_DEFAULTS = { golden: true, nap: true, feed: true, specialTime: true };
+  var NOTIF_LABELS = {
+    golden: 'Bloque dorado — 15 min antes',
+    nap: 'Siesta de Leo — 9:00 entre semana',
+    feed: 'Aviso toma Luca — 4h sin teta',
+    specialTime: 'Tiempo especial Leo — 15 min antes'
+  };
+
+  function getNotifSettings() {
+    try { return Object.assign({}, NOTIF_DEFAULTS, JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}')); }
+    catch(_) { return Object.assign({}, NOTIF_DEFAULTS); }
+  }
+
+  function saveNotifSettings(s) {
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(s));
+  }
+
+  function renderNotifToggles() {
+    var container = document.getElementById('cfg-notifications');
+    if (!container) return;
+    var s = getNotifSettings();
+    container.innerHTML = '';
+    Object.keys(NOTIF_LABELS).forEach(function(key) {
+      var row = document.createElement('div');
+      row.className = 'notif-toggle-row';
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)';
+      var lbl = document.createElement('label');
+      lbl.textContent = NOTIF_LABELS[key];
+      lbl.style.cssText = 'font-size:0.9rem;color:var(--text-secondary,#ccc);flex:1';
+      var chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.checked = !!s[key];
+      chk.style.cssText = 'width:18px;height:18px;accent-color:var(--accent,#7c6fcd);cursor:pointer';
+      chk.onchange = function() {
+        var cur = getNotifSettings();
+        cur[key] = chk.checked;
+        saveNotifSettings(cur);
+      };
+      row.appendChild(lbl);
+      row.appendChild(chk);
+      container.appendChild(row);
+    });
+  }
+
   // Initialize when auth is ready
   if (window.__authReady) init();
   else window.addEventListener('auth-ready', init, { once: true });
+
+  // Render notification toggles (no auth needed)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderNotifToggles);
+  } else {
+    renderNotifToggles();
+  }
 
   // No auto-repopulation — form is populated once in init().
   // Remote config changes are picked up on next page load.
