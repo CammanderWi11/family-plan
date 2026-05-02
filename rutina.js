@@ -260,7 +260,7 @@
 
   // ---- Render ----
   function render() {
-    var section = document.getElementById('rutina');
+    var section = document.getElementById('rutina-main');
     if (!section) return;
     if (!state.scenario) {
       section.innerHTML = '<div class="glass" style="padding:24px;text-align:center;color:var(--text-muted)">Cargando datos de rutina...</div>';
@@ -503,7 +503,7 @@
   }
 
   function bindEvents() {
-    var section = document.getElementById('rutina');
+    var section = document.getElementById('rutina-main');
     if (!section) return;
 
     var grandmaCheck = document.getElementById('rutina-grandma-check');
