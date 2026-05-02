@@ -2211,3 +2211,176 @@ select.doc-tracker-input {
   color: var(--red, #ef4444);
   font-weight: 600;
 }
+
+/* ---- Rutina toolbar (new sub-rules) ---- */
+.rutina-toolbar-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+}
+.rutina-grandma-toggle {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 13px; color: var(--text-secondary);
+}
+.rutina-grandma-toggle input { display: none; }
+.rutina-toggle-slider {
+  width: 40px; height: 22px; border-radius: 11px;
+  background: var(--glass-border); position: relative; transition: background 0.2s;
+}
+.rutina-toggle-slider::after {
+  content: ''; position: absolute; left: 2px; top: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--text-muted); transition: transform 0.2s, background 0.2s;
+}
+.rutina-grandma-toggle input:checked + .rutina-toggle-slider {
+  background: var(--amber);
+}
+.rutina-grandma-toggle input:checked + .rutina-toggle-slider::after {
+  transform: translateX(18px); background: #fff;
+}
+.rutina-scenario-label {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  color: var(--amber); letter-spacing: 1px; text-transform: uppercase;
+}
+.rutina-scenario-sub {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); letter-spacing: 1px; margin-left: 8px;
+}
+.rutina-person-filter {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.rutina-filter-pill {
+  padding: 4px 12px; border-radius: 16px; border: 1px solid var(--glass-border);
+  background: transparent; color: var(--text-secondary); font-size: 12px;
+  cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+}
+.rutina-filter-pill:hover { border-color: var(--text-secondary); }
+.rutina-filter-active {
+  background: var(--amber) !important; color: #000 !important;
+  border-color: var(--amber) !important; font-weight: 600;
+}
+
+/* ---- Multi-activity step layout ---- */
+.rutina-step-activities {
+  display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0;
+}
+.rutina-activity {
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.rutina-activity-body { flex: 1; min-width: 0; }
+.rutina-activity-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.rutina-activity-desc { font-size: 11px; color: var(--text-secondary); margin-left: 4px; }
+.rutina-step-end {
+  display: block; font-size: 10px; color: var(--text-muted); margin-top: 2px;
+}
+.rutina-luca-live { font-size: 11px; color: var(--amber); margin-top: 2px; }
+.rutina-luca-status { font-size: 11px; margin-top: 2px; }
+.rutina-luca-ok { color: var(--text-muted); }
+.rutina-luca-soon { color: var(--amber); }
+.rutina-luca-overdue { color: #f87171; font-weight: 600; }
+.rutina-hero-activity {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.rutina-hero-activity .rutina-hero-name { font-size: 16px; font-weight: 600; }
+.rutina-hero-activity .rutina-hero-desc { font-size: 12px; color: var(--text-secondary); }
+
+/* ---- Golden Sleep Block ---- */
+.rutina-block-golden {
+  border-left-color: #fbbf24 !important;
+  background: linear-gradient(135deg, rgba(251,191,36,0.05), transparent) !important;
+}
+.rutina-step-golden {
+  border-left: 3px solid #fbbf24;
+  padding-left: 10px;
+  background: rgba(251,191,36,0.03);
+}
+
+/* ---- Contextual guidance cards ---- */
+.rutina-guidance {
+  margin: 8px 0 16px; padding: 14px 16px;
+  border-left: 3px solid var(--text-muted);
+  background: rgba(255,255,255,0.015);
+}
+.rutina-guidance-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.rutina-guidance-icon { font-size: 16px; }
+.rutina-guidance-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.rutina-guidance-content { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ---- Red flags ---- */
+.rutina-redflags { margin-top: 16px; }
+.rutina-redflags summary {
+  cursor: pointer; font-size: 14px; font-weight: 600;
+  color: #f87171; padding: 12px 0;
+}
+.rutina-redflags-body { padding: 0 0 12px; }
+.rutina-redflag-cat { margin-bottom: 12px; }
+.rutina-redflag-cat h4 { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+.rutina-redflag-cat ul { margin: 0; padding-left: 20px; }
+.rutina-redflag-cat li { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; line-height: 1.4; }
+.rutina-redflag-urgent h4 { color: #f87171; }
+
+/* ---- Self-care card ---- */
+.rutina-selfcare-card {
+  margin-bottom: 16px; padding: 12px 16px; cursor: pointer;
+}
+.rutina-selfcare-header {
+  display: flex; align-items: center; gap: 10px;
+}
+.rutina-selfcare-icon { font-size: 18px; }
+.rutina-selfcare-summary { font-size: 13px; font-weight: 600; color: var(--text); }
+.rutina-selfcare-bar {
+  flex: 1; height: 4px; border-radius: 2px;
+  background: var(--glass-border); overflow: hidden;
+}
+.rutina-selfcare-fill {
+  height: 100%; background: var(--amber); border-radius: 2px; transition: width 0.3s;
+}
+.rutina-selfcare-chevron { font-size: 10px; color: var(--text-muted); }
+.rutina-selfcare-list {
+  margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
+}
+.rutina-selfcare-item {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 6px 0; font-size: 13px; color: var(--text);
+}
+.rutina-selfcare-item input { accent-color: var(--amber); }
+.rutina-selfcare-done { opacity: 0.5; text-decoration: line-through; }
+.rutina-selfcare-item-icon { font-size: 16px; }
+.rutina-selfcare-item-label { flex: 1; }
+.rutina-selfcare-weekly {
+  font-size: 10px; color: var(--text-muted);
+  border: 1px solid var(--glass-border); padding: 1px 6px; border-radius: 8px;
+}
+.rutina-selfcare-reminder { border-left-color: #f472b6; }
+
+/* ---- Caregiver badge colors (new family members) ---- */
+.caregiver-leo { background: rgba(74,222,128,0.15); color: #4ade80; }
+.caregiver-luca { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.caregiver-dad { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.caregiver-grandma { background: rgba(192,132,252,0.15); color: #c084fc; }
+
+/* ---- Notification permission card ---- */
+.rutina-notif-card {
+  margin-bottom: 16px; padding: 16px; text-align: center;
+  border: 1px dashed var(--glass-border);
+}
+.rutina-notif-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.rutina-notif-btn {
+  padding: 8px 20px; border-radius: 8px; border: none;
+  background: var(--amber); color: #000; font-weight: 600;
+  font-size: 13px; cursor: pointer;
+}
+.rutina-notif-dismiss {
+  padding: 8px 16px; border-radius: 8px; border: 1px solid var(--glass-border);
+  background: transparent; color: var(--text-muted); font-size: 12px;
+  cursor: pointer; margin-left: 8px;
+}
+
+/* ---- Dashboard banners: golden block + self-care ---- */
+.resumen-banner-golden {
+  border-left: 3px solid #fbbf24;
+  background: linear-gradient(135deg, rgba(251,191,36,0.08), transparent);
+}
+.resumen-banner-selfcare {
+  border-left: 3px solid #f472b6;
+}
