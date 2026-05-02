@@ -246,25 +246,29 @@ window.getTabForKey = function(key) {
 
     var html = '<div class="resumen-banner-row">';
 
-    // Leo banner
+    // Leo banner (from new rutina engine)
     var leoHtml = '';
-    if (window.getLeoCurrentStep) {
-      var cur = window.getLeoCurrentStep();
+    if (window.getRutinaCurrentStep) {
+      var cur = window.getRutinaCurrentStep();
       if (cur && cur.currentStep) {
         var s = cur.currentStep.step;
-        var whoLabel = (window.LEO_WHO_LABELS && window.LEO_WHO_LABELS[s.who]) || s.who;
-        leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
-          '<span class="resumen-banner-icon">\ud83d\udccc</span>' +
-          '<div class="resumen-banner-body">' +
-            '<span class="resumen-banner-title">Leo ahora</span>' +
-            '<span class="resumen-banner-text">' + s.name + ' \u00b7 ' + s.time + '\u2013' + s.endTime + '</span>' +
-          '</div>' +
-          '<span class="caregiver-badge caregiver-' + s.who + ' badge-sm">' + whoLabel + '</span>' +
-        '</div>';
+        var leoAct = null;
+        for (var a = 0; a < s.activities.length; a++) {
+          if (s.activities[a].who === 'leo') { leoAct = s.activities[a]; break; }
+        }
+        if (leoAct) {
+          leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
+            '<span class="resumen-banner-icon">\ud83d\udccc</span>' +
+            '<div class="resumen-banner-body">' +
+              '<span class="resumen-banner-title">Leo ahora</span>' +
+              '<span class="resumen-banner-text">' + leoAct.name + ' \u00b7 ' + s.time + '\u2013' + s.endTime + '</span>' +
+            '</div>' +
+          '</div>';
+        }
       } else {
-        var offLabel = (cur.isSleeping) ? 'Durmiendo \ud83d\ude34' : 'Fuera de horario';
+        var offLabel = (cur && cur.isSleeping) ? 'Durmiendo \ud83d\ude34' : 'Fuera de horario';
         leoHtml = '<div class="resumen-banner resumen-banner-leo">' +
-          '<span class="resumen-banner-icon">' + (cur.isSleeping ? '\ud83d\ude34' : '\ud83d\udccc') + '</span>' +
+          '<span class="resumen-banner-icon">' + (cur && cur.isSleeping ? '\ud83d\ude34' : '\ud83d\udccc') + '</span>' +
           '<div class="resumen-banner-body">' +
             '<span class="resumen-banner-title">Leo ahora</span>' +
             '<span class="resumen-banner-text resumen-banner-muted">' + offLabel + '</span>' +
@@ -317,7 +321,49 @@ window.getTabForKey = function(key) {
       }
     }
 
-    html += lucaHtml + leoHtml + '</div>';
+    // Golden Sleep Block banner
+    var goldenHtml = '';
+    if (window.getGoldenSleepBlock) {
+      var golden = window.getGoldenSleepBlock();
+      if (golden) {
+        var whoLabels = window.RUTINA_DATA ? window.RUTINA_DATA.whoLabels : {};
+        var coveredLabel = whoLabels[golden.coveredBy] || golden.coveredBy || '?';
+        var nowM = new Date().getHours() * 60 + new Date().getMinutes();
+        var gStart = parseInt(golden.timeStart.split(':')[0]) * 60 + parseInt(golden.timeStart.split(':')[1]);
+        var diff = gStart - nowM;
+        if (diff < 0) diff += 1440;
+        var countdownText = '';
+        if (diff <= 120 && diff > 0) {
+          var h = Math.floor(diff / 60);
+          var m = diff % 60;
+          countdownText = ' \u00b7 en ' + (h ? h + 'h ' : '') + m + 'min';
+        } else if (diff <= 0 || diff > 1380) {
+          countdownText = ' \u00b7 ACTIVO';
+        }
+        goldenHtml = '<div class="resumen-banner resumen-banner-golden">' +
+          '<span class="resumen-banner-icon">\ud83c\udf1f</span>' +
+          '<div class="resumen-banner-body">' +
+            '<span class="resumen-banner-title">Bloque de Oro</span>' +
+            '<span class="resumen-banner-text">' + golden.timeStart + '\u2013' + golden.timeEnd + ' \u00b7 ' + coveredLabel + ' cubre' + countdownText + '</span>' +
+          '</div>' +
+        '</div>';
+      }
+    }
+
+    // Self-care pill
+    var selfcareHtml = '';
+    if (window.getSelfcareStatus) {
+      var sc = window.getSelfcareStatus();
+      selfcareHtml = '<div class="resumen-banner resumen-banner-selfcare">' +
+        '<span class="resumen-banner-icon">\ud83e\udec0</span>' +
+        '<div class="resumen-banner-body">' +
+          '<span class="resumen-banner-title">Mum autocuidado</span>' +
+          '<span class="resumen-banner-text">' + sc.checked + '/' + sc.total + ' \u2713</span>' +
+        '</div>' +
+      '</div>';
+    }
+
+    html += lucaHtml + leoHtml + goldenHtml + selfcareHtml + '</div>';
     host.innerHTML = html;
 
     var leoBanner = host.querySelector('.resumen-banner-leo');
@@ -331,6 +377,20 @@ window.getTabForKey = function(key) {
     if (lucaBanner) {
       lucaBanner.addEventListener('click', function() {
         var nav = document.querySelector('[data-tab="registro"]');
+        if (nav) nav.click();
+      });
+    }
+    var goldenBanner = host.querySelector('.resumen-banner-golden');
+    if (goldenBanner) {
+      goldenBanner.addEventListener('click', function() {
+        var nav = document.querySelector('[data-tab="rutina"]');
+        if (nav) nav.click();
+      });
+    }
+    var selfcareBanner = host.querySelector('.resumen-banner-selfcare');
+    if (selfcareBanner) {
+      selfcareBanner.addEventListener('click', function() {
+        var nav = document.querySelector('[data-tab="rutina"]');
         if (nav) nav.click();
       });
     }
