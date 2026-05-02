@@ -198,7 +198,7 @@
     expanded = true;
     renderCard();
     var el = document.getElementById('rutina-selfcare');
-    if (el) setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   // ---- Init ----

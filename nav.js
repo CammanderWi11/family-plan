@@ -92,6 +92,11 @@ if ('serviceWorker' in navigator) {
     });
   }
 
+  // Exposed for programmatic navigation
+  window.navigateTo = function(id) {
+    if (activate(id)) history.replaceState(null, '', '#' + id);
+  };
+
   // Initial tab from hash
   var initial = (location.hash || '').slice(1);
   if (!initial || !activate(initial)) activate('resumen');

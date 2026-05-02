@@ -390,9 +390,13 @@ window.getTabForKey = function(key) {
     var selfcareBanner = host.querySelector('.resumen-banner-selfcare');
     if (selfcareBanner) {
       selfcareBanner.addEventListener('click', function() {
-        var nav = document.querySelector('[data-tab="rutina"]');
-        if (nav) nav.click();
-        if (window.expandSelfcare) window.expandSelfcare();
+        if (window.navigateTo) window.navigateTo('rutina');
+        else { var nav = document.querySelector('[data-tab="rutina"]'); if (nav) nav.click(); }
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            if (window.expandSelfcare) window.expandSelfcare();
+          });
+        });
       });
     }
   }
