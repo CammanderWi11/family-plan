@@ -76,9 +76,9 @@
             time: '9:00', endTime: '10:30',
             activities: [
               { who: 'leo', name: 'En guardería', desc: '' },
-              { who: 'luca', name: 'Toma → siesta', desc: '' },
+              { who: 'luca', name: 'Siesta con Dad o en moisés', desc: '' },
               { who: 'mum', name: 'SIESTA PROTEGIDA #1', desc: 'En cama, habitación oscura, bebé en moisés o con Dad' },
-              { who: 'dad', name: 'Bebé en otra habitación / colada / cocina batch', desc: '' }
+              { who: 'dad', name: 'Con Luca (otra habitación) / colada / cocina batch', desc: '' }
             ]
           },
           {
@@ -87,7 +87,7 @@
               { who: 'leo', name: 'En guardería', desc: '' },
               { who: 'luca', name: 'Toma, tummy time 3–5 min, piel con piel', desc: '' },
               { who: 'mum', name: 'Comer de verdad, paseo corto, respiración pelvic floor', desc: '' },
-              { who: 'dad', name: 'Con bebé O prep comida', desc: '' }
+              { who: 'dad', name: 'Con Luca (tummy time) O prep comida', desc: '' }
             ]
           },
           {
@@ -132,7 +132,7 @@
             activities: [
               { who: 'leo', name: 'Juego al aire libre', desc: 'Pati, jardín, ≥ 60 min activo' },
               { who: 'luca', name: 'Cluster feed / porteo / siesta en brazos', desc: '' },
-              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo' },
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue su juego' },
               { who: 'dad', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           },
@@ -359,7 +359,7 @@
             golden: true,
             activities: [
               { who: 'leo', name: 'Actividades tranquilas: plastilina, libros, dibujar', desc: '' },
-              { who: 'luca', name: 'Cluster feed / porteo', desc: '' },
+              { who: 'luca', name: 'En hamaca; ventana despierto', desc: '' },
               { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · bebé en hamaca · sigue el juego de Leo' }
             ]
           }
@@ -495,9 +495,9 @@
             time: '9:00', endTime: '11:00',
             activities: [
               { who: 'leo', name: 'En guardería', desc: '' },
-              { who: 'luca', name: 'Toma → siesta', desc: '' },
+              { who: 'luca', name: 'Toma → siesta con Granma', desc: '' },
               { who: 'mum', name: 'SIESTA LARGA PROTEGIDA', desc: 'Sin niño pequeño en casa, sin obligaciones' },
-              { who: 'grandma', name: 'Platos, colada, orden silencioso', desc: 'NO aspirar ni hacer ruido que despierte a Mum' }
+              { who: 'grandma', name: 'Platos, colada, orden silencioso; sostiene a Luca', desc: 'NO aspirar ni hacer ruido que despierte a Mum' }
             ]
           },
           {
@@ -542,7 +542,7 @@
             activities: [
               { who: 'leo', name: 'Juego exterior + interior', desc: '' },
               { who: 'luca', name: 'Cluster feed con Mum', desc: '' },
-              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · Granma sostiene a Luca · sigue el juego de Leo' },
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue su juego' },
               { who: 'grandma', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           }
@@ -706,7 +706,7 @@
             activities: [
               { who: 'leo', name: 'Despierta, snack, juego exterior / biblioteca / amigos', desc: '' },
               { who: 'luca', name: 'Porteo; ventana despierto', desc: '' },
-              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo' },
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue su juego' },
               { who: 'dad', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           },
@@ -899,7 +899,7 @@
             golden: true,
             activities: [
               { who: 'leo', name: 'Baño (skip si agotada); pijamas', desc: '' },
-              { who: 'luca', name: 'Porteo', desc: '' },
+              { who: 'luca', name: 'Hamaca durante cuentos', desc: '' },
               { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Cuentos en pijama · sin móvil · sigue el juego / historia de Leo' }
             ]
           },
@@ -1001,9 +1001,9 @@
             time: '12:30', endTime: '14:30',
             activities: [
               { who: 'leo', name: 'Siesta', desc: '' },
-              { who: 'luca', name: 'Toma → siesta en brazos', desc: '' },
+              { who: 'luca', name: 'Siesta en brazos de Granma', desc: '' },
               { who: 'mum', name: 'DUERME', desc: '' },
-              { who: 'grandma', name: 'Tranquila; lee', desc: '' }
+              { who: 'grandma', name: 'Sostiene a Luca; tranquila; lee', desc: '' }
             ]
           }
         ]
@@ -1021,7 +1021,7 @@
             activities: [
               { who: 'leo', name: 'Juego activo; proyecto con Granma (cocinar, jardín)', desc: '' },
               { who: 'luca', name: 'Porteo con Mum; ventana despierto', desc: '' },
-              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · Granma sostiene a Luca · sigue el juego de Leo' },
+              { who: 'mum', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue su juego' },
               { who: 'grandma', name: '💜 15 min Regla de Conexión', desc: 'Sin móvil · sin bebé · sigue el juego de Leo · Mum da pecho' }
             ]
           }
