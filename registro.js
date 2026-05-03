@@ -183,6 +183,17 @@
   }
 
   // ---- Date helpers ----
+
+  // Returns the ISO timestamp that determines which day an entry "belongs to".
+  // Cross-midnight sessions (startedAt on Day N, end on Day N+1) are assigned
+  // to the day they ended so they appear in the correct day's log.
+  function entryEffectiveISO(entry) {
+    if (entry.durationSeconds > 0) {
+      return new Date(new Date(entry.startedAt).getTime() + entry.durationSeconds * 1000).toISOString();
+    }
+    return entry.startedAt;
+  }
+
   function isSameDay(iso, date) {
     var d = new Date(iso);
     return d.getFullYear() === date.getFullYear() &&
@@ -292,7 +303,7 @@
 
     var isNextSide = false;
     if (!isActive) {
-      var log = getLog().filter(function(e) { return isToday(new Date(e.startedAt)); });
+      var log = getLog().filter(function(e) { return isToday(new Date(entryEffectiveISO(e))); });
       lastLog = log.find(function(e) { return e.type === meta.type && e.side === meta.side; }) || null;
       if (lastLog && meta.type === 'breast') {
         var lastBreast = log.find(function(e) { return e.type === 'breast'; });
@@ -468,7 +479,7 @@
     var el = document.getElementById('reg-stats');
     if (!el) return;
     var allLog = getLog();
-    var dayLog = allLog.filter(function(e) { return isSameDay(e.startedAt, viewDate); });
+    var dayLog = allLog.filter(function(e) { return isSameDay(entryEffectiveISO(e), viewDate); });
     var breast = dayLog.filter(function(e) { return e.type === 'breast'; })
       .slice().sort(function(a, b) { return new Date(a.startedAt) - new Date(b.startedAt); });
 
@@ -530,7 +541,7 @@
   function renderSummary() {
     var el = document.getElementById('registro-summary');
     if (!el) return;
-    var dayLog = getLog().filter(function(e) { return isSameDay(e.startedAt, viewDate); });
+    var dayLog = getLog().filter(function(e) { return isSameDay(entryEffectiveISO(e), viewDate); });
     var breastSecs = dayLog.filter(function(e) { return e.type === 'breast'; })
       .reduce(function(s, e) { return s + e.durationSeconds; }, 0);
     var pumpSecs = dayLog.filter(function(e) { return e.type === 'pump'; })
@@ -547,7 +558,7 @@
   function renderLog() {
     var el = document.getElementById('registro-log');
     if (!el) return;
-    var dayLog = getLog().filter(function(e) { return isSameDay(e.startedAt, viewDate); });
+    var dayLog = getLog().filter(function(e) { return isSameDay(entryEffectiveISO(e), viewDate); });
 
     // Date nav
     var todayFlag = isToday(viewDate);
